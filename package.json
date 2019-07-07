@@ -1,0 +1,27 @@
+{
+  "name": "Spite-Malice",
+  "version": "1.0.0",
+  "description": "",
+  "private": "true",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/taffyb/Spite-Malice.git"
+  },
+  "keywords": [],
+  "author": "Taffy Brecknock",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/taffyb/Spite-Malice/issues"
+  },
+  "homepage": "https://github.com/taffyb/Spite-Malice#readme",
+  "devDependencies": {
+    "webpack": "^4.35.2",
+    "webpack-cli": "^3.3.5"
+  },
+  "dependencies": {
+    "lodash": "^4.17.11"
+  }
+}
