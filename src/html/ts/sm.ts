@@ -1,6 +1,0 @@
-/*
- * Main Game 
-*/
-
- const pack = [];
- 
