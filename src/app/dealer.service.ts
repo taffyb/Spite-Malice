@@ -6,7 +6,8 @@ import {Player} from './Player';
 })
 export class DealerService {
   deck:number[]=[];
-  includeJokers:number=0; //maximum 4
+  recyclePile:number[]=[];
+  includeJokers:number=0; //maximum 4 (per deck)
   decks:number=2; //default play with two decks
 
   constructor() {
@@ -17,7 +18,7 @@ export class DealerService {
       }
   }
   
-  shuffleArray() { 
+  shuffleDeck() { 
       for (let i:number = this.deck.length - 1; i > 0; i--) {
           let j:number = Math.floor(Math.random() * (i + 1));
           let temp:number = this.deck[i];
@@ -26,7 +27,7 @@ export class DealerService {
       }
   }
   deal(players:Player[]){
-      this.shuffleArray();
+      this.shuffleDeck();
       console.log(`B4 deal: Deck contains ${this.deck.length} cards.`);
       // deal the player's piles
       for(let i:number=0;i<13;i++){
@@ -41,15 +42,39 @@ export class DealerService {
       // initialise the player's stacks
       for(let i:number=0;i<4;i++){
           for(let p:number=0;p<players.length;p++){
-              players[0].stacks[i].push(this.deck.pop());
+              players[p].stacks[i].push(this.deck.pop());
           }
       } 
       // initialise the player's stacks
       for(let i:number=0;i<5;i++){
           for(let p:number=0;p<players.length;p++){
-              players[0].hand.push(this.deck.pop());
+              players[p].hand.push(this.deck.pop());
           }
       }     
       console.log(`After deal: Deck contains ${this.deck.length} cards.`);
+  }
+  private dealNextCard():number{
+      let nextCard:number;
+      if(this.deck.length==0){
+          /* 
+              If the deck has run out of cards, 
+              shuffle the recycle pile and add them back into the deck.
+          */
+          this.deck = this.recyclePile;
+          this.recyclePile=[]; //empty the recycle pile
+          this.shuffleDeck();
+      }
+      nextCard= this.deck.pop();
+      return nextCard;
+  }
+  addToRecyclePile(cards:number[]){
+      for(let c=0;c<cards.length-1;c++){
+          this.recyclePile.push(cards[c]);
+      }
+  }
+  fillHand(player:Player){
+      for(let i=0;i<(5-player.hand.length);i++){
+          player.hand.push(this.dealNextCard());
+      }
   }
 }

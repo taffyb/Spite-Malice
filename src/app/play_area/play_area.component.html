@@ -1,14 +1,111 @@
-<ul>
-  	<li *ngFor="let p of players">
-  		{{p.name}} 
-  		<img *ngIf="p.topOfPile<10" src="/assets/cards/c0{{p.topOfPile}}.png"/>
-  		<img *ngIf="p.topOfPile>=10" src="/assets/cards/c{{p.topOfPile}}.png"/>
-  	</li>
-</ul>
-
-<div class="cardList">
-  <ng-container *ngFor="let n of [1,2,3,4,5,0]">
-    <card class="cardListItem" [name]="n"></card>
-  </ng-container>
+<div *ngFor="let p of players">
+<table >
+	<tr >
+		<th>Player Name</th>
+		<th>Pile</th>
+		<th colspan=5>Hand</th>
+		<th colspan=4>Stack</th>
+	</tr>
+	<tr >
+		<td><span *ngIf="p.isPrimary">*</span>{{p.name}}</td>
+		<td>{{toFaceNumber(p.topOfPile)}}</td>
+		<!-- The Hand -->
+		<td>
+			<span *ngIf="p.hand.length>0">
+				<span *ngIf="p.isPrimary">{{toFaceNumber(p.hand[0])}}</span><span *ngIf="!p.isPrimary">X</span>
+			</span>
+			<span *ngIf="!p.hand.length>0">
+				<span >&nbsp;</span>
+			</span>
+		</td>
+		<td>
+			<span *ngIf="p.hand.length>1">
+				<span *ngIf="p.isPrimary">{{toFaceNumber(p.hand[1])}}</span><span *ngIf="!p.isPrimary">X</span>
+			</span>
+			<span *ngIf="!p.hand.length>1">
+				<span >&nbsp;</span>
+			</span>
+		</td>
+		<td>
+			<span *ngIf="p.hand.length>2">
+				<span *ngIf="p.isPrimary">{{toFaceNumber(p.hand[2])}}</span><span *ngIf="!p.isPrimary">X</span>
+			</span>
+			<span *ngIf="!p.hand.length>2">
+				<span >&nbsp;</span>
+			</span>
+		</td>
+		<td>
+			<span *ngIf="p.hand.length>3">
+				<span *ngIf="p.isPrimary">{{toFaceNumber(p.hand[3])}}</span><span *ngIf="!p.isPrimary">X</span>
+			</span>
+			<span *ngIf="!p.hand.length>3">
+				<span >&nbsp;</span>
+			</span>
+		</td>
+		<td>
+			<span *ngIf="p.hand.length>4">
+				<span *ngIf="p.isPrimary">{{toFaceNumber(p.hand[4])}}</span><span *ngIf="!p.isPrimary">X</span>
+			</span>
+			<span *ngIf="!p.hand.length>4">
+				<span >&nbsp;</span>
+			</span>
+		</td>
+		<!-- The Stacks -->
+	 	<td>
+			<span *ngIf="p.stacks[0].length>0">
+				{{toFaceNumber(p.stacks[0][0])}}
+			</span>
+			<span *ngIf="!p.stacks[0].length>0">
+				&nbsp;
+			</span>
+		</td>
+	 	<td>
+			<span *ngIf="p.stacks[1].length>0">
+				{{toFaceNumber(p.stacks[1][0])}}
+			</span>
+			<span *ngIf="!p.stacks[1].length>0">
+				&nbsp;
+			</span>
+		</td>
+	 	<td>
+			<span *ngIf="p.stacks[2].length>0">
+				{{toFaceNumber(p.stacks[2][0])}}
+			</span>
+			<span *ngIf="!p.stacks[2].length>0">
+				&nbsp;
+			</span>
+		</td>
+	 	<td>
+			<span *ngIf="p.stacks[3].length>0">
+				{{toFaceNumber(p.stacks[3][0])}}
+			</span>
+			<span *ngIf="!p.stacks[3].length>0">
+				&nbsp;
+			</span>
+		</td>
+	</tr>
+</table>
+<p>
+<p>
 </div>
+<table>
+	<tr>
+		<td>
+			<span *ngIf="centreStacks[0]!=0">{{toFaceNumber(centreStacks[0])}}</span>
+			<span *ngIf="centreStacks[0]==0">&nbsp;</span>
+		</td>
+		<td>
+			<span *ngIf="centreStacks[1]!=0">{{toFaceNumber(centreStacks[1])}}</span>
+			<span *ngIf="centreStacks[1]==0">&nbsp;</span>
+		</td>
+		<td>
+			<span *ngIf="centreStacks[2]!=0">{{toFaceNumber(centreStacks[2])}}</span>
+			<span *ngIf="centreStacks[2]==0">&nbsp;</span>
+		</td>
+		<td>
+			<span *ngIf="centreStacks[3]!=0">{{toFaceNumber(centreStacks[3])}}</span>
+			<span *ngIf="centreStacks[3]==0">&nbsp;</span>
+		</td>
+	</tr>
+</table>
 
