@@ -1,0 +1,14 @@
+<ul>
+  	<li *ngFor="let p of players">
+  		{{p.name}} 
+  		<img *ngIf="p.topOfPile<10" src="/assets/cards/c0{{p.topOfPile}}.png"/>
+  		<img *ngIf="p.topOfPile>=10" src="/assets/cards/c{{p.topOfPile}}.png"/>
+  	</li>
+</ul>
+
+<div class="cardList">
+  <ng-container *ngFor="let n of [1,2,3,4,5,0]">
+    <card class="cardListItem" [name]="n"></card>
+  </ng-container>
+</div>
+

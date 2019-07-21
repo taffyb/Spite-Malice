@@ -1,0 +1,55 @@
+import { Injectable } from '@angular/core';
+import {Player} from './Player';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class DealerService {
+  deck:number[]=[];
+  includeJokers:number=0; //maximum 4
+  decks:number=2; //default play with two decks
+
+  constructor() {
+      for(let d:number=0;d<this.decks;d++){      
+          for(let i:number=1;i<=52+(this.includeJokers);i++ ){
+              this.deck.push(i);
+          }
+      }
+  }
+  
+  shuffleArray() { 
+      for (let i:number = this.deck.length - 1; i > 0; i--) {
+          let j:number = Math.floor(Math.random() * (i + 1));
+          let temp:number = this.deck[i];
+          this.deck[i] = this.deck[j];
+          this.deck[j] = temp;
+      }
+  }
+  deal(players:Player[]){
+      this.shuffleArray();
+      console.log(`B4 deal: Deck contains ${this.deck.length} cards.`);
+      // deal the player's piles
+      for(let i:number=0;i<13;i++){
+          for(let p:number=0;p<players.length;p++){
+              players[p].pile.push(this.deck.pop());
+          }
+          for(let p:number=0;p<players.length;p++){
+              players[p].topOfPile=players[p].pile[players[p].pile.length-1];
+          } 
+      }
+      
+      // initialise the player's stacks
+      for(let i:number=0;i<4;i++){
+          for(let p:number=0;p<players.length;p++){
+              players[0].stacks[i].push(this.deck.pop());
+          }
+      } 
+      // initialise the player's stacks
+      for(let i:number=0;i<5;i++){
+          for(let p:number=0;p<players.length;p++){
+              players[0].hand.push(this.deck.pop());
+          }
+      }     
+      console.log(`After deal: Deck contains ${this.deck.length} cards.`);
+  }
+}
