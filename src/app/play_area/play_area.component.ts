@@ -11,8 +11,9 @@ export class Play_areaComponent implements OnInit {
   players: Player[] = [];
   dealer:DealerService;
   centreStacks:number[][]=[[0],[0],[0],[0]];
+  activePlayer:number=0;
 
-  constructor(private dealer:DealerService) {
+  constructor(dealer:DealerService) {
       this.dealer = dealer;
   }
   
@@ -31,5 +32,11 @@ export class Play_areaComponent implements OnInit {
   toFaceNumber(card:number):number{
       let c:number=card%13;
       return (c>0?c:13);
+  }
+  toggleActivePlayer(){
+      this.activePlayer++;
+      if(this.activePlayer>=this.players.length){
+          this.activePlayer=0;
+      }
   }
 }

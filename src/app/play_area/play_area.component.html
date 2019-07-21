@@ -1,4 +1,5 @@
-<div *ngFor="let p of players">
+<div *ngFor="let p of players;let i=index">
+Active player: <span (dblclick)="toggleActivePlayer()">{{activePlayer}}</span>
 <table >
 	<tr >
 		<th>Player Name</th>
@@ -6,8 +7,9 @@
 		<th colspan=5>Hand</th>
 		<th colspan=4>Stack</th>
 	</tr>
+
 	<tr >
-		<td><span *ngIf="p.isPrimary">*</span>{{p.name}}</td>
+		<td><span [ngClass]="{'active':activePlayer==i,'inactive':activePlayer!=i}"><span *ngIf="p.isPrimary">*</span>{{p.name}}</span></td>
 		<td>{{toFaceNumber(p.topOfPile)}}</td>
 		<!-- The Hand -->
 		<td>

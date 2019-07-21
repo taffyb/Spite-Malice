@@ -22,3 +22,11 @@
 table, th, td {
   border: 1px solid black;
 }
+.active{
+	color:red;
+	font-weight: bold;
+}
+.inactive{
+	color:black;
+	font-weight: normal;
+}
