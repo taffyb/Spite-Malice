@@ -103,17 +103,41 @@ export class Play_areaComponent implements OnInit {
           
       }
   }
-  toggleCentreTarget(position:number){
-
-      this.zone.run(() => this.toPosition =position);
-//      console.log(`Mouse over: ${position} toPosition=${this.toPosition}`);         
+  toggleTarget(position:number){
+      this.zone.run(() => this.toPosition =position);        
   }
   moveToCentreStack(stack:number){
+      let move:Move = new Move();
+      move.from = this.fromPosition;
+      move.card =this.players[this.activePlayer].viewCard(stack);
+      move.to = stack+GamePositionsEnum['BASE'];
+      console.log(`moveToCentreStack: ${JSON.stringify(move)}`);
+      this.moveService.addMove(move);
+      this.fromPosition=-1;
+  }
+  moveToPlayerStack(stack:number){
       let move:Move = new Move();
       move.from = this.fromPosition;
       move.card =this.players[this.activePlayer].viewCard(stack);
       move.to = stack;
       console.log(`Move: ${JSON.stringify(move)}`);
       this.moveService.addMove(move);
+      this.fromPosition=-1;
+  }
+  canMoveHere(toPosition:number){
+      console.log(`canMovehere: ${toPosition}`);
+      let canMove:boolean=false;
+      let fromPosition:number=this.fromPosition;
+  
+      if(fromPosition>-1){
+          if(toPosition>=(GamePositionsEnum['BASE']+GamePositionsEnum['STACK_1']) &&
+                  toPosition<=GamePositionsEnum['BASE']+GamePositionsEnum['STACK_4']){
+             let centreCard:number=this.viewTopOfStack(toPosition-GamePositionsEnum['BASE']);
+             if(this.players[this.activePlayer].viewCard(this.fromPosition)==(centreCard<13?centreCard+1:1)) {
+                  canMove=true;
+             }        
+          }
+      }
+      return canMove;
   }
 }

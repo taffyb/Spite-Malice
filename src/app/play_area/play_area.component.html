@@ -11,14 +11,54 @@
 			<span [ngClass]="{'active':activePlayer==pIdx,'inactive':activePlayer!=pIdx}">
 			<span *ngIf="p.isPrimary">*</span>{{p.name}}</span>
 		</td>
-		<td *ngFor="let c of p.cards;let pos=index" [ngClass]="{'from':fromPosition==pos && activePlayer==pIdx}" >
+		<td *ngFor="let c of p.cards;let pos=index" [ngClass]="{'from':fromPosition==pos && activePlayer==pIdx,
+																'to':toPosition==pos && fromPosition>=0 && activePlayer==pIdx}" >
 		    <span *ngIf="p.isPrimary">
 				<span *ngIf="p.viewCard(pos)>Cards.NO_CARD">
-					<span (click)="!!toggleMoveFrom(pIdx,pos)">{{toFaceNumber(p.viewCard(pos))}}</span>
+					<!-- No card has been selected -->
+					<span *ngIf="fromPosition==-1" 
+						(click)="!!toggleMoveFrom(pIdx,pos)">
+		    			<span>{{toFaceNumber(p.viewCard(pos))}}</span>
+					</span>
+					<!-- This is the Selected card -->
+					<span *ngIf="fromPosition>-1 && pos==fromPosition" 
+						(click)="!!toggleMoveFrom(pIdx,pos)">
+		    			<span>{{toFaceNumber(p.viewCard(pos))}}</span>
+					</span>
+					<!-- 
+						A card is selected but it is not this one.
+						The selected Card is from the Players hand 
+						This position is a Stack position 
+					 -->
+					<span *ngIf="(fromPosition>-1 && pos!=fromPosition) &&
+								(fromPosition>=PlayerPositions.HAND_1 && fromPosition<=PlayerPositions.HAND_5) &&
+								(pos>=PlayerPositions.STACK_1 && pos<=PlayerPositions.STACK_4)">
+		    			<span (mouseover)="toggleTarget(pos)" 
+							  (mouseout)="toggleTarget(-1)" 
+				              (click)="moveToPlayerStack(pos)">{{toFaceNumber(p.viewCard(pos))}}</span>
+					</span>
+					<!-- 
+						A card is selected but it is not this one.
+						The selected Card is from the Players hand 
+						This position is NOT Stack position 
+					 -->
+					<span *ngIf="(fromPosition>-1 && pos!=fromPosition) &&
+								(fromPosition>=PlayerPositions.HAND_1 && fromPosition<=PlayerPositions.HAND_5) &&
+								(pos<PlayerPositions.STACK_1 || pos>PlayerPositions.STACK_4)">
+		    			<span >{{toFaceNumber(p.viewCard(pos))}}</span>
+					</span>
+					<!-- 
+						A card is selected but it is not this one.
+						The selected Card is NOT from the Players hand
+					 -->
+					<span *ngIf="(fromPosition>-1 && pos!=fromPosition) &&
+								(fromPosition<PlayerPositions.HAND_1 || fromPosition>PlayerPositions.HAND_5)">
+		    			<span>{{toFaceNumber(p.viewCard(pos))}}</span>
+					</span>
 				</span>
 				<span *ngIf="p.viewCard(pos)==Cards.NO_CARD">&nbsp;</span>
 			</span>
-		    <span *ngIf="!p.isPrimary && (pos>=PlayerPositions.HAND_1 && pos<PlayerPositions.HAND_5)">
+		    <span *ngIf="!p.isPrimary && (pos>=PlayerPositions.HAND_1 && pos<=PlayerPositions.HAND_5)">
 				<span >X</span>
 		    </span>
 		    <span *ngIf="!p.isPrimary && (pos<PlayerPositions.HAND_1 || pos>PlayerPositions.HAND_5)">
@@ -31,8 +71,20 @@
 </div>
 <table>
 	<tr>
-		<td *ngFor="let s of centreStacks; let sIdx=index" [ngClass]="{'to':toPosition==sIdx && fromPosition>=0}">
-			<span (mouseover)="toggleCentreTarget(sIdx)" (mouseout)="toggleCentreTarget(-1)" (click)="moveToCentreStack(sIdx)">
+		<td *ngFor="let s of centreStacks; let sIdx=index" [ngClass]="{'to':toPosition==GamePositions.BASE+sIdx && fromPosition>=0}">
+		
+			<span *ngIf="fromPosition>-1 && canMoveHere(GamePositions.BASE+sIdx)"
+				(mouseover)="toggleTarget(GamePositions.BASE+sIdx)" 
+				(mouseout)="toggleTarget(-1)" 
+				(click)="moveToCentreStack(sIdx)">
+				<span *ngIf="viewTopOfStack(sIdx)!=Cards.NO_CARD">{{toFaceNumber(viewTopOfStack(sIdx))}}</span>
+				<span *ngIf="viewTopOfStack(sIdx)==Cards.NO_CARD">&nbsp;</span>
+			</span>	
+			<span *ngIf="fromPosition>-1 && !canMoveHere(GamePositions.BASE+sIdx)">
+				<span *ngIf="viewTopOfStack(sIdx)!=Cards.NO_CARD">{{toFaceNumber(viewTopOfStack(sIdx))}}</span>
+				<span *ngIf="viewTopOfStack(sIdx)==Cards.NO_CARD">&nbsp;</span>
+			</span>		
+			<span *ngIf="fromPosition==-1">
 				<span *ngIf="viewTopOfStack(sIdx)!=Cards.NO_CARD">{{toFaceNumber(viewTopOfStack(sIdx))}}</span>
 				<span *ngIf="viewTopOfStack(sIdx)==Cards.NO_CARD">&nbsp;</span>
 			</span>		
