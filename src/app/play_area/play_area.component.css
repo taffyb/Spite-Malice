@@ -22,6 +22,12 @@
 table, th, td {
   border: 1px solid black;
 }
+td.from {
+  background-color: aqua;
+}
+td.to {
+  background-color: yellow;
+}
 .active{
 	color:red;
 	font-weight: bold;

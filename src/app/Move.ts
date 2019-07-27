@@ -1,6 +1,6 @@
 export class Move {
   guid: string;
-  from: string;
+  from: number;
   card: number;
-  to: string;
+  to: number;
 }

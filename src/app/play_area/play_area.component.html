@@ -1,5 +1,4 @@
-<div *ngFor="let p of players;let i=index">
-Active player: <span (dblclick)="toggleActivePlayer()">{{activePlayer}}</span>
+<div *ngFor="let p of players;let pIdx=index">
 <table >
 	<tr >
 		<th>Player Name</th>
@@ -7,106 +6,36 @@ Active player: <span (dblclick)="toggleActivePlayer()">{{activePlayer}}</span>
 		<th colspan=5>Hand</th>
 		<th colspan=4>Stack</th>
 	</tr>
-
 	<tr >
-		<td><span [ngClass]="{'active':activePlayer==i,'inactive':activePlayer!=i}"><span *ngIf="p.isPrimary">*</span>{{p.name}}</span></td>
-		<td>{{toFaceNumber(p.topOfPile)}}</td>
-		<!-- The Hand -->
-		<td>
-			<span *ngIf="p.hand.length>0">
-				<span *ngIf="p.isPrimary">{{toFaceNumber(p.hand[0])}}</span><span *ngIf="!p.isPrimary">X</span>
-			</span>
-			<span *ngIf="!p.hand.length>0">
-				<span >&nbsp;</span>
-			</span>
+		<td >
+			<span [ngClass]="{'active':activePlayer==pIdx,'inactive':activePlayer!=pIdx}">
+			<span *ngIf="p.isPrimary">*</span>{{p.name}}</span>
 		</td>
-		<td>
-			<span *ngIf="p.hand.length>1">
-				<span *ngIf="p.isPrimary">{{toFaceNumber(p.hand[1])}}</span><span *ngIf="!p.isPrimary">X</span>
+		<td *ngFor="let c of p.cards;let pos=index" [ngClass]="{'from':fromPosition==pos && activePlayer==pIdx}" >
+		    <span *ngIf="p.isPrimary">
+				<span *ngIf="p.viewCard(pos)>Cards.NO_CARD">
+					<span (click)="!!toggleMoveFrom(pIdx,pos)">{{toFaceNumber(p.viewCard(pos))}}</span>
+				</span>
+				<span *ngIf="p.viewCard(pos)==Cards.NO_CARD">&nbsp;</span>
 			</span>
-			<span *ngIf="!p.hand.length>1">
-				<span >&nbsp;</span>
-			</span>
+		    <span *ngIf="!p.isPrimary && (pos>=PlayerPositions.HAND_1 && pos<PlayerPositions.HAND_5)">
+				<span >X</span>
+		    </span>
+		    <span *ngIf="!p.isPrimary && (pos<PlayerPositions.HAND_1 || pos>PlayerPositions.HAND_5)">
+		    	<span>{{toFaceNumber(p.viewCard(pos))}}</span>
+		   	</span>
 		</td>
-		<td>
-			<span *ngIf="p.hand.length>2">
-				<span *ngIf="p.isPrimary">{{toFaceNumber(p.hand[2])}}</span><span *ngIf="!p.isPrimary">X</span>
-			</span>
-			<span *ngIf="!p.hand.length>2">
-				<span >&nbsp;</span>
-			</span>
-		</td>
-		<td>
-			<span *ngIf="p.hand.length>3">
-				<span *ngIf="p.isPrimary">{{toFaceNumber(p.hand[3])}}</span><span *ngIf="!p.isPrimary">X</span>
-			</span>
-			<span *ngIf="!p.hand.length>3">
-				<span >&nbsp;</span>
-			</span>
-		</td>
-		<td>
-			<span *ngIf="p.hand.length>4">
-				<span *ngIf="p.isPrimary">{{toFaceNumber(p.hand[4])}}</span><span *ngIf="!p.isPrimary">X</span>
-			</span>
-			<span *ngIf="!p.hand.length>4">
-				<span >&nbsp;</span>
-			</span>
-		</td>
-		<!-- The Stacks -->
-	 	<td>
-			<span *ngIf="p.stacks[0].length>0">
-				{{toFaceNumber(p.stacks[0][0])}}
-			</span>
-			<span *ngIf="!p.stacks[0].length>0">
-				&nbsp;
-			</span>
-		</td>
-	 	<td>
-			<span *ngIf="p.stacks[1].length>0">
-				{{toFaceNumber(p.stacks[1][0])}}
-			</span>
-			<span *ngIf="!p.stacks[1].length>0">
-				&nbsp;
-			</span>
-		</td>
-	 	<td>
-			<span *ngIf="p.stacks[2].length>0">
-				{{toFaceNumber(p.stacks[2][0])}}
-			</span>
-			<span *ngIf="!p.stacks[2].length>0">
-				&nbsp;
-			</span>
-		</td>
-	 	<td>
-			<span *ngIf="p.stacks[3].length>0">
-				{{toFaceNumber(p.stacks[3][0])}}
-			</span>
-			<span *ngIf="!p.stacks[3].length>0">
-				&nbsp;
-			</span>
-		</td>
-	</tr>
 </table>
 <p>
 <p>
 </div>
 <table>
 	<tr>
-		<td>
-			<span *ngIf="centreStacks[0]!=0">{{toFaceNumber(centreStacks[0])}}</span>
-			<span *ngIf="centreStacks[0]==0">&nbsp;</span>
-		</td>
-		<td>
-			<span *ngIf="centreStacks[1]!=0">{{toFaceNumber(centreStacks[1])}}</span>
-			<span *ngIf="centreStacks[1]==0">&nbsp;</span>
-		</td>
-		<td>
-			<span *ngIf="centreStacks[2]!=0">{{toFaceNumber(centreStacks[2])}}</span>
-			<span *ngIf="centreStacks[2]==0">&nbsp;</span>
-		</td>
-		<td>
-			<span *ngIf="centreStacks[3]!=0">{{toFaceNumber(centreStacks[3])}}</span>
-			<span *ngIf="centreStacks[3]==0">&nbsp;</span>
+		<td *ngFor="let s of centreStacks; let sIdx=index" [ngClass]="{'to':toPosition==sIdx && fromPosition>=0}">
+			<span (mouseover)="toggleCentreTarget(sIdx)" (mouseout)="toggleCentreTarget(-1)" (click)="moveToCentreStack(sIdx)">
+				<span *ngIf="viewTopOfStack(sIdx)!=Cards.NO_CARD">{{toFaceNumber(viewTopOfStack(sIdx))}}</span>
+				<span *ngIf="viewTopOfStack(sIdx)==Cards.NO_CARD">&nbsp;</span>
+			</span>		
 		</td>
 	</tr>
 </table>

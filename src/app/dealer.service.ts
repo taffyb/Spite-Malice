@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import {Player} from './Player';
+import {PlayerPositionsEnum} from './Enums';
 
 @Injectable({
   providedIn: 'root'
@@ -28,30 +29,26 @@ export class DealerService {
   }
   deal(players:Player[]){
       this.shuffleDeck();
-      console.log(`B4 deal: Deck contains ${this.deck.length} cards.`);
-      // deal the player's piles
+      
+      // deal the player's pile
       for(let i:number=0;i<13;i++){
           for(let p:number=0;p<players.length;p++){
-              players[p].pile.push(this.deck.pop());
-          }
-          for(let p:number=0;p<players.length;p++){
-              players[p].topOfPile=players[p].pile[players[p].pile.length-1];
+              players[p].addCard(this.deck.pop(),PlayerPositionsEnum['PILE']);
           } 
       }
       
       // initialise the player's stacks
       for(let i:number=0;i<4;i++){
           for(let p:number=0;p<players.length;p++){
-              players[p].stacks[i].push(this.deck.pop());
+              players[p].addCard(this.deck.pop(),PlayerPositionsEnum['STACK_1']+i);
           }
       } 
-      // initialise the player's stacks
+      // initialise the player's hand
       for(let i:number=0;i<5;i++){
           for(let p:number=0;p<players.length;p++){
-              players[p].hand.push(this.deck.pop());
+              players[p].addCard(this.deck.pop(),PlayerPositionsEnum['HAND_1']+i);
           }
       }     
-      console.log(`After deal: Deck contains ${this.deck.length} cards.`);
   }
   private dealNextCard():number{
       let nextCard:number;
@@ -73,8 +70,8 @@ export class DealerService {
       }
   }
   fillHand(player:Player){
-      for(let i=0;i<(5-player.hand.length);i++){
-          player.hand.push(this.dealNextCard());
+      for(let i=5;i>(player.hand.length);i--){
+          player.addCard(this.dealNextCard(),PlayerPositionsEnum['HAND_1']+i);
       }
   }
 }
