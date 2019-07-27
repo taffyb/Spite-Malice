@@ -106,34 +106,28 @@ export class Play_areaComponent implements OnInit {
   toggleTarget(position:number){
       this.zone.run(() => this.toPosition =position);        
   }
-  moveToCentreStack(stack:number){
+  moveTo(stack:number){
       let move:Move = new Move();
       move.from = this.fromPosition;
-      move.card =this.players[this.activePlayer].viewCard(stack);
-      move.to = stack+GamePositionsEnum['BASE'];
-      console.log(`moveToCentreStack: ${JSON.stringify(move)}`);
-      this.moveService.addMove(move);
-      this.fromPosition=-1;
-  }
-  moveToPlayerStack(stack:number){
-      let move:Move = new Move();
-      move.from = this.fromPosition;
-      move.card =this.players[this.activePlayer].viewCard(stack);
+      move.card =this.players[this.activePlayer].viewCard(this.fromPosition);
       move.to = stack;
       console.log(`Move: ${JSON.stringify(move)}`);
       this.moveService.addMove(move);
       this.fromPosition=-1;
+      this.toPosition=-1;
   }
   canMoveHere(toPosition:number){
-      console.log(`canMovehere: ${toPosition}`);
       let canMove:boolean=false;
-      let fromPosition:number=this.fromPosition;
+      const fromPosition:number=this.fromPosition;
+//      if(fromPosition>-1){console.log(`canMovehere: ${toPosition}`)};
+      const centreStack1:number=GamePositionsEnum['BASE']+GamePositionsEnum['STACK_1'];
+      const centreStack4:number=GamePositionsEnum['BASE']+GamePositionsEnum['STACK_4'];
   
       if(fromPosition>-1){
-          if(toPosition>=(GamePositionsEnum['BASE']+GamePositionsEnum['STACK_1']) &&
-                  toPosition<=GamePositionsEnum['BASE']+GamePositionsEnum['STACK_4']){
+          let cardToMove:number=this.toFaceNumber(this.players[this.activePlayer].viewCard(fromPosition));
+          if(toPosition>=centreStack1 && toPosition<=centreStack4){
              let centreCard:number=this.viewTopOfStack(toPosition-GamePositionsEnum['BASE']);
-             if(this.players[this.activePlayer].viewCard(this.fromPosition)==(centreCard<13?centreCard+1:1)) {
+             if(cardToMove==(centreCard<13?centreCard+1:1)) {
                   canMove=true;
              }        
           }

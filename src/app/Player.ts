@@ -97,9 +97,6 @@ export class Player {
               //show the cards on the stack in reverse order.
               card = this.cards[PlayerPositionsEnum['STACK_4']][this.cards[PlayerPositionsEnum['STACK_4']].length-depth];
               break;
-          default:
-              throw new Error(`${position} is NOT a valid Position`);
-              
       }
 
 //      console.log(`Position: ${position}, depth: ${depth}, card:${card}`);
