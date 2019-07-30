@@ -3,4 +3,5 @@ export class Move {
   from: number;
   card: number;
   to: number;
+  isDiscard:boolean=false;
 }

@@ -1,11 +1,14 @@
 <div *ngFor="let p of players;let pIdx=index">
+Max Stack {{p.maxStack().length}}
 <table >
+	<!-- Header Row -->
 	<tr >
 		<th>Player Name</th>
 		<th>Pile</th>
 		<th colspan=5>Hand</th>
 		<th colspan=4>Stack</th>
 	</tr>
+	<!--  Main player row -->
 	<tr >
 		<td >
 			<span [ngClass]="{'active':activePlayer==pIdx,'inactive':activePlayer!=pIdx}">
@@ -15,15 +18,34 @@
 																'to':toPosition==pos && fromPosition>=0 && activePlayer==pIdx}" >
 		    <span *ngIf="p.isPrimary || (pIdx==activePlayer)">
 				<span *ngIf="p.viewCard(pos)>Cards.NO_CARD">
-					<!-- No card has been selected -->
-					<span *ngIf="fromPosition==-1" 
-						(click)="!!toggleMoveFrom(pIdx,pos)">
-		    			<span>{{toFaceNumber(p.viewCard(pos))}}</span>
+					<!-- No card has been selected
+						 This is not on the stack -->
+					<span *ngIf="fromPosition==-1 &&
+								 (pos<PlayerPositions.STACK_1 || pos>PlayerPositions.STACK_4)" 
+						(click)="toggleMoveFrom(pIdx,pos)">
+		    			<span>A{{toFaceNumber(p.viewCard(pos))}}</span>
+					</span>
+					<!-- No card has been selected
+						 This is from the Player Stack 
+						 This is the last card-->
+					<span *ngIf="fromPosition==-1 &&
+								 (pos>=PlayerPositions.STACK_1 && pos<=PlayerPositions.STACK_4) &&
+								 p.maxStack().length==0" 
+						(click)="toggleMoveFrom(pIdx,pos)">
+		    			<span>B{{toFaceNumber(p.viewCard(pos))}}</span>
+					</span>
+					<!-- No card has been selected
+						 This is from the Player Stack 
+						 This is the not last card-->
+					<span *ngIf="fromPosition==-1 &&
+								 (pos>=PlayerPositions.STACK_1 && pos<=PlayerPositions.STACK_4) &&
+								 p.maxStack().length!=0">
+		    			<span>C{{toFaceNumber(p.viewCard(pos))}}</span>
 					</span>
 					<!-- This is the Selected card -->
 					<span *ngIf="fromPosition>-1 && pos==fromPosition" 
-						(click)="!!toggleMoveFrom(pIdx,pos)">
-		    			<span>{{toFaceNumber(p.viewCard(pos))}}</span>
+						(click)="toggleMoveFrom(pIdx,pos)">
+		    			<span>D{{toFaceNumber(p.viewCard(pos))}}</span>
 					</span>
 					<!-- 
 						A card is selected but it is NOT this one.
@@ -32,9 +54,7 @@
 					 -->
 					<span *ngIf="(fromPosition>-1 && pos!=fromPosition) &&
 								(fromPosition==PlayerPositions.PILE)">
-		    			<span>
-				              {{toFaceNumber(p.viewCard(pos))}}
-				        </span>
+		    			<span>E{{toFaceNumber(p.viewCard(pos))}}</span>
 					</span>
 					<!-- 
 						A card is selected, but it is NOT this one.
@@ -47,7 +67,7 @@
 		    			<span (mouseover)="toggleTarget(pos)" 
 							  (mouseout)="toggleTarget(-1)" 
 				              (click)="moveTo(pos)">
-				              {{toFaceNumber(p.viewCard(pos))}}</span>
+				              F{{toFaceNumber(p.viewCard(pos))}}</span>
 					</span>
 					<!-- 
 						A card is selected, but it is NOT this one.
@@ -58,7 +78,7 @@
 					<span *ngIf="(fromPosition>-1 && pos!=fromPosition) &&
 								(fromPosition>=PlayerPositions.HAND_1 && fromPosition<=PlayerPositions.HAND_5) &&
 								(pos<PlayerPositions.STACK_1 || pos>PlayerPositions.STACK_4)">
-		    			<span >{{toFaceNumber(p.viewCard(pos))}}</span>
+		    			<span >G{{toFaceNumber(p.viewCard(pos))}}</span>
 					</span>
 					<!-- 
 						A card is selected but it is NOT this one.
@@ -66,32 +86,95 @@
 					 -->
 					<span *ngIf="(fromPosition>-1 && pos!=fromPosition) &&
 								(fromPosition>=PlayerPositions.STACK_1 && fromPosition<=PlayerPositions.STACK_4)">
-		    			<span>
-				              {{toFaceNumber(p.viewCard(pos))}}
-				        </span>
+		    			<span>H{{toFaceNumber(p.viewCard(pos))}}</span>
 					</span>
 				</span>
-				<span *ngIf="p.viewCard(pos)==Cards.NO_CARD">&nbsp;</span>
+				<!-- 
+					A card is selected.
+					The selected Card is from the players Hand 
+					The position is on the Stack and empty
+				 -->
+				<span *ngIf="p.viewCard(pos)==Cards.NO_CARD">				            
+	    			<span (mouseover)="toggleTarget(pos)" 
+					      (mouseout)="toggleTarget(-1)" 
+				          (click)="moveTo(pos)">
+			       		&nbsp;
+			       </span>
+				</span>
 			</span>
-		    <span *ngIf="!(pIdx==activePlayer) && !p.isPrimary && (pos>=PlayerPositions.HAND_1 && pos<=PlayerPositions.HAND_5)">
+		    <span *ngIf="!(pIdx==activePlayer) && !p.isPrimary &&
+		    			 !(p.viewCard(pos)==Cards.NO_CARD) &&
+		    			 (pos>=PlayerPositions.HAND_1 && pos<=PlayerPositions.HAND_5)">
 				<span >X</span>
 		    </span>
+		    <span *ngIf="!(pIdx==activePlayer) && !p.isPrimary &&
+		    			 (p.viewCard(pos)==Cards.NO_CARD) &&
+		    			 (pos>=PlayerPositions.HAND_1 && pos<=PlayerPositions.HAND_5)">
+				<span >&nbsp;</span>
+		    </span>
 		    <span *ngIf="!(pIdx==activePlayer) && !p.isPrimary && (pos<PlayerPositions.HAND_1 || pos>PlayerPositions.HAND_5)">
-		    	<span>{{toFaceNumber(p.viewCard(pos))}}</span>
+		    	<span>I{{toFaceNumber(p.viewCard(pos))}}</span>
 		   	</span>
 		</td>
+	</tr>
+	<!-- show the rest of the stack -->
+	<tr  *ngFor="let r of p.maxStack();let stackRow=index" >
+	 	<td colspan=7>&nbsp;</td>
+		<td *ngFor="let s of playerStacks; let stackCol=index" 
+			[ngClass]="{'from':fromPosition==PlayerPositions.STACK_1+stackCol && activePlayer==pIdx,
+						'to':toPosition==PlayerPositions.STACK_1+stackCol && fromPosition>=0 && activePlayer==pIdx}">
+		    <span *ngIf="pIdx==activePlayer"> <!-- This is the active Player -->
+		    	<!-- this stack has a card in this row -->
+				<span *ngIf="p.cards[PlayerPositions.STACK_1+stackCol].length>2+stackRow"> 
+					<!-- this is the last card in the stack -->
+					<span *ngIf="stackRow==(p.cards[PlayerPositions.STACK_1+stackCol].length-2)"> 
+						<!-- No card has been selected -->
+						<span *ngIf="fromPosition==-1" 
+						
+							(click)="toggleMoveFrom(pIdx,PlayerPositions.STACK_1+stackCol)">
+			    			<span>a:{{toFaceNumber(p.cards[PlayerPositions.STACK_1+stackCol][2+stackRow])}}</span>
+						</span>
+						<!-- 
+							 A card is selected
+							 This is the Selected stack
+						-->
+						<span *ngIf="fromPosition>-1 && 
+									 fromPosition==PlayerPositions.STACK_1+stackCol"
+									   
+							(click)="toggleMoveFrom(pIdx,PlayerPositions.STACK_1+stackCol)">
+			    			<span>b:{{toFaceNumber(p.cards[PlayerPositions.STACK_1+stackCol][2+stackRow])}}</span>
+						</span>
+						<!-- 
+							A card is selected 
+							It is NOT this one.
+							The selected Card is from the players Pile
+						 -->
+						<span *ngIf="fromPosition>-1 &&
+									 fromPosition!=PlayerPositions.STACK_1+stackCol &&
+									 fromPosition==PlayerPositions.PILE">
+			    			<span>
+					              c:{{toFaceNumber(p.cards[PlayerPositions.STACK_1+stackCol][2+stackRow])}}
+					        </span>
+						</span>	
+					</span> <!-- END this is the last card in the stack -->
+					<!-- ELSE not the last card -->
+				    <span>d{{toFaceNumber(p.cards[PlayerPositions.STACK_1+stackCol][2+stackRow])}}</span>   	
+				</span><!-- END this stack has a card in this row -->
+				<!-- ELSE No card in this row -->
+				<span *ngIf="!(p.cards[PlayerPositions.STACK_1+stackCol].length>2+stackRow)">j&nbsp;</span> 
+			</span>
+			<span *ngIf="!(pIdx==activePlayer)">
+			    <span *ngIf="toFaceNumber(p.cards[PlayerPositions.STACK_1+stackCol][2+stackRow])>Cards.NO_CARD">
+			    	<span>i{{toFaceNumber(p.cards[PlayerPositions.STACK_1+stackCol][2+stackRow])}}</span>
+			   	</span>
+		   	</span>
+		</td>
+	</tr>
 </table>
+
 <p>
 <p>
 </div>
-<!-- 
-fromPosition:{{fromPosition}}<br>
-Stack 1:{{viewTopOfStack(GamePositions.STACK_1)}}<br>
-Stack 1:{{viewTopOfStack(GamePositions.STACK_2)}}<br>
-Stack 1:{{viewTopOfStack(GamePositions.STACK_3)}}<br>
-Stack 1:{{viewTopOfStack(GamePositions.STACK_4)}}<br>
-Card:{{toFaceNumber(players[activePlayer].viewCard(fromPosition))}}<br>
- -->
 <table>
 	<tr>
 		<td *ngFor="let s of centreStacks; let sIdx=index" [ngClass]="{'to':toPosition==GamePositions.BASE+sIdx && fromPosition>-1}">
