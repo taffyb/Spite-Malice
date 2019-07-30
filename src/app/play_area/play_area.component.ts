@@ -167,6 +167,7 @@ export class Play_areaComponent implements OnInit {
           if(m.to<=PlayerPositionsEnum['STACK_4']){
               this.players[this.activePlayer].addCard(m.card,m.to);
           }else{
+              console.log(`m.to:${m.to} GamePositionsEnum.BASE:${GamePositionsEnum.BASE}`);
               this.centreStacks[m.to-GamePositionsEnum.BASE].push(m.card);
           }
           if(m.isDiscard){
@@ -176,6 +177,9 @@ export class Play_areaComponent implements OnInit {
           }else{
               console.log(`Move: ${JSON.stringify(moves)}`);
               this.zone.run(() => null);
+          }
+          if(this.players[this.activePlayer].cardsInHand()==0){
+              this.zone.run(() => this.dealer.fillHand(this.players[this.activePlayer]));
           }
       });
   }

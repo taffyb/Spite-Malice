@@ -143,8 +143,16 @@ export class Player {
               }
               break;
       }
-
 //      console.log(`Position: ${position}, depth: ${depth}, card:${card}`);
       return card;
+  }
+  cardsInHand():number{
+      let cards:number=0;
+      if(this.cards[PlayerPositionsEnum.HAND_1]>0){cards++;}
+      if(this.cards[PlayerPositionsEnum.HAND_2]>0){cards++;}
+      if(this.cards[PlayerPositionsEnum.HAND_3]>0){cards++;}
+      if(this.cards[PlayerPositionsEnum.HAND_4]>0){cards++;}
+      if(this.cards[PlayerPositionsEnum.HAND_5]>0){cards++;}
+      return cards;
   }
 }
