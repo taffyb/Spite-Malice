@@ -36,3 +36,12 @@ td.to {
 	color:black;
 	font-weight: normal;
 }
+.player-hand{
+	display: inline-block;
+	vertical-align:top;
+}
+.space{
+	display: inline-block;
+	width: 50px;
+	min-height:5px;
+}

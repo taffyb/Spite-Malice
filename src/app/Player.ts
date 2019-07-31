@@ -22,7 +22,7 @@ export class Player {
       for(let i=0;i<max-2;i++){
           maxArray.push(CardsEnum.NO_CARD);
       }
-      console.log(`maxStack ${JSON.stringify(maxArray)}`);
+//      console.log(`maxStack ${JSON.stringify(maxArray)}`);
       return maxArray;
   }
   removeCard(fromPosition:number){
@@ -73,9 +73,9 @@ export class Player {
               this.cards[PlayerPositionsEnum.STACK_3].push(card);
               break;
           case PlayerPositionsEnum.STACK_4:
-              console.log(`${this.name} STACK_4 + ${card}\n stack=${JSON.stringify(this.cards[PlayerPositionsEnum.STACK_4])}`);
+//              console.log(`${this.name} STACK_4 + ${card}\n stack=${JSON.stringify(this.cards[PlayerPositionsEnum.STACK_4])}`);
               this.cards[PlayerPositionsEnum.STACK_4].push(card);
-              console.log(`stack=${JSON.stringify(this.cards[PlayerPositionsEnum.STACK_4])}`);
+//              console.log(`stack=${JSON.stringify(this.cards[PlayerPositionsEnum.STACK_4])}`);
               break;
           default:
               throw new Error(`${position} is NOT a valid Position`);

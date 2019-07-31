@@ -71,14 +71,16 @@ export class DealerService {
       }
   }
   fillHand(player:Player){
-      console.log(`fillHand\nPlayer: ${player.name} Hand B4: ${JSON.stringify(player.cards)}`);
+      let c:number=0;
+//      console.log(`fillHand\nPlayer: ${player.name} Hand B4: ${JSON.stringify(player.cards)}`);
       for(let i=PlayerPositionsEnum['HAND_1'];i<PlayerPositionsEnum['STACK_1'];i++){
           if(player.cards[i]==CardsEnum.NO_CARD){
               let nextCard:number = this.dealNextCard();
-              console.log(`add card ${nextCard} to position ${i}`);
+//              console.log(`add card ${nextCard} to position ${i}`);
+              c++;
               player.addCard(nextCard,i);
           }          
       }
-      console.log(`fillHand\nPlayer: ${player.name} Hand After: ${JSON.stringify(player.cards)}`);
+      console.log(`fillHand\nPlayer: ${player.name} Added ${c} cards`);
   }
 }

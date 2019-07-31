@@ -121,7 +121,15 @@ export class Play_areaComponent implements OnInit {
       let move:Move = new Move();
       let s:number=0;
       move.from = this.fromPosition;
-      move.card =this.players[this.activePlayer].viewCard(this.fromPosition);
+      const fromPosition:number=this.fromPosition;
+      let cardToMove:number;
+      if(fromPosition>=PlayerPositionsEnum.STACK_1 && fromPosition<=PlayerPositionsEnum.STACK_4){
+          let topOfPlayerStack:number= this.players[this.activePlayer].cards[fromPosition].length-1;
+          cardToMove=this.players[this.activePlayer].cards[fromPosition][topOfPlayerStack];
+      }else{
+          cardToMove= this.players[this.activePlayer].viewCard(fromPosition);
+      }
+      move.card =cardToMove;
       move.to = stack;
 //      console.log(`Move: ${JSON.stringify(move)}`);
       if(move.to>=PlayerPositionsEnum['STACK_1'] && move.to<=PlayerPositionsEnum.STACK_4){
@@ -149,7 +157,15 @@ export class Play_areaComponent implements OnInit {
       const centreStack4:number=GamePositionsEnum.BASE+GamePositionsEnum.STACK_4;
   
       if(fromPosition>-1){
-          let cardToMove:number=this.toFaceNumber(this.players[this.activePlayer].viewCard(fromPosition));
+          
+          let cardToMove:number;
+          if(fromPosition>=PlayerPositionsEnum.STACK_1 && fromPosition<=PlayerPositionsEnum.STACK_4){
+              let topOfPlayerStack:number= this.players[this.activePlayer].cards[fromPosition].length-1;
+              cardToMove=this.toFaceNumber(this.players[this.activePlayer].cards[fromPosition][topOfPlayerStack]);
+          }else{
+              cardToMove= this.toFaceNumber(this.players[this.activePlayer].viewCard(fromPosition));
+          }
+          
           if(toPosition>=centreStack1 && toPosition<=centreStack4){
              let centreCard:number=this.toFaceNumber(this.viewTopOfStack(toPosition-GamePositionsEnum.BASE));
              if(cardToMove==(centreCard<13?centreCard+1:1)) {
@@ -167,15 +183,15 @@ export class Play_areaComponent implements OnInit {
           if(m.to<=PlayerPositionsEnum['STACK_4']){
               this.players[this.activePlayer].addCard(m.card,m.to);
           }else{
-              console.log(`m.to:${m.to} GamePositionsEnum.BASE:${GamePositionsEnum.BASE}`);
+//              console.log(`m.to:${m.to} GamePositionsEnum.BASE:${GamePositionsEnum.BASE}`);
               this.centreStacks[m.to-GamePositionsEnum.BASE].push(m.card);
           }
           if(m.isDiscard){
-              console.log(`Discard: ${JSON.stringify(moves)}`);
+//              console.log(`Discard: ${JSON.stringify(moves)}`);
               this.dealer.fillHand(this.players[nextPlayer]);
               this.zone.run(() => this.activePlayer=nextPlayer);              
           }else{
-              console.log(`Move: ${JSON.stringify(moves)}`);
+//              console.log(`Move: ${JSON.stringify(moves)}`);
               this.zone.run(() => null);
           }
           if(this.players[this.activePlayer].cardsInHand()==0){
