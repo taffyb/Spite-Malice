@@ -37,10 +37,10 @@ export class Play_areaComponent implements OnInit {
                           9 = Stack 4
                        */
    toPosition:number=-1 /*
-                          0 = Stack 1
-                          1 = Stack 2
-                          2 = Stack 3
-                          3 = Stack 4
+                          6 = Stack 1
+                          7 = Stack 2
+                          8 = Stack 3
+                          9 = Stack 4
                           10 = Centre Stack 1
                           11 = Centre Stack 2
                           12 = Centre Stack 3
@@ -196,6 +196,11 @@ export class Play_areaComponent implements OnInit {
           }
           if(this.players[this.activePlayer].cardsInHand()==0){
               this.zone.run(() => this.dealer.fillHand(this.players[this.activePlayer]));
+          }
+          if(m.to>=GamePositionsEnum.STACK_1 && this.toFaceNumber(m.card)==CardsEnum.KING){
+              let stack:number[]= this.centreStacks[m.to];
+              this.dealer.addToRecyclePile(stack);
+              this.zone.run(() => this.centreStacks[m.to]=[CardsEnum.NO_CARD]);
           }
       });
   }
