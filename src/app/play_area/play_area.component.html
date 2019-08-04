@@ -1,3 +1,7 @@
+<span [ngClass]="{'active':allowEdit==true,
+				  'inactive':allowEdit==false}" (click)="toggleEdit()">Edit cards</span>
+<p>
+<p>
 <div class="player-hand" *ngFor="let p of players;let pIdx=index">
 
 <table class="player-hand">

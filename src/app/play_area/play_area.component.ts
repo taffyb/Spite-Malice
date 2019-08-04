@@ -1,4 +1,5 @@
 import { Component, OnInit, NgZone  } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import {Player} from '../Player';
 import {Move} from '../Move';
 import {DealerService} from '../Dealer.Service';
@@ -14,6 +15,7 @@ import {CardsEnum} from '../Enums';
   styleUrls: ['./play_area.component.css']
 })
 export class Play_areaComponent implements OnInit {
+  allowEdit:boolean=false;
   playerStacks:number[][]=[[CardsEnum.NO_CARD],[CardsEnum.NO_CARD],[CardsEnum.NO_CARD],[CardsEnum.NO_CARD]];
   players: Player[] = [];
   dealer:DealerService;
@@ -48,12 +50,14 @@ export class Play_areaComponent implements OnInit {
                         */
 
 
-  constructor(public zone: NgZone,dealer:DealerService,moveService:MovesService) {
+  constructor(private route: ActivatedRoute,public zone: NgZone,dealer:DealerService,moveService:MovesService) {
+       
       this.dealer = dealer;
       this.moveService = moveService;
   }
   
   ngOnInit() {
+      const gameState = '' || this.route.snapshot.paramMap.get('game-state');
       let p:Player= new Player();
       p.name = "Taffy";
       p.guid="abcde";
@@ -67,6 +71,7 @@ export class Play_areaComponent implements OnInit {
       
       console.log(`Player[0].topOfPile=${this.toFaceNumber(this.players[0].viewCard(this.PlayerPositions.PILE))}`);
       console.log(`Player[1].topOfPile=${this.toFaceNumber(this.players[1].viewCard(this.PlayerPositions.PILE))}`);
+      console.log(`Game State ='${gameState}'`);
       
       // set active player
       if(this.toFaceNumber(this.players[0].viewCard(this.PlayerPositions.PILE)) 
@@ -78,12 +83,12 @@ export class Play_areaComponent implements OnInit {
       this.moveService.subscribeToChanges(this);
   }
   viewTopOfStack(stack:number):number{
+      
       let centreStack:number[]= this.centreStacks[stack];
-//      console.log(`TOP_OF_STACK ${stack}\n
-//          Center Stacks: ${JSON.stringify(this.centreStacks)}\n
-//          Length: ${this.centreStacks.length}\n
-//          centreStack: ${JSON.stringify(centreStack)}\n
-//          topOfStack: ${JSON.stringify(centreStack[centreStack.length-1])}`);
+      console.log(`TOP_OF_STACK ${stack}\n
+          Center Stacks: ${JSON.stringify(this.centreStacks)}\n
+          centreStack: ${JSON.stringify(centreStack)}\n
+          topOfStack: ${centreStack[centreStack.length-1]}`);
       return centreStack[centreStack.length-1];
   }
   toFaceNumber(card:number):number{
@@ -197,11 +202,15 @@ export class Play_areaComponent implements OnInit {
           if(this.players[this.activePlayer].cardsInHand()==0){
               this.zone.run(() => this.dealer.fillHand(this.players[this.activePlayer]));
           }
-          if(m.to>=GamePositionsEnum.STACK_1 && this.toFaceNumber(m.card)==CardsEnum.KING){
-              let stack:number[]= this.centreStacks[m.to];
+          if(m.to>=GamePositionsEnum.BASE+GamePositionsEnum.STACK_1 && this.toFaceNumber(m.card)==CardsEnum.KING){
+              let stack:number[]= this.centreStacks[m.to-GamePositionsEnum.BASE];
+              console.log(`Recycle centre stack: ${m.to} ${JSON.stringify(this.centreStacks[m.to-GamePositionsEnum.BASE])}`);
               this.dealer.addToRecyclePile(stack);
               this.zone.run(() => this.centreStacks[m.to]=[CardsEnum.NO_CARD]);
           }
       });
+  }
+  toggleEdit(){
+      this.zone.run(() => this.allowEdit= !this.allowEdit);
   }
 }
