@@ -4,9 +4,11 @@ import {Player} from '../Player';
 import {Move} from '../Move';
 import {DealerService} from '../Dealer.Service';
 import {MovesService} from '../Moves.Service';
+import {GameService} from '../Game.Service';
 import {PlayerPositionsEnum} from '../Enums';
 import {GamePositionsEnum} from '../Enums';
 import {CardsEnum} from '../Enums';
+import {Game} from '../Game';
 
 
 @Component({
@@ -17,15 +19,17 @@ import {CardsEnum} from '../Enums';
 export class PlayAreaComponent implements OnInit {
   allowEdit:boolean=false;
   playerStacks:number[][]=[[CardsEnum.NO_CARD],[CardsEnum.NO_CARD],[CardsEnum.NO_CARD],[CardsEnum.NO_CARD]];
-  players: Player[] = [];
+//  players:Player[]=[];
   dealer:DealerService;
   moveService:MovesService;
-  centreStacks:number[][]=[[CardsEnum.NO_CARD],[CardsEnum.NO_CARD],[CardsEnum.NO_CARD],[CardsEnum.NO_CARD]];
-  PlayerPositions = PlayerPositionsEnum;
-  GamePositions = GamePositionsEnum;
-  Cards = CardsEnum;
-  activePlayer:number=0;
+  gameService:GameService;
+//  centreStacks:number[][];
+  PlayerPositions=PlayerPositionsEnum;
+  GamePositions=GamePositionsEnum;
+  Cards=CardsEnum;
+//  activePlayer:number;
   isPendingDiscard:boolean=false;
+  game:Game;
   fromPosition:number=-1 /*
                           0 = Pile
                           1 = Hand 1
@@ -50,41 +54,23 @@ export class PlayAreaComponent implements OnInit {
                         */
 
 
-  constructor(private route: ActivatedRoute,public zone: NgZone,dealer:DealerService,moveService:MovesService) {
+  constructor(private route: ActivatedRoute,public zone: NgZone,dealer:DealerService,moveService:MovesService, gameService:GameService) {
        
       this.dealer = dealer;
       this.moveService = moveService;
+      this.gameService = gameService;
   }
   
   ngOnInit() {
-      const gameState = '' || this.route.snapshot.paramMap.get('game-state');
-      let p:Player= new Player();
-      p.name = "Taffy";
-      p.guid="abcde";
-      p.isPrimary=true;
-      this.players.push(p);
-      p = new Player();
-      p.name = "The Machine";
-      p.guid="abcde";
-      this.players.push(p);
-      this.dealer.deal(this.players); 
-      
-      console.log(`Player[0].topOfPile=${this.toFaceNumber(this.players[0].viewCard(this.PlayerPositions.PILE))}`);
-      console.log(`Player[1].topOfPile=${this.toFaceNumber(this.players[1].viewCard(this.PlayerPositions.PILE))}`);
-      console.log(`Game State ='${gameState}'`);
-      
-      // set active player
-      if(this.toFaceNumber(this.players[0].viewCard(this.PlayerPositions.PILE)) 
-         >  
-         this.toFaceNumber(this.players[1].viewCard(this.PlayerPositions.PILE))){
-          
-         this.activePlayer=1;
-      }
+       this.game=this.gameService.newGame();
+//       this.players = this.game.players;
+//       this.centreStacks= this.game.centreStacks;
+//       this.activePlayer=this.game.activePlayer;
       this.moveService.subscribeToChanges(this);
   }
   viewTopOfStack(stack:number):number{
       
-      let centreStack:number[]= this.centreStacks[stack];
+      let centreStack:number[]= this.game.centreStacks[stack];
 //      console.log(`TOP_OF_STACK ${stack}\n
 //          Center Stacks: ${JSON.stringify(this.centreStacks)}\n
 //          centreStack: ${JSON.stringify(centreStack)}\n
@@ -104,13 +90,13 @@ export class PlayAreaComponent implements OnInit {
       return c;
   }
   toggleActivePlayer(){
-      this.activePlayer++;
-      if(this.activePlayer>=this.players.length){
-          this.activePlayer=0;
+      this.game.activePlayer++;
+      if(this.game.activePlayer>=this.game.players.length){
+          this.game.activePlayer=0;
       }
   }
   toggleMoveFrom(player:number,position:number){
-      if(player == this.activePlayer){
+      if(player == this.game.activePlayer){
           if(position==this.fromPosition){
               this.zone.run(() => this.fromPosition =-1);
           }else{
@@ -129,19 +115,19 @@ export class PlayAreaComponent implements OnInit {
       const fromPosition:number=this.fromPosition;
       let cardToMove:number;
       if(fromPosition>=PlayerPositionsEnum.STACK_1 && fromPosition<=PlayerPositionsEnum.STACK_4){
-          let topOfPlayerStack:number= this.players[this.activePlayer].cards[fromPosition].length-1;
-          cardToMove=this.players[this.activePlayer].cards[fromPosition][topOfPlayerStack];
+          let topOfPlayerStack:number= this.game.players[this.game.activePlayer].cards[fromPosition].length-1;
+          cardToMove=this.game.players[this.game.activePlayer].cards[fromPosition][topOfPlayerStack];
       }else{
-          cardToMove= this.players[this.activePlayer].viewCard(fromPosition);
+          cardToMove= this.game.players[this.game.activePlayer].viewCard(fromPosition);
       }
       move.card =cardToMove;
       move.to = stack;
 //      console.log(`Move: ${JSON.stringify(move)}`);
       if(move.to>=PlayerPositionsEnum['STACK_1'] && move.to<=PlayerPositionsEnum.STACK_4){
           for(let i=PlayerPositionsEnum['STACK_1'];i<=PlayerPositionsEnum.STACK_4;i++){
-              if(this.players[this.activePlayer].viewCard(stack)>0){s++;}
+              if(this.game.players[this.game.activePlayer].viewCard(stack)>0){s++;}
           }
-          if(this.players[this.activePlayer].viewCard(stack)>0){
+          if(this.game.players[this.game.activePlayer].viewCard(stack)>0){
               this.isPendingDiscard=true;
           }
       }
@@ -165,10 +151,10 @@ export class PlayAreaComponent implements OnInit {
           
           let cardToMove:number;
           if(fromPosition>=PlayerPositionsEnum.STACK_1 && fromPosition<=PlayerPositionsEnum.STACK_4){
-              let topOfPlayerStack:number= this.players[this.activePlayer].cards[fromPosition].length-1;
-              cardToMove=this.toFaceNumber(this.players[this.activePlayer].cards[fromPosition][topOfPlayerStack]);
+              let topOfPlayerStack:number= this.game.players[this.game.activePlayer].cards[fromPosition].length-1;
+              cardToMove=this.toFaceNumber(this.game.players[this.game.activePlayer].cards[fromPosition][topOfPlayerStack]);
           }else{
-              cardToMove= this.toFaceNumber(this.players[this.activePlayer].viewCard(fromPosition));
+              cardToMove= this.toFaceNumber(this.game.players[this.game.activePlayer].viewCard(fromPosition));
           }
           
           if(toPosition>=centreStack1 && toPosition<=centreStack4){
@@ -182,35 +168,32 @@ export class PlayAreaComponent implements OnInit {
   }
   onNewMoves(moves:Move[]){
       
-      let nextPlayer = (this.activePlayer+1<this.players.length?this.activePlayer+1:0);
+      let nextPlayer = (this.game.activePlayer+1<this.game.players.length?this.game.activePlayer+1:0);
       moves.forEach(m=>{
-          this.players[this.activePlayer].removeCard(m.from);
+          this.game.players[this.game.activePlayer].removeCard(m.from);
           if(m.to<=PlayerPositionsEnum['STACK_4']){
-              this.players[this.activePlayer].addCard(m.card,m.to);
+              this.game.players[this.game.activePlayer].addCard(m.card,m.to);
           }else{
 //              console.log(`m.to:${m.to} GamePositionsEnum.BASE:${GamePositionsEnum.BASE}`);
-              this.centreStacks[m.to-GamePositionsEnum.BASE].push(m.card);
+              this.game.centreStacks[m.to-GamePositionsEnum.BASE].push(m.card);
           }
           if(m.isDiscard){
 //              console.log(`Discard: ${JSON.stringify(moves)}`);
-              this.dealer.fillHand(this.players[nextPlayer]);
-              this.zone.run(() => this.activePlayer=nextPlayer);              
+              this.dealer.fillHand(this.game.players[nextPlayer]);
+              this.zone.run(() => this.game.activePlayer=nextPlayer);              
           }else{
 //              console.log(`Move: ${JSON.stringify(moves)}`);
               this.zone.run(() => null);
           }
-          if(this.players[this.activePlayer].cardsInHand()==0){
-              this.zone.run(() => this.dealer.fillHand(this.players[this.activePlayer]));
+          if(this.game.players[this.game.activePlayer].cardsInHand()==0){
+              this.zone.run(() => this.dealer.fillHand(this.game.players[this.game.activePlayer]));
           }
           if(m.to>=GamePositionsEnum.BASE+GamePositionsEnum.STACK_1 && this.toFaceNumber(m.card)==CardsEnum.KING){
-              let stack:number[]= this.centreStacks[m.to-GamePositionsEnum.BASE];
-              console.log(`Recycle centre stack: ${m.to} ${JSON.stringify(this.centreStacks[m.to-GamePositionsEnum.BASE])}`);
+              let stack:number[]= this.game.centreStacks[m.to-GamePositionsEnum.BASE];
+              console.log(`Recycle centre stack: ${m.to} ${JSON.stringify(this.game.centreStacks[m.to-GamePositionsEnum.BASE])}`);
               this.dealer.addToRecyclePile(stack);
-              this.zone.run(() => this.centreStacks[m.to]=[CardsEnum.NO_CARD]);
+              this.zone.run(() => this.game.centreStacks[m.to]=[CardsEnum.NO_CARD]);
           }
       });
-  }
-  toggleEdit(){
-      this.zone.run(() => this.allowEdit= !this.allowEdit);
   }
 }

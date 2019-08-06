@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {Player} from './Player';
 import {PlayerPositionsEnum} from './Enums';
 import {CardsEnum} from './Enums';
@@ -14,12 +14,15 @@ export class DealerService {
 
   constructor() {
       for(let d:number=0;d<this.decks;d++){      
-          for(let i:number=1;i<=52+(this.includeJokers);i++ ){
+          for(let i:number=1;i<=52+(this.includeJokers);i++){
               this.deck.push(i);
           }
       }
   }
-  
+  removeCard(card:number){
+      let removed=this.deck.splice(card+1,1);
+      console.log(`Remove ${card} = ${removed}`);
+  }
   shuffleDeck() { 
       for (let i:number = this.deck.length - 1; i > 0; i--) {
           let j:number = Math.floor(Math.random() * (i + 1));
