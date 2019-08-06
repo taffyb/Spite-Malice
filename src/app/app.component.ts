@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import {TabsEnum} from './Enums';
 
 @Component({
   selector: 'app-root',
@@ -7,4 +8,6 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'my-app';
+  activeTab:number=TabsEnum.DEFAULT;
+  Tabs=TabsEnum;
 }

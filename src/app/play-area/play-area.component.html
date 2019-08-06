@@ -1,7 +1,4 @@
-<span [ngClass]="{'active':allowEdit==true,
-				  'inactive':allowEdit==false}" (click)="toggleEdit()">Edit cards</span>
-<p>
-<p>
+
 <div class="player-hand" *ngFor="let p of players;let pIdx=index">
 
 <table class="player-hand">
@@ -24,6 +21,7 @@
 							   ((pos>=PlayerPositions.PILE && PlayerPositions.HAND_5>=pos) || 
 							    pos>=PlayerPositions.STACK_1 && PlayerPositions.STACK_4>=pos && p.cards[pos].length==2),
 						'to':toPosition==pos && fromPosition>=0 && activePlayer==pIdx}" >
+						
 		    <span *ngIf="p.isPrimary || (pIdx==activePlayer)">
 				<span *ngIf="p.viewCard(pos)>Cards.NO_CARD">
 					<!-- No card has been selected
@@ -254,4 +252,3 @@
 		</td>
 	</tr>
 </table>
-

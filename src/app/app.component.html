@@ -1,4 +1,7 @@
 <!--The content below is only a placeholder and can be replaced.-->
 
-<!-- <play_area></play_area> -->
+<ul class="main-menu">
+	<li class="tab" [ngClass]="{'active':activeTab==Tabs.DASHBOARD}" (click)="activeTab=Tabs.DASHBOARD"><a routerLink="/dashboard">Dashboard</a></li>
+	<li class="tab" [ngClass]="{'active':activeTab==Tabs.PLAY_AREA}" (click)="activeTab=Tabs.PLAY_AREA"><a routerLink="/play-area">Play Area</a></li>
+</ul>
 <router-outlet></router-outlet>

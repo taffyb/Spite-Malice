@@ -17,6 +17,11 @@ export enum GamePositionsEnum{
     STACK_3,
     STACK_4
 }
+export enum TabsEnum{
+    DEFAULT=0,
+    DASHBOARD=0,
+    PLAY_AREA=1
+}
 export enum CardsEnum{
     NO_CARD=0,
     ACE,

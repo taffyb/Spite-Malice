@@ -1,5 +1,5 @@
-import { Component, OnInit, NgZone  } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import {Component, OnInit, NgZone  } from '@angular/core';
+import {ActivatedRoute } from '@angular/router';
 import {Player} from '../Player';
 import {Move} from '../Move';
 import {DealerService} from '../Dealer.Service';
@@ -10,11 +10,11 @@ import {CardsEnum} from '../Enums';
 
 
 @Component({
-  selector: 'play_area',
-  templateUrl: './play_area.component.html',
-  styleUrls: ['./play_area.component.css']
+  selector: 'play-area',
+  templateUrl: './play-area.component.html',
+  styleUrls: ['./play-area.component.css']
 })
-export class Play_areaComponent implements OnInit {
+export class PlayAreaComponent implements OnInit {
   allowEdit:boolean=false;
   playerStacks:number[][]=[[CardsEnum.NO_CARD],[CardsEnum.NO_CARD],[CardsEnum.NO_CARD],[CardsEnum.NO_CARD]];
   players: Player[] = [];
@@ -85,10 +85,10 @@ export class Play_areaComponent implements OnInit {
   viewTopOfStack(stack:number):number{
       
       let centreStack:number[]= this.centreStacks[stack];
-      console.log(`TOP_OF_STACK ${stack}\n
-          Center Stacks: ${JSON.stringify(this.centreStacks)}\n
-          centreStack: ${JSON.stringify(centreStack)}\n
-          topOfStack: ${centreStack[centreStack.length-1]}`);
+//      console.log(`TOP_OF_STACK ${stack}\n
+//          Center Stacks: ${JSON.stringify(this.centreStacks)}\n
+//          centreStack: ${JSON.stringify(centreStack)}\n
+//          topOfStack: ${centreStack[centreStack.length-1]}`);
       return centreStack[centreStack.length-1];
   }
   toFaceNumber(card:number):number{

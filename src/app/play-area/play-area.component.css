@@ -1,4 +1,7 @@
-  .cardList {
+input.card{
+	width:20px;
+}
+.cardList {
    display: flex;
    flex-direction: row;
    flex-wrap: wrap;
