@@ -22,6 +22,12 @@ export enum TabsEnum{
     DASHBOARD=0,
     PLAY_AREA=1
 }
+export enum SuitsEnum{
+    SPADES=0,
+    HEARTS=13,
+    CLUBS=26,
+    DIAMONDS=39
+}
 export enum CardsEnum{
     NO_CARD=0,
     ACE,
@@ -36,6 +42,5 @@ export enum CardsEnum{
     TEN,
     JACK,
     QUEEN,
-    KING,
-    JOKER
+    KING
 }

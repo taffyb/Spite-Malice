@@ -17,17 +17,13 @@ import {Game} from '../Game';
   styleUrls: ['./play-area.component.css']
 })
 export class PlayAreaComponent implements OnInit {
-  allowEdit:boolean=false;
   playerStacks:number[][]=[[CardsEnum.NO_CARD],[CardsEnum.NO_CARD],[CardsEnum.NO_CARD],[CardsEnum.NO_CARD]];
-//  players:Player[]=[];
   dealer:DealerService;
   moveService:MovesService;
   gameService:GameService;
-//  centreStacks:number[][];
   PlayerPositions=PlayerPositionsEnum;
   GamePositions=GamePositionsEnum;
   Cards=CardsEnum;
-//  activePlayer:number;
   isPendingDiscard:boolean=false;
   game:Game;
   fromPosition:number=-1 /*
@@ -78,16 +74,7 @@ export class PlayAreaComponent implements OnInit {
       return centreStack[centreStack.length-1];
   }
   toFaceNumber(card:number):number{
-      let c:number;
-      if(card>0){
-          c=card%13;
-          if(c==0){
-              c=13;
-          }
-      }else{
-          c=0;
-      }
-      return c;
+      return this.game.toFaceNumber(card);
   }
   toggleActivePlayer(){
       this.game.activePlayer++;

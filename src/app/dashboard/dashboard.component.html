@@ -1,3 +1,44 @@
-<p>
-  dashboard works!
-</p>
+<div class="list">
+  Game list
+  <ul>
+  	<li class="list-item" *ngFor="let g of games" (click)="setGame(g.guid)">{{g.name}}</li>
+  </ul>
+</div>
+<div id="detail" *ngIf="game">
+  Game: {{game.name}}<br>
+  
+  Game Stacks 
+  <table>
+  	<tr>
+	  	<td  *ngFor="let s of game.centreStacks; let sIdx=index">
+	  		{{toFaceNumber(game.centreStacks[sIdx][game.centreStacks[sIdx].length-1])}}
+	  	</td>
+	</tr>
+  </table>
+  
+  <div *ngFor="let p of game.players">
+  	{{p.name}}<br>
+  	<table>
+  		<tr >
+  			<td *ngFor="let s of p.cards;let sIdx=index">
+  				<span *ngIf="sIdx==PlayerPositions.PILE">{{toFaceNumber(s[s.length-1])}}</span>
+  				<span *ngIf="sIdx>=PlayerPositions.HAND_1 && PlayerPositions.HAND_5>=sIdx">{{toFaceNumber(s)}}</span>
+  				<span *ngIf="sIdx>=PlayerPositions.STACK_1 && PlayerPositions.STACK_4>=sIdx">{{toFaceNumber(s[1])}}</span>
+  			</td>
+  		</tr>
+  		<tr *ngFor="let r of p.maxStack();let rowIdx=index"	>
+  			<td colspan="6">
+  			<td *ngFor="let s of playerStacks;let colIdx=index">
+  				<span *ngIf="(p.cards[PlayerPositions.STACK_1+colIdx].length>=3+rowIdx)">
+  					{{toFaceNumber(p.cards[PlayerPositions.STACK_1+colIdx][2+rowIdx])}}
+  				</span>
+  				<span *ngIf="!(p.cards[PlayerPositions.STACK_1+colIdx].length>=3+rowIdx)">
+  					&nbsp;
+  				</span>
+  			</td>
+  		</tr>
+  	</table>
+  	<p>
+  	<p>
+  </div>
+</div>

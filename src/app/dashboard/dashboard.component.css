@@ -1,0 +1,16 @@
+.list{
+	width:29%;
+	min-height:100%;
+	display: inline-block;
+	border-right: 1px solid black;
+	vertical-align:top;
+}
+.list-item:hover {
+  background-color: #ddd;
+}
+#detail{
+	width:69%;
+	height:100%;
+	display: inline-block;
+	vertical-align:top;
+}

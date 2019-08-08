@@ -13,13 +13,20 @@ export class Game {
   centreStacks:number[][]=[[CardsEnum.NO_CARD],[CardsEnum.NO_CARD],[CardsEnum.NO_CARD],[CardsEnum.NO_CARD]];
   activePlayer:number=0;
 
-  dealer:DealerService;
-  moveService:MovesService;
-
-  constructor(dealer:DealerService,moveService:MovesService,gameGUID:string='') {        
-      this.dealer=dealer;
-      this.moveService=moveService;
+  constructor(gameGUID:string='') {
       this.guid=gameGUID;
-      this.name=gameGUID; 
+      this.name="New Game"; 
+  }
+  toFaceNumber(card:number):number{
+      let c:number;
+      if(card>0){
+          c=card%13;
+          if(c==0){
+              c=13;
+          }
+      }else{
+          c=0;
+      }
+      return c;
   }
 }

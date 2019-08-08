@@ -1,14 +1,27 @@
 
+import { v4 as uuid } from 'uuid';
 import {PlayerPositionsEnum} from './Enums';
 import {CardsEnum} from './Enums';
 
 export class Player {
   guid: string;
   name: string;
-  cards:any[]=[[CardsEnum.NO_CARD],CardsEnum.NO_CARD,CardsEnum.NO_CARD,CardsEnum.NO_CARD,CardsEnum.NO_CARD,CardsEnum.NO_CARD,[CardsEnum.NO_CARD],[CardsEnum.NO_CARD],[CardsEnum.NO_CARD],[CardsEnum.NO_CARD]];// pile 
+  cards:any[]=[[CardsEnum.NO_CARD], /* PILE*/
+               CardsEnum.NO_CARD,   /* HAND_1*/
+               CardsEnum.NO_CARD,   /* HAND_2*/
+               CardsEnum.NO_CARD,   /* HAND_3*/
+               CardsEnum.NO_CARD,   /* HAND_4*/
+               CardsEnum.NO_CARD,   /* HAND_5*/
+               [CardsEnum.NO_CARD], /* STACK_1*/
+               [CardsEnum.NO_CARD], /* STACK_2*/
+               [CardsEnum.NO_CARD], /* STACK_3*/
+               [CardsEnum.NO_CARD]];/* STACK_4*/ 
 
   isPrimary:boolean=false;
 
+  constructor(){
+      this.guid=uuid();
+  }
 
   pileSize():number{
       return this.cards[PlayerPositionsEnum.PILE].length;
