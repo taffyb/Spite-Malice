@@ -2,6 +2,8 @@
 
 <ul class="main-menu">
 	<li class="tab" [ngClass]="{'active':activeTab==Tabs.DASHBOARD}" (click)="activeTab=Tabs.DASHBOARD"><a routerLink="/dashboard">Dashboard</a></li>
-	<li class="tab" [ngClass]="{'active':activeTab==Tabs.PLAY_AREA}" (click)="activeTab=Tabs.PLAY_AREA"><a routerLink="/play-area">Play Area</a></li>
+	<li *ngFor="let g of gameService.games;let gIdx=index" class="tab" [ngClass]="{'active':activeTab==1+idx}" 
+	  (click)="activeTab=1+gIdx" ><a  routerLink="/play-area/{{g.guid}}">{{g.name}}</a>
+	</li><li class="tab" [ngClass]="{'active':activeTab==gameService.games.length}" (click)="activeTab=gameService.games.length"><a routerLink="/play-area">+</a></li>
 </ul>
 <router-outlet></router-outlet>

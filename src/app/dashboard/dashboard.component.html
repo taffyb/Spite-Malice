@@ -1,10 +1,35 @@
 <div class="list">
   Game list
   <ul>
-  	<li class="list-item" *ngFor="let g of games" (click)="setGame(g.guid)">{{g.name}}</li>
+  	<li class="list-item" *ngFor="let g of games" (click)="setGame(g.guid)">
+  		{{g.name}}
+  		<a routerLink="/play-area/{{g.guid}}" (click)="g.playing=true">[play]</a>
+  	</li>
   </ul>
 </div>
 <div id="detail" *ngIf="game">
+<!-- 
+  Spades {{Suits.SPADES}}: {{Suits.SPADES+Cards.ACE}}/{{toFaceNumber(Suits.SPADES+Cards.ACE)}},
+  {{Suits.SPADES+Cards.TWO}}/{{toFaceNumber(Suits.SPADES+Cards.TWO)}},{{Suits.SPADES+Cards.THREE}}/{{toFaceNumber(Suits.SPADES+Cards.THREE)}},
+  {{Suits.SPADES+Cards.FOUR}}/{{toFaceNumber(Suits.SPADES+Cards.FOUR)}},{{Suits.SPADES+Cards.FIVE}}/{{toFaceNumber(Suits.SPADES+Cards.FIVE)}},
+  {{Suits.SPADES+Cards.SIX}}/{{toFaceNumber(Suits.SPADES+Cards.SIX)}},{{Suits.SPADES+Cards.SEVEN}}/{{toFaceNumber(Suits.SPADES+Cards.SEVEN)}},
+  {{Suits.SPADES+Cards.EIGHT}}/{{toFaceNumber(Suits.SPADES+Cards.EIGHT)}},{{Suits.SPADES+Cards.NINE}}/{{toFaceNumber(Suits.SPADES+Cards.NINE)}},
+  {{Suits.SPADES+Cards.TEN}}/{{toFaceNumber(Suits.SPADES+Cards.TEN)}},{{Suits.SPADES+Cards.JACK}}/{{toFaceNumber(Suits.SPADES+Cards.JACK)}},
+  {{Suits.SPADES+Cards.QUEEN}}/{{toFaceNumber(Suits.SPADES+Cards.QUEEN)}},{{Suits.SPADES+Cards.KING}}/{{toFaceNumber(Suits.SPADES+Cards.KING)}}<p>
+  Hearts {{Suits.HEARTS}}: {{Suits.HEARTS+Cards.ACE}},{{Suits.HEARTS+Cards.TWO}},{{Suits.HEARTS+Cards.THREE}},
+  {{Suits.HEARTS+Cards.FOUR}},{{Suits.HEARTS+Cards.FIVE}},{{Suits.HEARTS+Cards.SIX}},{{Suits.HEARTS+Cards.SEVEN}},
+  {{Suits.HEARTS+Cards.EIGHT}},{{Suits.HEARTS+Cards.NINE}},{{Suits.HEARTS+Cards.TEN}},{{Suits.HEARTS+Cards.JACK}},
+  {{Suits.HEARTS+Cards.QUEEN}},{{Suits.HEARTS+Cards.KING}}<p>
+  Clubs {{Suits.CLUBS}}: {{Suits.CLUBS+Cards.ACE}},{{Suits.CLUBS+Cards.TWO}},{{Suits.CLUBS+Cards.THREE}},
+  {{Suits.CLUBS+Cards.FOUR}},{{Suits.CLUBS+Cards.FIVE}},{{Suits.CLUBS+Cards.SIX}},{{Suits.CLUBS+Cards.SEVEN}},
+  {{Suits.CLUBS+Cards.EIGHT}},{{Suits.CLUBS+Cards.NINE}},{{Suits.CLUBS+Cards.TEN}},{{Suits.CLUBS+Cards.JACK}},
+  {{Suits.CLUBS+Cards.QUEEN}},{{Suits.CLUBS+Cards.KING}}/{{toFaceNumber(Suits.CLUBS+Cards.KING)}}<p>
+  Diamonds {{Suits.DIAMONDS}}: {{Suits.DIAMONDS+Cards.ACE}},{{Suits.DIAMONDS+Cards.TWO}},{{Suits.DIAMONDS+Cards.THREE}},
+  {{Suits.DIAMONDS+Cards.FOUR}},{{Suits.DIAMONDS+Cards.FIVE}},{{Suits.DIAMONDS+Cards.SIX}},{{Suits.DIAMONDS+Cards.SEVEN}},
+  {{Suits.DIAMONDS+Cards.EIGHT}},{{Suits.DIAMONDS+Cards.NINE}},{{Suits.DIAMONDS+Cards.TEN}},{{Suits.DIAMONDS+Cards.JACK}},
+  {{Suits.DIAMONDS+Cards.QUEEN}},{{Suits.DIAMONDS+Cards.KING}}<p>
+  --> 
+
   Game: {{game.name}}<br>
   
   Game Stacks 
@@ -23,7 +48,9 @@
   			<td *ngFor="let s of p.cards;let sIdx=index">
   				<span *ngIf="sIdx==PlayerPositions.PILE">{{toFaceNumber(s[s.length-1])}}</span>
   				<span *ngIf="sIdx>=PlayerPositions.HAND_1 && PlayerPositions.HAND_5>=sIdx">{{toFaceNumber(s)}}</span>
-  				<span *ngIf="sIdx>=PlayerPositions.STACK_1 && PlayerPositions.STACK_4>=sIdx">{{toFaceNumber(s[1])}}</span>
+  				<span *ngIf="sIdx>=PlayerPositions.STACK_1 && PlayerPositions.STACK_4>=sIdx">
+  					{{toFaceNumber(s[1])}}
+  				</span>
   			</td>
   		</tr>
   		<tr *ngFor="let r of p.maxStack();let rowIdx=index"	>

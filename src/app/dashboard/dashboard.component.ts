@@ -4,6 +4,7 @@ import {GameService} from '../Game.Service';
 import {PlayerPositionsEnum} from '../Enums';
 import {GamePositionsEnum} from '../Enums';
 import {CardsEnum} from '../Enums';
+import {SuitsEnum} from '../Enums';
 
 @Component({
   selector: 'app-dashboard',
@@ -18,6 +19,7 @@ export class DashboardComponent implements OnInit {
   PlayerPositions=PlayerPositionsEnum;
   GamePositions=GamePositionsEnum;
   Cards=CardsEnum;
+  Suits=SuitsEnum;
   playerStacks:number[][]=[[CardsEnum.NO_CARD],[CardsEnum.NO_CARD],[CardsEnum.NO_CARD],[CardsEnum.NO_CARD]];
 
   constructor(gameService:GameService) { 

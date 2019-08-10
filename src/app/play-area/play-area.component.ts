@@ -58,17 +58,22 @@ export class PlayAreaComponent implements OnInit {
   }
   
   ngOnInit() {
-       this.game=this.gameService.newGame();
+      const gameId = this.route.snapshot.paramMap.get('gameId');
+      if(!gameId){
+          this.game=this.gameService.newGame();
+      }else{
+          this.game=this.gameService.getGame(gameId);
+      }     
 //       this.players = this.game.players;
 //       this.centreStacks= this.game.centreStacks;
 //       this.activePlayer=this.game.activePlayer;
       this.moveService.subscribeToChanges(this);
   }
   viewTopOfStack(stack:number):number{
-      
+      console.log(`TOP_OF_STACK ${stack}`);
       let centreStack:number[]= this.game.centreStacks[stack];
 //      console.log(`TOP_OF_STACK ${stack}\n
-//          Center Stacks: ${JSON.stringify(this.centreStacks)}\n
+//          Center Stacks: ${JSON.stringify(this.game.centreStacks)}\n
 //          centreStack: ${JSON.stringify(centreStack)}\n
 //          topOfStack: ${centreStack[centreStack.length-1]}`);
       return centreStack[centreStack.length-1];
@@ -146,7 +151,7 @@ export class PlayAreaComponent implements OnInit {
           
           if(toPosition>=centreStack1 && toPosition<=centreStack4){
              let centreCard:number=this.toFaceNumber(this.viewTopOfStack(toPosition-GamePositionsEnum.BASE));
-             if(cardToMove==(centreCard<13?centreCard+1:1)) {
+             if(cardToMove==(centreCard<CardsEnum.KING?centreCard+1:1)) {
                   canMove=true;
              }        
           }
@@ -179,7 +184,7 @@ export class PlayAreaComponent implements OnInit {
               let stack:number[]= this.game.centreStacks[m.to-GamePositionsEnum.BASE];
               console.log(`Recycle centre stack: ${m.to} ${JSON.stringify(this.game.centreStacks[m.to-GamePositionsEnum.BASE])}`);
               this.dealer.addToRecyclePile(stack);
-              this.zone.run(() => this.game.centreStacks[m.to]=[CardsEnum.NO_CARD]);
+              this.game.centreStacks[m.to-GamePositionsEnum.BASE]=[CardsEnum.NO_CARD]
           }
       });
   }

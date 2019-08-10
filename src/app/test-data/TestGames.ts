@@ -38,27 +38,27 @@ export class TestGames{
         player.cards[pp.HAND_3]=s.HEARTS+c.NINE;
         player.cards[pp.HAND_4]=s.HEARTS+c.JACK;
         player.cards[pp.HAND_5]=s.SPADES+c.FIVE;
-        player.cards[pp.STACK_1]=[s.CLUBS+c.FIVE,s.SPADES+c.SIX];
-        player.cards[pp.STACK_2]=[s.HEARTS+c.FOUR,s.SPADES+c.THREE,s.SPADES+c.TWO,s.DIAMONDS+c.ACE];
-        player.cards[pp.STACK_3]=[s.SPADES+c.NINE,s.CLUBS+c.EIGHT];
-        player.cards[pp.STACK_4]=[s.CLUBS+c.KING];
+        player.cards[pp.STACK_1]=[c.NO_CARD,s.CLUBS+c.FIVE,s.SPADES+c.SIX];
+        player.cards[pp.STACK_2]=[c.NO_CARD,s.HEARTS+c.FOUR,s.SPADES+c.THREE,s.SPADES+c.TWO,s.DIAMONDS+c.ACE];
+        player.cards[pp.STACK_3]=[c.NO_CARD,s.SPADES+c.NINE,s.CLUBS+c.EIGHT];
+        player.cards[pp.STACK_4]=[c.NO_CARD,s.CLUBS+c.KING];
         player.isPrimary=true;
         game.players.push(player);
               
         player=new Player();
         player.name="Player 2";
         player.cards[pp.PILE]=[c.NO_CARD,
-                               s.CLUBS+c.ACE,
+                               s.DIAMONDS+c.FOUR,
                                s.HEARTS+c.TWO];
-        player.cards[pp.HAND_1]=s.DIAMONDS+c.FOUR;
+        player.cards[pp.HAND_1]=s.CLUBS+c.ACE;
         player.cards[pp.HAND_2]=s.CLUBS+c.THREE;
         player.cards[pp.HAND_3]=s.SPADES+c.THREE;
         player.cards[pp.HAND_4]=s.HEARTS+c.EIGHT;
         player.cards[pp.HAND_5]=s.SPADES+c.QUEEN;
-        player.cards[pp.STACK_1]=[s.CLUBS+c.SEVEN];
-        player.cards[pp.STACK_2]=[s.SPADES+c.KING];
-        player.cards[pp.STACK_3]=[s.SPADES+c.TEN];
-        player.cards[pp.STACK_4]=[s.CLUBS+c.SIX];
+        player.cards[pp.STACK_1]=[c.NO_CARD,s.CLUBS+c.SEVEN];
+        player.cards[pp.STACK_2]=[c.NO_CARD,s.SPADES+c.KING];
+        player.cards[pp.STACK_3]=[c.NO_CARD,s.SPADES+c.TEN];
+        player.cards[pp.STACK_4]=[c.NO_CARD,s.CLUBS+c.SIX];
         game.players.push(player);
         
         game.centreStacks[gp.STACK_1]=[c.NO_CARD,

@@ -7,7 +7,7 @@ import { DashboardComponent }   from './dashboard/dashboard.component';
 
 const routes: Routes = [
      { path: '', redirectTo: '/dashboard', pathMatch: 'full' },
-     { path: 'play-area', component: PlayAreaComponent},
+     { path: 'play-area/:gameId', component: PlayAreaComponent},
      { path: 'dashboard', component: DashboardComponent}
 ];
 
