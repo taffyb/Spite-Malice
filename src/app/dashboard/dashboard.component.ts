@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import {Game} from '../Game';
-import {GameService} from '../Game.Service';
-import {PlayerPositionsEnum} from '../Enums';
-import {GamePositionsEnum} from '../Enums';
-import {CardsEnum} from '../Enums';
-import {SuitsEnum} from '../Enums';
+import {Game} from '../classes/Game';
+import {GameService} from '../services/Game.Service';
+import {PlayerPositionsEnum} from '../classes/Enums';
+import {GamePositionsEnum} from '../classes/Enums';
+import {CardsEnum} from '../classes/Enums';
+import {SuitsEnum} from '../classes/Enums';
 
 @Component({
   selector: 'app-dashboard',

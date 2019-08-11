@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import {Move} from './Move';
+import {Move} from '../classes/Move';
 
 @Injectable({
   providedIn: 'root'

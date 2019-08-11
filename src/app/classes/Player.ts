@@ -35,7 +35,7 @@ export class Player {
       for(let i=0;i<max-2;i++){
           maxArray.push(CardsEnum.NO_CARD);
       }
-      console.log(`maxStack ${JSON.stringify(maxArray)}`);
+//      console.log(`maxStack ${JSON.stringify(maxArray)}`);
       return maxArray;
   }
   removeCard(fromPosition:number){

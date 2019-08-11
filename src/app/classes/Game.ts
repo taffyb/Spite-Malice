@@ -3,8 +3,8 @@ import {PlayerPositionsEnum} from './Enums';
 import {CardsEnum} from './Enums';
 import {Player} from './Player';
 
-import {DealerService} from './Dealer.Service';
-import {MovesService} from './Moves.Service';
+import {DealerService} from '../services/Dealer.Service';
+import {MovesService} from '../services/Moves.Service';
 
 export class Game {
   guid: string;
@@ -12,6 +12,9 @@ export class Game {
   players:Player[]=[]; 
   centreStacks:number[][]=[[CardsEnum.NO_CARD],[CardsEnum.NO_CARD],[CardsEnum.NO_CARD],[CardsEnum.NO_CARD]];
   activePlayer:number=0;
+  inPlay:boolean=false;
+  recyclePile:number[]=[];
+  gameOver:boolean=false;
 
   constructor(gameGUID:string='') {
       this.guid=gameGUID;

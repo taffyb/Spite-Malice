@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
-import {TabsEnum} from './Enums';
-import {GameService} from './Game.Service';
+import {TabsEnum} from './classes/Enums';
+import {GameService} from './services/Game.Service';
 
 @Component({
   selector: 'app-root',

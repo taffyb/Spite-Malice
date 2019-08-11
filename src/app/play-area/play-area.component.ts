@@ -1,14 +1,17 @@
 import {Component, OnInit, NgZone  } from '@angular/core';
-import {ActivatedRoute } from '@angular/router';
-import {Player} from '../Player';
-import {Move} from '../Move';
-import {DealerService} from '../Dealer.Service';
-import {MovesService} from '../Moves.Service';
-import {GameService} from '../Game.Service';
-import {PlayerPositionsEnum} from '../Enums';
-import {GamePositionsEnum} from '../Enums';
-import {CardsEnum} from '../Enums';
-import {Game} from '../Game';
+import {ActivatedRoute, Router } from '@angular/router';
+
+import {Player} from '../classes/Player';
+import {Move} from '../classes/Move';
+
+import {DealerService} from '../services/Dealer.Service';
+import {MovesService} from '../services/Moves.Service';
+import {GameService} from '../services/Game.Service';
+
+import {PlayerPositionsEnum} from '../classes/Enums';
+import {GamePositionsEnum} from '../classes/Enums';
+import {CardsEnum} from '../classes/Enums';
+import {Game} from '../classes/Game';
 
 
 @Component({
@@ -17,13 +20,11 @@ import {Game} from '../Game';
   styleUrls: ['./play-area.component.css']
 })
 export class PlayAreaComponent implements OnInit {
-  playerStacks:number[][]=[[CardsEnum.NO_CARD],[CardsEnum.NO_CARD],[CardsEnum.NO_CARD],[CardsEnum.NO_CARD]];
-  dealer:DealerService;
-  moveService:MovesService;
-  gameService:GameService;
   PlayerPositions=PlayerPositionsEnum;
   GamePositions=GamePositionsEnum;
   Cards=CardsEnum;
+    
+  playerStacks:number[][]=[[CardsEnum.NO_CARD],[CardsEnum.NO_CARD],[CardsEnum.NO_CARD],[CardsEnum.NO_CARD]];
   isPendingDiscard:boolean=false;
   game:Game;
   fromPosition:number=-1 /*
@@ -50,27 +51,37 @@ export class PlayAreaComponent implements OnInit {
                         */
 
 
-  constructor(private route: ActivatedRoute,public zone: NgZone,dealer:DealerService,moveService:MovesService, gameService:GameService) {
-       
-      this.dealer = dealer;
-      this.moveService = moveService;
-      this.gameService = gameService;
+  constructor(private router: Router,
+              private route: ActivatedRoute, 
+              private dealer:DealerService,
+              private moveService:MovesService,
+              private gameService:GameService,
+              public zone: NgZone) {
+       route.params.subscribe(val => {
+
+           const gameId = route.snapshot.paramMap.get('gameId');
+           if(!gameId || gameId=="new"){
+               this.game=this.gameService.newGame();
+               dealer.deal(this.game.players);
+               // set active player
+               if(this.gameService.toFaceNumber(this.game.players[0].viewCard(PlayerPositionsEnum.PILE)) 
+                  >  
+                  this.gameService.toFaceNumber(this.game.players[1].viewCard(PlayerPositionsEnum.PILE))){
+                   
+                   this.game.activePlayer=1;
+               }
+               router.navigateByUrl(`/play-area/${this.game.guid}`);
+           }else{
+               this.game=this.gameService.getGame(gameId);
+               dealer.setGameDeck(this.game);
+           }     
+           this.moveService.subscribeToChanges(this);
+       });
   }
   
   ngOnInit() {
-      const gameId = this.route.snapshot.paramMap.get('gameId');
-      if(!gameId){
-          this.game=this.gameService.newGame();
-      }else{
-          this.game=this.gameService.getGame(gameId);
-      }     
-//       this.players = this.game.players;
-//       this.centreStacks= this.game.centreStacks;
-//       this.activePlayer=this.game.activePlayer;
-      this.moveService.subscribeToChanges(this);
   }
   viewTopOfStack(stack:number):number{
-      console.log(`TOP_OF_STACK ${stack}`);
       let centreStack:number[]= this.game.centreStacks[stack];
 //      console.log(`TOP_OF_STACK ${stack}\n
 //          Center Stacks: ${JSON.stringify(this.game.centreStacks)}\n
@@ -93,38 +104,45 @@ export class PlayAreaComponent implements OnInit {
               this.zone.run(() => this.fromPosition =-1);
           }else{
               this.zone.run(() => this.fromPosition =position);
-          }
-          
+          }          
       }
   }
   toggleTarget(position:number){
-      this.zone.run(() => this.toPosition =position);        
+      if(!this.isPendingDiscard ||
+         (position<PlayerPositionsEnum.STACK_1) ||
+         this.game.players[this.game.activePlayer].cards[position].length<=1){         
+          this.zone.run(() => this.toPosition =position);
+      }
   }
   moveTo(stack:number){
       let move:Move = new Move();
-      let s:number=0;
+      let sCount:number=0;
       move.from = this.fromPosition;
-      const fromPosition:number=this.fromPosition;
+      const from:number=this.fromPosition;
       let cardToMove:number;
-      if(fromPosition>=PlayerPositionsEnum.STACK_1 && fromPosition<=PlayerPositionsEnum.STACK_4){
-          let topOfPlayerStack:number= this.game.players[this.game.activePlayer].cards[fromPosition].length-1;
-          cardToMove=this.game.players[this.game.activePlayer].cards[fromPosition][topOfPlayerStack];
+      if(from>=PlayerPositionsEnum.STACK_1 && from<=PlayerPositionsEnum.STACK_4){
+          let topOfPlayerStack:number= this.game.players[this.game.activePlayer].cards[from].length-1;
+          cardToMove=this.game.players[this.game.activePlayer].cards[from][topOfPlayerStack];
       }else{
-          cardToMove= this.game.players[this.game.activePlayer].viewCard(fromPosition);
+          cardToMove= this.game.players[this.game.activePlayer].viewCard(from);
       }
       move.card =cardToMove;
       move.to = stack;
-//      console.log(`Move: ${JSON.stringify(move)}`);
+      
+//    If moving to a Player Stack is this a discard?
+//    All stacks must have at least 1 card before it can be considered a discard
       if(move.to>=PlayerPositionsEnum['STACK_1'] && move.to<=PlayerPositionsEnum.STACK_4){
           for(let i=PlayerPositionsEnum['STACK_1'];i<=PlayerPositionsEnum.STACK_4;i++){
-              if(this.game.players[this.game.activePlayer].viewCard(stack)>0){s++;}
+//              count player stacks with at least one card
+              if(this.game.players[this.game.activePlayer].viewCard(i)>0 || i==stack){sCount++;}
           }
-          if(this.game.players[this.game.activePlayer].viewCard(stack)>0){
+//          does the target stack already have a card on it?
+          if(this.game.players[this.game.activePlayer].viewCard(stack)>0 ){
               this.isPendingDiscard=true;
           }
       }
       
-      if(this.isPendingDiscard && s==4){
+      if(this.isPendingDiscard && sCount==4){
          move.isDiscard=true;
          this.isPendingDiscard=false;
       }
@@ -135,7 +153,6 @@ export class PlayAreaComponent implements OnInit {
   canMoveHere(toPosition:number){
       let canMove:boolean=false;
       const fromPosition:number=this.fromPosition;
-//      if(fromPosition>-1){console.log(`canMovehere: ${toPosition}`)};
       const centreStack1:number=GamePositionsEnum.BASE+GamePositionsEnum.STACK_1;
       const centreStack4:number=GamePositionsEnum.BASE+GamePositionsEnum.STACK_4;
   
@@ -171,20 +188,24 @@ export class PlayAreaComponent implements OnInit {
           }
           if(m.isDiscard){
 //              console.log(`Discard: ${JSON.stringify(moves)}`);
-              this.dealer.fillHand(this.game.players[nextPlayer]);
+              this.dealer.fillHand(this.game.players[nextPlayer],this.game);
               this.zone.run(() => this.game.activePlayer=nextPlayer);              
           }else{
 //              console.log(`Move: ${JSON.stringify(moves)}`);
               this.zone.run(() => null);
           }
           if(this.game.players[this.game.activePlayer].cardsInHand()==0){
-              this.zone.run(() => this.dealer.fillHand(this.game.players[this.game.activePlayer]));
+              this.zone.run(() => this.dealer.fillHand(this.game.players[this.game.activePlayer],this.game));
           }
           if(m.to>=GamePositionsEnum.BASE+GamePositionsEnum.STACK_1 && this.toFaceNumber(m.card)==CardsEnum.KING){
               let stack:number[]= this.game.centreStacks[m.to-GamePositionsEnum.BASE];
               console.log(`Recycle centre stack: ${m.to} ${JSON.stringify(this.game.centreStacks[m.to-GamePositionsEnum.BASE])}`);
-              this.dealer.addToRecyclePile(stack);
+              this.dealer.addToRecyclePile(stack,this.game);
               this.game.centreStacks[m.to-GamePositionsEnum.BASE]=[CardsEnum.NO_CARD]
+          }
+          if(m.from==PlayerPositionsEnum.PILE && this.game.players[this.game.activePlayer].viewCard(m.from)==CardsEnum.NO_CARD){
+//              Game Over
+              this.game.gameOver=true;
           }
       });
   }
