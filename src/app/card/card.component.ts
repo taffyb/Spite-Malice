@@ -2,21 +2,31 @@ import { Component, OnInit,Input } from '@angular/core';
 
 @Component({
     selector: 'card',
-    template: `<div><img>src="/assets/cards/c0{{name}}.png"/></div>`,
+    template: `<div><img src="/assets/cards/{{filename()}}"/></div>`,
     styles: [`
         :host {
           display: block;
-          padding: 32px;
-          border: 1px solid black;
+          padding: 0px;
+          /*border: 1px solid black;*/
           border-radius: 8px;
         }
         img{
-          height:20px;
-          width:15px;
+          width:45px;
+          height:70px;
         }
     `]
   })
   export class CardComponent {
-    @Input()cardNo:number;
+    @Input()cardNo:string;
     
+    filename():string{
+        let filename:string;
+        if(!this.cardNo.startsWith("back")){
+            let cardNo = parseInt(this.cardNo);
+            filename="c"+(cardNo<10?"0"+cardNo:this.cardNo)+".png";
+        }else{
+            filename="back.png";
+        }
+        return filename;
+    }
 }
