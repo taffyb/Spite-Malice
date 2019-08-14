@@ -116,6 +116,9 @@ export class DealerService {
           throw Error;
       }
       nextCard= this.deck.pop();
+      while(nextCard==CardsEnum.NO_CARD){
+          nextCard=this.deck.pop();
+      }
       return nextCard;
   }
   addToRecyclePile(cards:number[],game:Game){

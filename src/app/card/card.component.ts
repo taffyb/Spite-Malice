@@ -2,7 +2,7 @@ import { Component, OnInit,Input } from '@angular/core';
 
 @Component({
     selector: 'card',
-    template: `<div><img src="/assets/cards/{{filename()}}"/></div>`,
+    template: `<div><img [ngClass]="{'clip':clip}" src="/assets/cards/{{filename()}}"/></div>`,
     styles: [`
         :host {
           display: block;
@@ -13,11 +13,17 @@ import { Component, OnInit,Input } from '@angular/core';
         img{
           width:45px;
           height:70px;
+          opacity:0.75;
+        }
+        img.clip{
+          -webkit-clip-path: inset(0, 45px, 35px, 0);
+          clip-path: inset(0, 45px, 35px, 0);
         }
     `]
   })
   export class CardComponent {
     @Input()cardNo:string;
+    @Input()clip:boolean=false;
     
     filename():string{
         let filename:string;

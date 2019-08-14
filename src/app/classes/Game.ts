@@ -15,10 +15,15 @@ export class Game {
   inPlay:boolean=false;
   recyclePile:number[]=[];
   gameOver:boolean=false;
+  autoplay:boolean=false;
 
-  constructor(gameGUID:string='') {
+  constructor(gameGUID:string='',private movesService:MovesService) {
       this.guid=gameGUID;
       this.name="New Game"; 
+  }
+  nextTurn(){
+      let gameClone:Game=this.clone();
+      this.movesService
   }
   toFaceNumber(card:number):number{
       let c:number;
@@ -31,5 +36,9 @@ export class Game {
           c=0;
       }
       return c;
+  }
+  clone():Game{
+      let clone=JSON.parse(JSON.stringify(this));
+      return clone;
   }
 }

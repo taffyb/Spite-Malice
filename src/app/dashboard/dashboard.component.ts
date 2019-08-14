@@ -6,6 +6,7 @@ import {GamePositionsEnum} from '../classes/Enums';
 import {CardsEnum} from '../classes/Enums';
 import {SuitsEnum} from '../classes/Enums';
 
+
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
@@ -25,6 +26,7 @@ export class DashboardComponent implements OnInit {
   constructor(gameService:GameService) { 
       this.games = gameService.getGames(); 
       this.gameService=gameService;
+      
   }
 
   ngOnInit() {

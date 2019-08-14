@@ -1,4 +1,5 @@
 export enum PlayerPositionsEnum{
+    NO_POS=-1,
     PILE=0,
     HAND_1,
     HAND_2,
@@ -43,4 +44,10 @@ export enum CardsEnum{
     JACK,
     QUEEN,
     KING
+}
+export enum MoveScoresEnum{
+    FROM_PILE=1000,
+    ADD_TO_STACK=10,
+    OPEN_A_SPACE=10,
+    DISCARD=1
 }

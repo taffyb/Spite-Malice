@@ -189,7 +189,8 @@ export class PlayAreaComponent implements OnInit {
           if(m.isDiscard){
 //              console.log(`Discard: ${JSON.stringify(moves)}`);
               this.dealer.fillHand(this.game.players[nextPlayer],this.game);
-              this.zone.run(() => this.game.activePlayer=nextPlayer);              
+              this.zone.run(() => this.game.activePlayer=nextPlayer); 
+              this.game.nextTurn();
           }else{
 //              console.log(`Move: ${JSON.stringify(moves)}`);
               this.zone.run(() => null);

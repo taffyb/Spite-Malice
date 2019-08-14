@@ -6,6 +6,9 @@ import {GamePositionsEnum} from '../classes/Enums';
 import {CardsEnum} from '../classes/Enums';
 import {SuitsEnum} from '../classes/Enums';
 
+
+import {MovesService} from '../services/Moves.Service';
+
 export class TestGames{
     games:Game[]=[];
    
@@ -25,7 +28,7 @@ export class TestGames{
         const s=SuitsEnum;
         const c=CardsEnum;
         
-        let game:Game=new Game(uuid());
+        let game:Game=new Game(uuid(),new MovesService());
         game.name="Test Recycle Centre Stack";
         let player:Player=new Player();
         
@@ -97,7 +100,7 @@ export class TestGames{
         const s=SuitsEnum;
         const c=CardsEnum;
         
-        let game:Game=new Game(uuid());
+        let game:Game=new Game(uuid(),new MovesService());
         game.name="Test Pending Discard";
         let player:Player=new Player();
         
@@ -169,7 +172,7 @@ export class TestGames{
         const s=SuitsEnum;
         const c=CardsEnum;
         
-        let game:Game=new Game(uuid());
+        let game:Game=new Game(uuid(),new MovesService());
         game.name="Winning Hand";
         let player:Player=new Player();
         

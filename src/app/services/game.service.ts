@@ -9,6 +9,7 @@ import {TestGames} from '../test-data/TestGames';
 import {PlayerPositionsEnum} from '../classes/Enums';
 import {GamePositionsEnum} from '../classes/Enums';
 import {CardsEnum} from '../classes/Enums';
+import {MovesService} from './moves.service';
 
 @Injectable({
   providedIn: 'root'
@@ -17,14 +18,14 @@ export class GameService {
 
   games:Game[]=[];
 
-  constructor() {
+  constructor(private movesService:MovesService) {
       let testGames=new TestGames();
       this.games = testGames.getGames();
   }
   
   newGame():Game{
       let guid = uuid();
-      let game = new Game(guid);
+      let game = new Game(guid,this.movesService);
       
       let p:Player= new Player();
       p.name = "Player 1";
