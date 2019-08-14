@@ -37,7 +37,8 @@
 							'to':toPosition==pos && 
 							     fromPosition>=0 && 
 							     game.activePlayer==pIdx &&
-							     (pos >=PlayerPositions.STACK_1 && PlayerPositions.STACK_4>=pos && c.length<=2)}" >
+							     (pos >=PlayerPositions.STACK_1 && PlayerPositions.STACK_4>=pos && c.length<=2),
+							 'left':pos==PlayerPositions.HAND_1 || pos==PlayerPositions.STACK_1}" >
 				<!-- 
 					If it is the Primary Player or the Active Player
 					then show all cards
@@ -176,7 +177,8 @@
 								   p.cards[fromPosition].length-3==stackRow,
 							'to':toPosition==PlayerPositions.STACK_1+stackCol &&
 							       fromPosition>=0 && game.activePlayer==pIdx &&
-								   p.cards[toPosition].length-3==stackRow}">
+								   p.cards[toPosition].length-3==stackRow,
+							 'left':stackCol==0}">
 			    <span *ngIf="pIdx==game.activePlayer"> <!-- This is the active Player -->
 			    	<!-- this stack has a card in this row -->		    	
 					<span *ngIf="p.cards[PlayerPositions.STACK_1+stackCol].length>=3+stackRow"> 
@@ -250,6 +252,7 @@
 	</table>
 	<div class="space">&nbsp;</div>
 	</div>
+	<p><p>
 	<table>
 		<tr>
 			<td *ngFor="let s of game.centreStacks; let sIdx=index" 

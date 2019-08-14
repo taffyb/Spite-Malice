@@ -22,7 +22,7 @@ input.card{
   border-collapse: collapse;
 }
 
-table, th, td {
+table, th {
   border: 1px solid black;
 }
 td.from {
@@ -30,6 +30,9 @@ td.from {
 }
 td.to {
   background-color: yellow;
+}
+td.left {
+  padding-left: 8px;
 }
 .active{
 	color:red;
