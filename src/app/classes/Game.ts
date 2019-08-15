@@ -14,7 +14,7 @@ export class Game {
   activePlayer:number=0;
   inPlay:boolean=false;
   recyclePile:number[]=[];
-  gameOver:boolean=false;
+  gameOver:string="";
   autoplay:boolean=false;
   includeJokers:number=4; //maximum 4 (per deck)
 

@@ -15,10 +15,6 @@ import { Component, OnInit,Input } from '@angular/core';
           height:70px;
           opacity:0.75;
         }
-        img.clip{
-          -webkit-clip-path: inset(0, 45px, 35px, 0);
-          clip-path: inset(0, 45px, 35px, 0);
-        }
     `]
   })
   export class CardComponent {

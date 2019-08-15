@@ -1,16 +1,18 @@
-<div *ngIf="game.gameOver">
+<div *ngIf="game.gameOver!=''">
 
 	<h1>Game Over</h1>
 	<p>
-	<h2>Congratulations {{game.players[game.activePlayer].name}} you won!</h2>
+	<h2>{{game.gameOver}}</h2>
 </div>
 <div *ngIf="!game.gameOver">
+
+	<span class="button" (click)="saveGame()">Save Game</span><p>
 	<div class="player-hand" *ngFor="let p of game.players;let pIdx=index">
 	
 	<table class="player-hand">
 		<!-- Header Row -->
 		<tr >
-			<th>Player Name</th>
+			<th>Player</th>
 			<th>Pile</th>
 			<th colspan=5>Hand</th>
 			<th colspan=4>Stack</th>

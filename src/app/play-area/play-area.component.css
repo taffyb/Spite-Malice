@@ -80,3 +80,6 @@ td.left {
 .tooltip:hover .tooltiptext {
   visibility: visible;
 }
+span.button:hover{
+	background-color:gray;
+}

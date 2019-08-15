@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import {Move} from '../classes/Move';
+import {Turn} from '../classes/Turn';
 import {Game} from '../classes/Game';
 import {PlayerPositionsEnum} from '../classes/Enums';
 import {GamePositionsEnum} from '../classes/Enums';
@@ -9,23 +10,27 @@ import {MoveScoresEnum} from '../classes/Enums';
   providedIn: 'root'
 })
 export class MovesService {
-  moves:Move[]=[];
+  turns:Turn[]=[new Turn()];
   subscriber:any;
   
 
   constructor() { }
   
   addMove(move:Move){
-      this.moves.push(move);
-      this.publish();
+      this.turns[this.turns.length-1].moves.push(move);
+      if(move.isDiscard){
+          console.log(`Turn: ${JSON.stringify(this.turns[this.turns.length-1])}`);
+          this.turns.push(new Turn());
+      }
+      this.publish(move);
   }
   
   subscribeToChanges(subscriber:any){
       this.subscriber=subscriber;
   }
-  publish(){
-      this.subscriber.onNewMoves(this.moves);
-      this.moves=[];
+  publish(move:Move){
+      this.subscriber.onNewMoves(move);
+      
   }
   findNextMove(game:Game):Move{
       let m = new Move();

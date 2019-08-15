@@ -107,6 +107,9 @@ export class DealerService {
   }
   private dealNextCard(game:Game):number{
       let nextCard:number;
+      if(this.deck.length==0 && game.recyclePile.length==0){
+          game.gameOver="There are no more cards to deal. We will have to call this a draw.";
+      }
       if(this.deck.length==0){
           /* 
               If the deck has run out of cards, 

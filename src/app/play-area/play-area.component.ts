@@ -119,6 +119,7 @@ export class PlayAreaComponent implements OnInit {
   }
   moveTo(stack:number){
       let move:Move = new Move();
+      move.player= this.game.players[this.game.activePlayer].guid;
       let sCount:number=0;
       move.from = this.fromPosition;
       const from:number=this.fromPosition;
@@ -182,10 +183,10 @@ export class PlayAreaComponent implements OnInit {
       }
       return canMove;
   }
-  onNewMoves(moves:Move[]){
+  onNewMoves(m:Move){
       
       let nextPlayer = (this.game.activePlayer+1<this.game.players.length?this.game.activePlayer+1:0);
-      moves.forEach(m=>{
+ 
           this.game.players[this.game.activePlayer].removeCard(m.from);
           if(m.to<=PlayerPositionsEnum['STACK_4']){
               this.game.players[this.game.activePlayer].addCard(m.card,m.to);
@@ -213,8 +214,10 @@ export class PlayAreaComponent implements OnInit {
           }
           if(m.from==PlayerPositionsEnum.PILE && this.game.players[this.game.activePlayer].viewCard(m.from)==CardsEnum.NO_CARD){
 //              Game Over
-              this.game.gameOver=true;
+              this.game.gameOver=this.game.players[this.game.activePlayer].name + " won!.";
           }
-      });
+  }
+  saveGame(){
+      console.log(`Game:${JSON.stringify(this.game)}`);
   }
 }
