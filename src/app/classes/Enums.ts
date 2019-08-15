@@ -43,7 +43,9 @@ export enum CardsEnum{
     TEN,
     JACK,
     QUEEN,
-    KING
+    KING,
+    DECK=52,
+    JOKER=53
 }
 export enum MoveScoresEnum{
     FROM_PILE=1000,

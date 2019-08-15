@@ -15,7 +15,6 @@ import {SuitsEnum} from '../classes/Enums';
 export class DashboardComponent implements OnInit {
   games:Game[]=[];
   game:Game;
-  gameService:GameService;
 
   PlayerPositions=PlayerPositionsEnum;
   GamePositions=GamePositionsEnum;
@@ -23,9 +22,8 @@ export class DashboardComponent implements OnInit {
   Suits=SuitsEnum;
   playerStacks:number[][]=[[CardsEnum.NO_CARD],[CardsEnum.NO_CARD],[CardsEnum.NO_CARD],[CardsEnum.NO_CARD]];
 
-  constructor(gameService:GameService) { 
-      this.games = gameService.getGames(); 
-      this.gameService=gameService;
+  constructor(private gameSvc:GameService) { 
+      this.games = gameSvc.getGames();
       
   }
 
@@ -33,7 +31,7 @@ export class DashboardComponent implements OnInit {
   }
   setGame(guid:string){
       console.log(`GUID: ${guid}`);
-      this.game = this.gameService.getGame(guid);
+      this.game = this.gameSvc.getGame(guid);
   }
   toFaceNumber(card:number):number{
       

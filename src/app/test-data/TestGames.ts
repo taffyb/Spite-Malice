@@ -37,7 +37,7 @@ export class TestGames{
                                s.HEARTS+c.KING,
                                s.SPADES+c.QUEEN,
                                s.CLUBS+c.JACK,
-                               s.DIAMONDS+c.TEN];
+                               c.DECK+1];
         player.cards[pp.HAND_1]=s.HEARTS+c.ACE;
         player.cards[pp.HAND_2]=s.HEARTS+c.THREE;
         player.cards[pp.HAND_3]=s.HEARTS+c.NINE;

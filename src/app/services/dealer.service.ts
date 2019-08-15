@@ -9,8 +9,7 @@ import {CardsEnum} from '../classes/Enums';
 })
 export class DealerService {
   deck:number[]=[];
-  recyclePile:number[]=[];
-  includeJokers:number=0; //maximum 4 (per deck)
+//  recyclePile:number[]=[];
   decks:number=2; //default play with two decks
 
   constructor() {
@@ -19,13 +18,18 @@ export class DealerService {
   private fillDeck(){
       this.deck=[];
       for(let d:number=0;d<this.decks;d++){      
-          for(let i:number=1;i<=52+(this.includeJokers);i++){
+          for(let i:number=1;i<=52;i++){
               this.deck.push(i);
           }
       }      
   }
   setGameDeck(game:Game){
       this.fillDeck();
+      if(game.includeJokers>0){
+          for(let i=1;i<=game.includeJokers;i++){
+              this.deck.push(CardsEnum.JOKER);
+          }
+      }
       game.centreStacks.forEach(s=>{
           if(s.length>1){
               s.forEach(c=>{

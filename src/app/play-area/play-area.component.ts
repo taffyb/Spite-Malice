@@ -54,28 +54,28 @@ export class PlayAreaComponent implements OnInit {
   constructor(private router: Router,
               private route: ActivatedRoute, 
               private dealer:DealerService,
-              private moveService:MovesService,
-              private gameService:GameService,
+              private moveSvc:MovesService,
+              private gameSvc:GameService,
               public zone: NgZone) {
        route.params.subscribe(val => {
 
            const gameId = route.snapshot.paramMap.get('gameId');
            if(!gameId || gameId=="new"){
-               this.game=this.gameService.newGame();
+               this.game=this.gameSvc.newGame();
                dealer.deal(this.game.players);
                // set active player
-               if(this.gameService.toFaceNumber(this.game.players[0].viewCard(PlayerPositionsEnum.PILE)) 
+               if(this.gameSvc.toFaceNumber(this.game.players[0].viewCard(PlayerPositionsEnum.PILE)) 
                   >  
-                  this.gameService.toFaceNumber(this.game.players[1].viewCard(PlayerPositionsEnum.PILE))){
+                  this.gameSvc.toFaceNumber(this.game.players[1].viewCard(PlayerPositionsEnum.PILE))){
                    
                    this.game.activePlayer=1;
                }
                router.navigateByUrl(`/play-area/${this.game.guid}`);
            }else{
-               this.game=this.gameService.getGame(gameId);
+               this.game=this.gameSvc.getGame(gameId);
                dealer.setGameDeck(this.game);
            }     
-           this.moveService.subscribeToChanges(this);
+           this.moveSvc.subscribeToChanges(this);
        });
   }
   
@@ -83,11 +83,14 @@ export class PlayAreaComponent implements OnInit {
   }
   viewTopOfStack(stack:number):number{
       let centreStack:number[]= this.game.centreStacks[stack];
-//      console.log(`TOP_OF_STACK ${stack}\n
-//          Center Stacks: ${JSON.stringify(this.game.centreStacks)}\n
-//          centreStack: ${JSON.stringify(centreStack)}\n
-//          topOfStack: ${centreStack[centreStack.length-1]}`);
-      return centreStack[centreStack.length-1];
+      let tos:number= centreStack[centreStack.length-1];
+  
+      if(tos>CardsEnum.DECK){
+          //its a joker
+          tos=centreStack[centreStack.length-2]+1;
+      }
+      
+      return tos;
   }
   toFaceNumber(card:number):number{
       return this.game.toFaceNumber(card);
@@ -146,7 +149,7 @@ export class PlayAreaComponent implements OnInit {
          move.isDiscard=true;
          this.isPendingDiscard=false;
       }
-      this.moveService.addMove(move);
+      this.moveSvc.addMove(move);
       this.fromPosition=-1;
       this.toPosition=-1;
   }
@@ -167,10 +170,14 @@ export class PlayAreaComponent implements OnInit {
           }
           
           if(toPosition>=centreStack1 && toPosition<=centreStack4){
-             let centreCard:number=this.toFaceNumber(this.viewTopOfStack(toPosition-GamePositionsEnum.BASE));
-             if(cardToMove==(centreCard<CardsEnum.KING?centreCard+1:1)) {
-                  canMove=true;
-             }        
+             if(cardToMove==CardsEnum.JOKER){
+                 canMove=true;
+             }else{
+                 let centreCard:number=this.toFaceNumber(this.viewTopOfStack(toPosition-GamePositionsEnum.BASE));
+                 if(cardToMove==(centreCard<CardsEnum.KING?centreCard+1:1)) {
+                      canMove=true;
+                 }     
+             }
           }
       }
       return canMove;

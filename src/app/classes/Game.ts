@@ -16,24 +16,27 @@ export class Game {
   recyclePile:number[]=[];
   gameOver:boolean=false;
   autoplay:boolean=false;
+  includeJokers:number=4; //maximum 4 (per deck)
 
-  constructor(gameGUID:string='',private movesService:MovesService) {
+  constructor(gameGUID:string='',private movesSvc:MovesService) {
       this.guid=gameGUID;
       this.name="New Game"; 
   }
   nextTurn(){
       let gameClone:Game=this.clone();
-      this.movesService
+      this.movesSvc
   }
   toFaceNumber(card:number):number{
       let c:number;
-      if(card>0){
-          c=card%13;
+      if(card>CardsEnum.DECK){
+          c=CardsEnum.JOKER;
+      }else if(card>CardsEnum.NO_CARD){
+          c=card%CardsEnum.KING;
           if(c==0){
-              c=13;
+              c=CardsEnum.KING;
           }
       }else{
-          c=0;
+          c=CardsEnum.NO_CARD;
       }
       return c;
   }

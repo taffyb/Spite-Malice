@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 
-import { MovesService } from './moves.service';
+import { MovesService } from './Moves.Service';
 
 describe('MovesService', () => {
   beforeEach(() => TestBed.configureTestingModule({}));
