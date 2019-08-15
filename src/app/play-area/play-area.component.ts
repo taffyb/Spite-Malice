@@ -187,35 +187,35 @@ export class PlayAreaComponent implements OnInit {
       
       let nextPlayer = (this.game.activePlayer+1<this.game.players.length?this.game.activePlayer+1:0);
  
-          this.game.players[this.game.activePlayer].removeCard(m.from);
-          if(m.to<=PlayerPositionsEnum['STACK_4']){
-              this.game.players[this.game.activePlayer].addCard(m.card,m.to);
-          }else{
-//              console.log(`m.to:${m.to} GamePositionsEnum.BASE:${GamePositionsEnum.BASE}`);
-              this.game.centreStacks[m.to-GamePositionsEnum.BASE].push(m.card);
-          }
-          if(m.isDiscard){
-//              console.log(`Discard: ${JSON.stringify(moves)}`);
-              this.dealer.fillHand(this.game.players[nextPlayer],this.game);
-              this.zone.run(() => this.game.activePlayer=nextPlayer); 
-              this.game.nextTurn();
-          }else{
+      this.game.players[this.game.activePlayer].removeCard(m.from);
+      if(m.to<=PlayerPositionsEnum['STACK_4']){
+          this.game.players[this.game.activePlayer].addCard(m.card,m.to);
+      }else{
+//          console.log(`m.to:${m.to} GamePositionsEnum.BASE:${GamePositionsEnum.BASE}`);
+          this.game.centreStacks[m.to-GamePositionsEnum.BASE].push(m.card);
+      }
+      if(m.isDiscard){
+//          console.log(`Discard: ${JSON.stringify(moves)}`);
+          this.dealer.fillHand(this.game.players[nextPlayer],this.game);
+          this.zone.run(() => this.game.activePlayer=nextPlayer); 
+          this.game.nextTurn();
+      }else{
 //              console.log(`Move: ${JSON.stringify(moves)}`);
-              this.zone.run(() => null);
-          }
-          if(this.game.players[this.game.activePlayer].cardsInHand()==0){
-              this.zone.run(() => this.dealer.fillHand(this.game.players[this.game.activePlayer],this.game));
-          }
-          if(m.to>=GamePositionsEnum.BASE+GamePositionsEnum.STACK_1 && this.toFaceNumber(m.card)==CardsEnum.KING){
-              let stack:number[]= this.game.centreStacks[m.to-GamePositionsEnum.BASE];
-              console.log(`Recycle centre stack: ${m.to} ${JSON.stringify(this.game.centreStacks[m.to-GamePositionsEnum.BASE])}`);
-              this.dealer.addToRecyclePile(stack,this.game);
-              this.game.centreStacks[m.to-GamePositionsEnum.BASE]=[CardsEnum.NO_CARD]
-          }
-          if(m.from==PlayerPositionsEnum.PILE && this.game.players[this.game.activePlayer].viewCard(m.from)==CardsEnum.NO_CARD){
-//              Game Over
-              this.game.gameOver=this.game.players[this.game.activePlayer].name + " won!.";
-          }
+          this.zone.run(() => null);
+      }
+      if(this.game.players[this.game.activePlayer].cardsInHand()==0){
+          this.zone.run(() => this.dealer.fillHand(this.game.players[this.game.activePlayer],this.game));
+      }
+      if(m.to>=GamePositionsEnum.BASE+GamePositionsEnum.STACK_1 && this.toFaceNumber(m.card)==CardsEnum.KING){
+          let stack:number[]= this.game.centreStacks[m.to-GamePositionsEnum.BASE];
+          console.log(`Recycle centre stack: ${m.to} ${JSON.stringify(this.game.centreStacks[m.to-GamePositionsEnum.BASE])}`);
+          this.dealer.addToRecyclePile(stack,this.game);
+          this.game.centreStacks[m.to-GamePositionsEnum.BASE]=[CardsEnum.NO_CARD]
+      }
+      if(m.from==PlayerPositionsEnum.PILE && this.game.players[this.game.activePlayer].viewCard(m.from)==CardsEnum.NO_CARD){
+//        Game Over
+          this.game.gameOver=this.game.players[this.game.activePlayer].name + " won!.";
+      }
   }
   saveGame(){
       console.log(`Game:${JSON.stringify(this.game)}`);
