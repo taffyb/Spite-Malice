@@ -25,7 +25,7 @@ export class GameService {
   
   newGame():Game{
       let guid = uuid();
-      let game = new Game(guid,this.movesService);
+      let game = new Game();
       
       let p:Player= new Player();
       p.name = "Player 1";

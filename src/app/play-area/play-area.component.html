@@ -6,7 +6,6 @@
 </div>
 <div *ngIf="!game.gameOver">
 
-	<span class="button" (click)="saveGame()">Save Game</span><p>
 	<div class="player-hand" *ngFor="let p of game.players;let pIdx=index">
 	
 	<table class="player-hand">
@@ -29,7 +28,7 @@
 				</span>
 				<input name="{{p.guid}}" *ngIf="p.isEditable" 
 				(focusout)="p.isEditable=false" 
-				[(ngModel)]="p.name" />
+				[(ngModel)]="p.name" />				
 			</td>
 			
 			<td *ngFor="let c of p.cards;let pos=index" 
@@ -301,5 +300,7 @@
 		</tr>
 	</table>
 	Deck:{{dealer.deck.length}}<br>
-	Recycle Pile:{{game.recyclePile.length}}
+	Recycle Pile:{{game.recyclePile.length}}<p>
+	<span class="button" (click)="saveGame()">Save Game</span><span>&nbsp;</span><span class="button" (click)="undo()">Undo</span><p>
+	Autoplay <input name="autoplay" type="checkbox" [(ngModel)]="game.autoplay"/>
 </div>

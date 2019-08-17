@@ -1,7 +1,11 @@
 import {Injectable} from '@angular/core';
 import {Player} from '../classes/Player';
 import {Game} from '../classes/Game';
+import {Turn} from '../classes/Turn';
+import {Deal} from '../classes/Deal';
+import {Move} from '../classes/Move';
 import {PlayerPositionsEnum} from '../classes/Enums';
+import {GamePositionsEnum} from '../classes/Enums';
 import {CardsEnum} from '../classes/Enums';
 
 @Injectable({
@@ -61,6 +65,9 @@ export class DealerService {
           });
       });
       this.shuffleDeck();
+  }
+  returnCard(card:number){
+      this.deck.push(card);
   }
   removeCard(card:number){
       let removed:number;
@@ -133,17 +140,28 @@ export class DealerService {
           game.recyclePile.push(cards[c]);
       }
   }
-  fillHand(player:Player,game:Game){
+  fillHand(player:Player,game:Game):Turn{
       let c:number=0;
+      let deal:Deal=new Deal();
+      let move:Move;
+      
 //      console.log(`fillHand\nPlayer: ${player.name} Hand B4: ${JSON.stringify(player.cards)}`);
       for(let i=PlayerPositionsEnum['HAND_1'];i<PlayerPositionsEnum['STACK_1'];i++){
           if(player.cards[i]==CardsEnum.NO_CARD){
               let nextCard:number = this.dealNextCard(game);
 //              console.log(`add card ${nextCard} to position ${i}`);
               c++;
-              player.addCard(nextCard,i);
+              move = new Move();
+              move.player=player.guid;
+              move.from=GamePositionsEnum.DECK;
+              move.card=nextCard;
+              move.to=i;
+              deal.moves.push(move);
+              player.addCard(nextCard,i);              
           }          
       }
-      console.log(`fillHand\nPlayer: ${player.name} Added ${c} cards`);
+      
+      console.log(`fillHand\nPlayer: ${player.name} Added ${c} cards ${JSON.stringify(deal)}`);
+      return deal;
   }
 }

@@ -16,7 +16,9 @@ export enum GamePositionsEnum{
     STACK_1=0,
     STACK_2,
     STACK_3,
-    STACK_4
+    STACK_4,
+    DECK=20,
+    RECYCLE_PILE
 }
 export enum TabsEnum{
     DEFAULT=0,
@@ -47,10 +49,8 @@ export enum CardsEnum{
     DECK=52,
     JOKER=53
 }
-export enum MoveScoresEnum{
-    FROM_PILE=1000,
-    ADD_TO_STACK=10,
-    OPEN_A_SPACE=10,
-    PLAY_FROM_HAND=5,
-    DISCARD=1
+export enum TurnEnum{
+    PLAYER=0,
+    DEALER,
+    RECYCLE
 }

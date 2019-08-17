@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {Game} from '../classes/Game';
-import {GameService} from '../services/Game.Service';
+import {GameService} from '../services/game.service';
 import {PlayerPositionsEnum} from '../classes/Enums';
 import {GamePositionsEnum} from '../classes/Enums';
 import {CardsEnum} from '../classes/Enums';

@@ -1,3 +1,4 @@
+import { v4 as uuid } from 'uuid';
 
 import {PlayerPositionsEnum} from './Enums';
 import {CardsEnum} from './Enums';
@@ -18,13 +19,12 @@ export class Game {
   autoplay:boolean=false;
   includeJokers:number=4; //maximum 4 (per deck)
 
-  constructor(gameGUID:string='',private movesSvc:MovesService) {
-      this.guid=gameGUID;
+  constructor() {
+      this.guid=uuid();
       this.name="New Game"; 
   }
   nextTurn(){
       let gameClone:Game=this.clone();
-      this.movesSvc
   }
   toFaceNumber(card:number):number{
       let c:number;

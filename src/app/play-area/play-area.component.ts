@@ -3,10 +3,12 @@ import {ActivatedRoute, Router } from '@angular/router';
 
 import {Player} from '../classes/Player';
 import {Move} from '../classes/Move';
+import {Turn} from '../classes/Turn';
+import {IMoveSubscriber} from '../classes/IMoveSubscriber';
 
-import {DealerService} from '../services/Dealer.Service';
-import {MovesService} from '../services/Moves.Service';
-import {GameService} from '../services/Game.Service';
+import {DealerService} from '../services/dealer.service';
+import {MovesService} from '../services/moves.service';
+import {GameService} from '../services/game.service';
 
 import {PlayerPositionsEnum} from '../classes/Enums';
 import {GamePositionsEnum} from '../classes/Enums';
@@ -19,7 +21,7 @@ import {Game} from '../classes/Game';
   templateUrl: './play-area.component.html',
   styleUrls: ['./play-area.component.css']
 })
-export class PlayAreaComponent implements OnInit {
+export class PlayAreaComponent implements OnInit, IMoveSubscriber {
   PlayerPositions=PlayerPositionsEnum;
   GamePositions=GamePositionsEnum;
   Cards=CardsEnum;
@@ -183,41 +185,79 @@ export class PlayAreaComponent implements OnInit {
       }
       return canMove;
   }
-  onNewMoves(m:Move){
-      
-      let nextPlayer = (this.game.activePlayer+1<this.game.players.length?this.game.activePlayer+1:0);
- 
-      this.game.players[this.game.activePlayer].removeCard(m.from);
-      if(m.to<=PlayerPositionsEnum['STACK_4']){
-          this.game.players[this.game.activePlayer].addCard(m.card,m.to);
-      }else{
-//          console.log(`m.to:${m.to} GamePositionsEnum.BASE:${GamePositionsEnum.BASE}`);
-          this.game.centreStacks[m.to-GamePositionsEnum.BASE].push(m.card);
-      }
-      if(m.isDiscard){
-//          console.log(`Discard: ${JSON.stringify(moves)}`);
-          this.dealer.fillHand(this.game.players[nextPlayer],this.game);
-          this.zone.run(() => this.game.activePlayer=nextPlayer); 
-          this.game.nextTurn();
-      }else{
-//              console.log(`Move: ${JSON.stringify(moves)}`);
-          this.zone.run(() => null);
-      }
-      if(this.game.players[this.game.activePlayer].cardsInHand()==0){
-          this.zone.run(() => this.dealer.fillHand(this.game.players[this.game.activePlayer],this.game));
-      }
-      if(m.to>=GamePositionsEnum.BASE+GamePositionsEnum.STACK_1 && this.toFaceNumber(m.card)==CardsEnum.KING){
-          let stack:number[]= this.game.centreStacks[m.to-GamePositionsEnum.BASE];
-          console.log(`Recycle centre stack: ${m.to} ${JSON.stringify(this.game.centreStacks[m.to-GamePositionsEnum.BASE])}`);
-          this.dealer.addToRecyclePile(stack,this.game);
-          this.game.centreStacks[m.to-GamePositionsEnum.BASE]=[CardsEnum.NO_CARD]
-      }
-      if(m.from==PlayerPositionsEnum.PILE && this.game.players[this.game.activePlayer].viewCard(m.from)==CardsEnum.NO_CARD){
-//        Game Over
-          this.game.gameOver=this.game.players[this.game.activePlayer].name + " won!.";
-      }
+  onUndoActivePlayer(){
+      let previousPlayer = (this.game.activePlayer-1>=0?this.game.activePlayer-1:this.game.players.length-1);
+      this.zone.run(() => this.game.activePlayer=previousPlayer);
+  }
+  onUndo(moves:Move[]){
+      let player:Player;
+      moves.forEach(m=>{   
+          //determine the player who made the move
+          this.game.players.forEach(p=>{
+             if(p.guid==m.player){
+                 player=p;
+             }
+          });
+          
+          //If it is from a center stack
+          if(m.from>GamePositionsEnum.BASE){
+             this.game.centreStacks[m.from-GamePositionsEnum.BASE].pop();
+          }
+          
+          //If it is from a Player stack
+          if(m.from>=PlayerPositionsEnum.STACK_1 && m.from<=PlayerPositionsEnum.STACK_4){
+              player.cards[m.from].pop();
+          }
+          
+          //If it it is going back to the deck
+          if(m.to==GamePositionsEnum.DECK){
+              this.dealer.returnCard(m.card);
+          }else{
+              player.addCard(m.card,m.to);    
+          }          
+      });
+  }
+  onNewMoves(moves:Move[]){
+      moves.forEach(m=>{   
+          let nextPlayer = (this.game.activePlayer+1<this.game.players.length?this.game.activePlayer+1:0);
+     
+          this.game.players[this.game.activePlayer].removeCard(m.from);
+          if(m.to<=PlayerPositionsEnum['STACK_4']){
+              this.game.players[this.game.activePlayer].addCard(m.card,m.to);
+          }else{
+    //          console.log(`m.to:${m.to} GamePositionsEnum.BASE:${GamePositionsEnum.BASE}`);
+              this.game.centreStacks[m.to-GamePositionsEnum.BASE].push(m.card);
+          }
+          if(m.isDiscard){
+    //          console.log(`Discard: ${JSON.stringify(moves)}`);
+              let deal:Turn;
+              deal=this.dealer.fillHand(this.game.players[nextPlayer],this.game);
+              this.moveSvc.addTurn(deal);
+              this.zone.run(() => this.game.activePlayer=nextPlayer); 
+              this.game.nextTurn();
+          }else{
+    //          console.log(`Move: ${JSON.stringify(moves)}`);
+              this.zone.run(() => null);
+          }
+          if(this.game.players[this.game.activePlayer].cardsInHand()==0){
+              this.zone.run(() => this.dealer.fillHand(this.game.players[this.game.activePlayer],this.game));
+          }
+          if(m.to>=GamePositionsEnum.BASE+GamePositionsEnum.STACK_1 && this.toFaceNumber(m.card)==CardsEnum.KING){
+              let stack:number[]= this.game.centreStacks[m.to-GamePositionsEnum.BASE];
+              console.log(`Recycle centre stack: ${m.to} ${JSON.stringify(this.game.centreStacks[m.to-GamePositionsEnum.BASE])}`);
+              this.dealer.addToRecyclePile(stack,this.game);
+              this.game.centreStacks[m.to-GamePositionsEnum.BASE]=[CardsEnum.NO_CARD]
+          }
+          if(m.from==PlayerPositionsEnum.PILE && this.game.players[this.game.activePlayer].viewCard(m.from)==CardsEnum.NO_CARD){
+    //        Game Over
+              this.game.gameOver=this.game.players[this.game.activePlayer].name + " won!.";
+          }
+      });
   }
   saveGame(){
       console.log(`Game:${JSON.stringify(this.game)}`);
+  }
+  undo(){
+      this.moveSvc.undo();
   }
 }
