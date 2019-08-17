@@ -87,11 +87,12 @@ export class PlayAreaComponent implements OnInit, IMoveSubscriber {
       let centreStack:number[]= this.game.centreStacks[stack];
       let tos:number= centreStack[centreStack.length-1];
   
-      if(tos>CardsEnum.DECK){
+      let j=0;
+      while(tos>CardsEnum.DECK){
+          j++;
           //its a joker
-          tos=centreStack[centreStack.length-2]+1;
-      }
-      
+          tos=centreStack[centreStack.length-(1+j)]+j;
+      }      
       return tos;
   }
   toFaceNumber(card:number):number{
