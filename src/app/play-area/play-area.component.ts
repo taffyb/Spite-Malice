@@ -25,6 +25,7 @@ export class PlayAreaComponent implements OnInit, IMoveSubscriber {
   PlayerPositions=PlayerPositionsEnum;
   GamePositions=GamePositionsEnum;
   Cards=CardsEnum;
+  dealer;
     
   playerStacks:number[][]=[[CardsEnum.NO_CARD],[CardsEnum.NO_CARD],[CardsEnum.NO_CARD],[CardsEnum.NO_CARD]];
   isPendingDiscard:boolean=false;
@@ -55,10 +56,11 @@ export class PlayAreaComponent implements OnInit, IMoveSubscriber {
 
   constructor(private router: Router,
               private route: ActivatedRoute, 
-              private dealer:DealerService,
+              dealer:DealerService,
               private moveSvc:MovesService,
               private gameSvc:GameService,
               public zone: NgZone) {
+       this.dealer=dealer;
        route.params.subscribe(val => {
 
            const gameId = route.snapshot.paramMap.get('gameId');

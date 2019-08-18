@@ -36,7 +36,7 @@ td.left {
 }
 .active{
 	color:red;
-	font-weight: bold;
+	text-decoration: underline;
 }
 .inactive{
 	color:black;
@@ -44,12 +44,8 @@ td.left {
 }
 .player-hand{
 	display: inline-block;
+	float:left;
 	vertical-align:top;
-}
-.space{
-	display: inline-block;
-	width: 50px;
-	min-height:5px;
 }
 
 /* Tooltip container */
@@ -71,7 +67,7 @@ td.left {
   border-radius: 6px;
  
 
-  /* Position the tooltip text - see examples below! */
+/* Position the tooltip text - see examples below! */
   position: absolute;
   z-index: 1;
 }
@@ -83,3 +79,17 @@ td.left {
 span.button:hover{
 	background-color:gray;
 }
+.space{
+	float:left;
+	min-width: 30px;
+	min-height:5px;
+}
+#game-row{
+	display:block;
+	align: left;
+}
+
+#centre-stacks{
+	border: none;
+}
+

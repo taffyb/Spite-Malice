@@ -4,7 +4,6 @@
 	<p>
 	<h2>{{game.gameOver}}</h2>
 </div>
-{{fromPosition}},{{toPosition}}
 <div *ngIf="!game.gameOver">
 
 	<div class="player-hand" *ngFor="let p of game.players;let pIdx=index">
@@ -254,54 +253,63 @@
 	</table>
 	<div class="space">&nbsp;</div>
 	</div>
-	<p><p>
-	<table>
-		<tr>
-			<td *ngFor="let s of game.centreStacks; let sIdx=index" 
-				[ngClass]="{'to':toPosition==GamePositions.BASE+sIdx && fromPosition>-1}">
-				<!-- 
-					There is a card Selected 
-					the selected card can be moved here
-				-->
-				<span *ngIf="fromPosition>-1 && canMoveHere(GamePositions.BASE+sIdx)"
-					(mouseover)="toggleTarget(GamePositions.BASE+sIdx)" 
-					(mouseout)="toggleTarget(-1)" 
-					(click)="moveTo(GamePositions.BASE+sIdx)">
-					<!-- <span *ngIf="viewTopOfStack(sIdx)!=Cards.NO_CARD">
-						<card cardNo="{{viewTopOfStack(sIdx)}}"></card>
-					</span>
-					<span *ngIf="viewTopOfStack(sIdx)==Cards.NO_CARD">&nbsp;</span>
-					 -->
-					 <card cardNo="{{viewTopOfStack(sIdx)}}"></card>
-				</span>	
-				<!-- 
-					There is a card Selected 
-					the selected card cannot be moved here
-				-->
-				<span *ngIf="fromPosition>-1 && !canMoveHere(GamePositions.BASE+sIdx)">
-					<!-- <span *ngIf="viewTopOfStack(sIdx)!=Cards.NO_CARD">
-						
-					</span>
-					<span *ngIf="viewTopOfStack(sIdx)==Cards.NO_CARD">&nbsp;</span>
-					 -->
-					 <card cardNo="{{viewTopOfStack(sIdx)}}"></card>
-				</span>		
-				<!-- 
-					There is no card Selected
-				-->
-				<span *ngIf="fromPosition<0">
-					<!-- <span *ngIf="viewTopOfStack(sIdx)!=Cards.NO_CARD">
-						
-					</span>
-					<span *ngIf="viewTopOfStack(sIdx)==Cards.NO_CARD">&nbsp;</span>
-					 -->
-					 <card cardNo="{{viewTopOfStack(sIdx)}}"></card>
-				</span>		
-			</td>
-		</tr>
-	</table>
-	Deck:{{dealer.deck.length}}<br>
-	Recycle Pile:{{game.recyclePile.length}}<p>
+	<p>
+	<p>
+	<p>
+	<div id="game-row">
+<!--  
+		<card cardNo="back"></card>
+		<div class="space">_&nbsp;</div>
+		<card *ngIf="game.recyclePile.length>0" cardNo="back"></card>
+		<card *ngIf="game.recyclePile.length==0" cardNo="{{Cards.NO_CARD}}"></card><p>
+		<div class="space">_&nbsp;</div>
+-->	
+		<table id="centre-stacks">
+			<tr>
+				<td *ngFor="let s of game.centreStacks; let sIdx=index" 
+					[ngClass]="{'to':toPosition==GamePositions.BASE+sIdx && fromPosition>-1}">
+					<!-- 
+						There is a card Selected 
+						the selected card can be moved here
+					-->
+					<span *ngIf="fromPosition>-1 && canMoveHere(GamePositions.BASE+sIdx)"
+						(mouseover)="toggleTarget(GamePositions.BASE+sIdx)" 
+						(mouseout)="toggleTarget(-1)" 
+						(click)="moveTo(GamePositions.BASE+sIdx)">
+						<!-- <span *ngIf="viewTopOfStack(sIdx)!=Cards.NO_CARD">
+							<card cardNo="{{viewTopOfStack(sIdx)}}"></card>
+						</span>
+						<span *ngIf="viewTopOfStack(sIdx)==Cards.NO_CARD">&nbsp;</span>
+						 -->
+						 <card cardNo="{{viewTopOfStack(sIdx)}}"></card>
+					</span>	
+					<!-- 
+						There is a card Selected 
+						the selected card cannot be moved here
+					-->
+					<span *ngIf="fromPosition>-1 && !canMoveHere(GamePositions.BASE+sIdx)">
+						<!-- <span *ngIf="viewTopOfStack(sIdx)!=Cards.NO_CARD">
+							
+						</span>
+						<span *ngIf="viewTopOfStack(sIdx)==Cards.NO_CARD">&nbsp;</span>
+						 -->
+						 <card cardNo="{{viewTopOfStack(sIdx)}}"></card>
+					</span>		
+					<!-- 
+						There is no card Selected
+					-->
+					<span *ngIf="fromPosition<0">
+						<!-- <span *ngIf="viewTopOfStack(sIdx)!=Cards.NO_CARD">
+							
+						</span>
+						<span *ngIf="viewTopOfStack(sIdx)==Cards.NO_CARD">&nbsp;</span>
+						 -->
+						 <card cardNo="{{viewTopOfStack(sIdx)}}"></card>
+					</span>		
+				</td>
+			</tr>
+		</table>
+	</div>
 	<span class="button" (click)="saveGame()">Save Game</span><span>&nbsp;</span><span class="button" (click)="undo()">Undo</span><p>
 	Autoplay <input name="autoplay" type="checkbox" [(ngModel)]="game.autoplay"/>
 </div>

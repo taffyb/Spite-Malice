@@ -2,10 +2,10 @@ import { Component, OnInit,Input } from '@angular/core';
 
 @Component({
     selector: 'card',
-    template: `<div><img [ngClass]="{'clip':clip}" src="/assets/cards/{{filename()}}"/></div>`,
+    template: `<div><img  src="/assets/cards/{{filename()}}"/></div>`,
     styles: [`
         :host {
-          display: block;
+          float: left;
           padding: 0px;
           /*border: 1px solid black;*/
           border-radius: 8px;
@@ -19,7 +19,6 @@ import { Component, OnInit,Input } from '@angular/core';
   })
   export class CardComponent {
     @Input()cardNo:string;
-    @Input()clip:boolean=false;
     
     filename():string{
         let filename:string;
