@@ -187,7 +187,9 @@ export class PlayAreaComponent implements OnInit, IMoveSubscriber {
       return canMove;
   }
   onUndoActivePlayer(){
+      console.log(`[play-area] activePlayer: ${this.game.activePlayer}`); 
       let previousPlayer = (this.game.activePlayer-1>=0?this.game.activePlayer-1:this.game.players.length-1);
+      console.log(`[play-area] previousPlayer: ${previousPlayer}`); 
       this.zone.run(() => this.game.activePlayer=previousPlayer);
   }
   onUndo(moves:Move[]){
@@ -201,8 +203,16 @@ export class PlayAreaComponent implements OnInit, IMoveSubscriber {
           });
           
           //If it is from a center stack
+//          console.log(`${JSON.stringify(m)}`);
           if(m.from>GamePositionsEnum.BASE){
-             this.game.centreStacks[m.from-GamePositionsEnum.BASE].pop();
+             if(m.from==GamePositionsEnum.RECYCLE_PILE){
+                 this.game.recyclePile.pop();
+                 this.game.centreStacks[m.to-GamePositionsEnum.BASE].push(m.card);
+                 
+             }else{
+                 this.game.centreStacks[m.from-GamePositionsEnum.BASE].pop();
+             }
+             
           }
           
           //If it is from a Player stack
@@ -213,6 +223,8 @@ export class PlayAreaComponent implements OnInit, IMoveSubscriber {
           //If it it is going back to the deck
           if(m.to==GamePositionsEnum.DECK){
               this.dealer.returnCard(m.card);
+          }else if(m.to>PlayerPositionsEnum.STACK_4){
+              this.game.centreStacks[m.to-GamePositionsEnum.BASE].push(m.card);
           }else{
               player.addCard(m.card,m.to);    
           }          
@@ -243,9 +255,12 @@ export class PlayAreaComponent implements OnInit, IMoveSubscriber {
           if(this.game.players[this.game.activePlayer].cardsInHand()==0){
               this.zone.run(() => this.dealer.fillHand(this.game.players[this.game.activePlayer],this.game));
           }
-          if(m.to>=GamePositionsEnum.BASE+GamePositionsEnum.STACK_1 && this.toFaceNumber(m.card)==CardsEnum.KING){
+//          console.log(`m.to=${m.to} card=${this.toFaceNumber(this.viewTopOfStack(m.to-GamePositionsEnum.BASE))}`);
+          if(m.to>=GamePositionsEnum.BASE+GamePositionsEnum.STACK_1 && 
+                  (this.toFaceNumber(this.viewTopOfStack(m.to-GamePositionsEnum.BASE))==CardsEnum.KING)){
               let stack:number[]= this.game.centreStacks[m.to-GamePositionsEnum.BASE];
-              console.log(`Recycle centre stack: ${m.to} ${JSON.stringify(this.game.centreStacks[m.to-GamePositionsEnum.BASE])}`);
+//              console.log(`Recycle centre stack: ${m.to} ${JSON.stringify(this.game.centreStacks[m.to-GamePositionsEnum.BASE])}`);
+              this.moveSvc.addRecycle(stack,m.to);
               this.dealer.addToRecyclePile(stack,this.game);
               this.game.centreStacks[m.to-GamePositionsEnum.BASE]=[CardsEnum.NO_CARD]
           }

@@ -161,7 +161,7 @@ export class DealerService {
           }          
       }
       
-      console.log(`fillHand\nPlayer: ${player.name} Added ${c} cards ${JSON.stringify(deal)}`);
+//      console.log(`fillHand\nPlayer: ${player.name} Added ${c} cards ${JSON.stringify(deal)}`);
       return deal;
   }
 }

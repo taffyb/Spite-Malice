@@ -35,7 +35,7 @@ export class TestGames{
                                s.HEARTS+c.KING,
                                s.SPADES+c.QUEEN,
                                s.CLUBS+c.JACK,
-                               c.DECK+1];
+                               s.CLUBS+c.KING];
         player.cards[pp.HAND_1]=s.HEARTS+c.ACE;
         player.cards[pp.HAND_2]=s.HEARTS+c.THREE;
         player.cards[pp.HAND_3]=s.HEARTS+c.NINE;
@@ -44,7 +44,7 @@ export class TestGames{
         player.cards[pp.STACK_1]=[c.NO_CARD,s.CLUBS+c.FIVE,s.SPADES+c.SIX];
         player.cards[pp.STACK_2]=[c.NO_CARD,s.HEARTS+c.FOUR,s.SPADES+c.THREE,s.SPADES+c.TWO,s.DIAMONDS+c.ACE];
         player.cards[pp.STACK_3]=[c.NO_CARD,s.SPADES+c.NINE,c.JOKER];
-        player.cards[pp.STACK_4]=[c.JOKER];
+        player.cards[pp.STACK_4]=[c.NO_CARD,c.JOKER];
         player.isPrimary=true;
         game.players.push(player);
               

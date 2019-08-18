@@ -4,6 +4,7 @@
 	<p>
 	<h2>{{game.gameOver}}</h2>
 </div>
+{{fromPosition}},{{toPosition}}
 <div *ngIf="!game.gameOver">
 
 	<div class="player-hand" *ngFor="let p of game.players;let pIdx=index">

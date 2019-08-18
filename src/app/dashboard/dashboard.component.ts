@@ -30,7 +30,7 @@ export class DashboardComponent implements OnInit {
   ngOnInit() {
   }
   setGame(guid:string){
-      console.log(`GUID: ${guid}`);
+//      console.log(`GUID: ${guid}`);
       this.game = this.gameSvc.getGame(guid);
   }
   toFaceNumber(card:number):number{

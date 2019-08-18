@@ -19,6 +19,19 @@ export class MovesService {
 
   constructor() { }
   
+  addRecycle(stack:number[],pos:number){
+      let recycle:Turn = new Recycle();
+      let move:Move;
+      stack.forEach(c=>{
+          move=new Move();
+          move.from=pos;
+          move.card=c;
+          move.to=GamePositionsEnum.RECYCLE_PILE;
+          recycle.moves.push(move);
+      });
+      this.turns.push(recycle);
+      this.turns.push(new Turn());
+  }
   addTurn(turn:Turn){
       this.turns.push(turn);
   }
@@ -28,7 +41,7 @@ export class MovesService {
       }
       this.turns[this.turns.length-1].moves.push(move);
       if(move.isDiscard){
-          console.log(`Turn: ${JSON.stringify(this.turns[this.turns.length-1])}`);
+//          console.log(`Turn: ${JSON.stringify(this.turns[this.turns.length-1])}`);
           this.turns.push(new Turn());
       }
       this.publish(move);
@@ -72,28 +85,42 @@ export class MovesService {
       return move;
   }
   undo(){
-      console.log(`Turns: ${this.turns.length}\n${JSON.stringify(this.turns)}`);
+//      console.log(`Turns: ${this.turns.length}\n${JSON.stringify(this.turns)}`);
       let undoMoves:Move[]=[];
       if(this.turns.length>0){
           this.turns.forEach((t,i)=>{
              if(t instanceof Deal){
-                 console.log(`Undo [${i}] Deal ${t.moves.length} cards`);
+//                 console.log(`Undo [${i}] Deal ${t.moves.length} cards`);
              }else if(t instanceof Recycle){
-                 console.log(`Undo [${i}] Recycle`);                 
+//                 console.log(`Undo [${i}] Recycle`);                 
              }else{
-                 console.log(`Undo [${i}] Turn ${t.moves.length} cards`);                 
+//                 console.log(`Undo [${i}] Turn ${t.moves.length} cards`);                 
              }
           });
           let currentTurn:Turn=this.turns[this.turns.length-1];
+          while(currentTurn.moves.length==0){              
+              this.turns.pop();
+              currentTurn=this.turns[this.turns.length-1];
+          }
           if(currentTurn instanceof Deal){
               for(let i:number=currentTurn.moves.length-1;i>0;i--){
                   let m:Move=currentTurn.moves[i];
                   undoMoves.push(this.undoMove(m));
               }              
               this.turns.pop();
-              this.subscriber.onUndoActivePlayer();
+//              this.subscriber.onUndoActivePlayer();
               currentTurn=this.turns[this.turns.length-1];
           } 
+          if(currentTurn instanceof Recycle){
+              //remove the top of the stack because that will be undone when the top card is moved back to the player
+              currentTurn.moves.pop();
+              for(let i:number=0;i<currentTurn.moves.length;i++){
+                  let m:Move=currentTurn.moves[i];
+                  undoMoves.push(this.undoMove(m));
+              }              
+              this.turns.pop();
+              currentTurn=this.turns[this.turns.length-1];              
+          }
           if(currentTurn.moves.length==0){
               this.turns.pop();
               if(this.turns.length>0){
@@ -103,9 +130,13 @@ export class MovesService {
           if(currentTurn && currentTurn.moves.length>0){
               let move:Move=currentTurn.moves.pop();
               undoMoves.push(this.undoMove(move));
+              console.log(`[moves.service] move:${JSON.stringify(move)}`);
+              if(move.isDiscard){
+                  console.log(`[moves.service] call onUndoActivePlayer()`);
+                  this.subscriber.onUndoActivePlayer();
+              }
           }
-          this.subscriber.onUndo(undoMoves);          
-            
+          this.subscriber.onUndo(undoMoves);  
       }           
   }
 }
