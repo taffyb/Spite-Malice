@@ -16,7 +16,6 @@ export class Game {
   inPlay:boolean=false;
   recyclePile:number[]=[];
   gameOver:string="";
-  autoplay:boolean=false;
   includeJokers:number=4; //maximum 4 (per deck)
 
   constructor() {
@@ -25,20 +24,6 @@ export class Game {
   }
   nextTurn(){
       let gameClone:Game=this.clone();
-  }
-  toFaceNumber(card:number):number{
-      let c:number;
-      if(card>CardsEnum.DECK){
-          c=CardsEnum.JOKER;
-      }else if(card>CardsEnum.NO_CARD){
-          c=card%CardsEnum.KING;
-          if(c==0){
-              c=CardsEnum.KING;
-          }
-      }else{
-          c=CardsEnum.NO_CARD;
-      }
-      return c;
   }
   clone():Game{
       let clone=JSON.parse(JSON.stringify(this));

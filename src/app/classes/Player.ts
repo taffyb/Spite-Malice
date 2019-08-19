@@ -18,6 +18,7 @@ export class Player {
                [CardsEnum.NO_CARD]];/* STACK_4*/ 
 
   isPrimary:boolean=false;
+  isAutoplay:boolean=false;
 
   constructor(){
       this.guid=uuid();
@@ -91,6 +92,7 @@ export class Player {
 //              console.log(`stack=${JSON.stringify(this.cards[PlayerPositionsEnum.STACK_4])}`);
               break;
           default:
+              console.log(`ERROR addCard(${card},${position}) is NOT a valid Position`);
               throw new Error(`${position} is NOT a valid Position`);
       }
   }

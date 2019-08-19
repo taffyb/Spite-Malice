@@ -1,7 +1,9 @@
-import {Component, OnInit, NgZone  } from '@angular/core';
+import {Component, OnInit, NgZone } from '@angular/core';
 import {ActivatedRoute, Router } from '@angular/router';
 
 import {Player} from '../classes/Player';
+import {AutoPlayer} from '../classes/AutoPlayer';
+import {DeterministicPlayer} from '../classes/DeterministicPlayer';
 import {Move} from '../classes/Move';
 import {Turn} from '../classes/Turn';
 import {IMoveSubscriber} from '../classes/IMoveSubscriber';
@@ -14,6 +16,7 @@ import {PlayerPositionsEnum} from '../classes/Enums';
 import {GamePositionsEnum} from '../classes/Enums';
 import {CardsEnum} from '../classes/Enums';
 import {Game} from '../classes/Game';
+import {SMUtils} from '../classes/SMUtils';
 
 
 @Component({
@@ -25,52 +28,29 @@ export class PlayAreaComponent implements OnInit, IMoveSubscriber {
   PlayerPositions=PlayerPositionsEnum;
   GamePositions=GamePositionsEnum;
   Cards=CardsEnum;
-  dealer;
     
   playerStacks:number[][]=[[CardsEnum.NO_CARD],[CardsEnum.NO_CARD],[CardsEnum.NO_CARD],[CardsEnum.NO_CARD]];
   isPendingDiscard:boolean=false;
   game:Game;
-  fromPosition:number=-1 /*
-                          0 = Pile
-                          1 = Hand 1
-                          2 = Hand 2
-                          3 = Hand 3
-                          4 = Hand 4
-                          5 = Hand 5
-                          6 = Stack 1
-                          7 = Stack 2
-                          8 = Stack 3
-                          9 = Stack 4
-                       */
-   toPosition:number=-1 /*
-                          6 = Stack 1
-                          7 = Stack 2
-                          8 = Stack 3
-                          9 = Stack 4
-                          10 = Centre Stack 1
-                          11 = Centre Stack 2
-                          12 = Centre Stack 3
-                          13 = Centre Stack 4
-                        */
+  fromPosition:number=PlayerPositionsEnum.NO_POS;
+  toPosition:number=PlayerPositionsEnum.NO_POS;
 
 
   constructor(private router: Router,
               private route: ActivatedRoute, 
-              dealer:DealerService,
               private moveSvc:MovesService,
               private gameSvc:GameService,
+              public dealer:DealerService,
               public zone: NgZone) {
-       this.dealer=dealer;
        route.params.subscribe(val => {
-
            const gameId = route.snapshot.paramMap.get('gameId');
            if(!gameId || gameId=="new"){
                this.game=this.gameSvc.newGame();
                dealer.deal(this.game.players);
                // set active player
-               if(this.gameSvc.toFaceNumber(this.game.players[0].viewCard(PlayerPositionsEnum.PILE)) 
+               if(SMUtils.toFaceNumber(this.game.players[0].viewCard(PlayerPositionsEnum.PILE)) 
                   >  
-                  this.gameSvc.toFaceNumber(this.game.players[1].viewCard(PlayerPositionsEnum.PILE))){
+                   SMUtils.toFaceNumber(this.game.players[1].viewCard(PlayerPositionsEnum.PILE))){
                    
                    this.game.activePlayer=1;
                }
@@ -88,7 +68,6 @@ export class PlayAreaComponent implements OnInit, IMoveSubscriber {
   viewTopOfStack(stack:number):number{
       let centreStack:number[]= this.game.centreStacks[stack];
       let tos:number= centreStack[centreStack.length-1];
-  
       let j=0;
       while(tos>CardsEnum.DECK){
           j++;
@@ -98,13 +77,27 @@ export class PlayAreaComponent implements OnInit, IMoveSubscriber {
       return tos;
   }
   toFaceNumber(card:number):number{
-      return this.game.toFaceNumber(card);
+      return SMUtils.toFaceNumber(card);
+  }
+  private setActivePlayer(playerId){
+      this.game.activePlayer=playerId;  
+      let player:Player=this.game.players[playerId];
+      if(player instanceof AutoPlayer){
+          let move:Move = player.findNextMove(this.game);
+          this.onNewMoves([move]);
+          while(!move.isDiscard){
+              move = player.findNextMove(this.game);
+              this.onNewMoves([move]);
+          }
+      }
   }
   toggleActivePlayer(){
-      this.game.activePlayer++;
-      if(this.game.activePlayer>=this.game.players.length){
-          this.game.activePlayer=0;
+      let ap:number=this.game.activePlayer;
+      ap++;
+      if(ap>=this.game.players.length){
+          ap=0;
       }
+      this.setActivePlayer(ap);
   }
   toggleMoveFrom(player:number,position:number){
       if(player == this.game.activePlayer){
@@ -192,7 +185,7 @@ export class PlayAreaComponent implements OnInit, IMoveSubscriber {
       console.log(`[play-area] activePlayer: ${this.game.activePlayer}`); 
       let previousPlayer = (this.game.activePlayer-1>=0?this.game.activePlayer-1:this.game.players.length-1);
       console.log(`[play-area] previousPlayer: ${previousPlayer}`); 
-      this.zone.run(() => this.game.activePlayer=previousPlayer);
+      this.zone.run(() => this.setActivePlayer(previousPlayer));
   }
   onUndo(moves:Move[]){
       let player:Player;
@@ -248,7 +241,7 @@ export class PlayAreaComponent implements OnInit, IMoveSubscriber {
               let deal:Turn;
               deal=this.dealer.fillHand(this.game.players[nextPlayer],this.game);
               this.moveSvc.addTurn(deal);
-              this.zone.run(() => this.game.activePlayer=nextPlayer); 
+              this.zone.run(() => this.setActivePlayer(nextPlayer)); 
               this.game.nextTurn();
           }else{
     //          console.log(`Move: ${JSON.stringify(moves)}`);

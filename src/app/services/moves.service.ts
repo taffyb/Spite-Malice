@@ -3,11 +3,8 @@ import {Move} from '../classes/Move';
 import {Turn} from '../classes/Turn';
 import {Deal} from '../classes/Deal';
 import {Recycle} from '../classes/Recycle';
-import {Game} from '../classes/Game';
 import {IMoveSubscriber} from '../classes/IMoveSubscriber';
-import {PlayerPositionsEnum} from '../classes/Enums';
 import {GamePositionsEnum} from '../classes/Enums';
-import {MoveScoresEnum} from '../classes/StocasticEnum';
 
 @Injectable({
   providedIn: 'root'
@@ -54,29 +51,6 @@ export class MovesService {
       this.subscriber.onNewMoves([move]);
       
   }
-  findNextMove(game:Game):Move{
-      let m = new Move();
-      
-      //Check if can move off PILE
-      const topOfPile:number=game.players[game.activePlayer].viewCard(PlayerPositionsEnum.PILE);
-      let topOfStack:number;
-      for(let i:number=0;i<game.centreStacks.length;i++){
-          topOfStack=game.centreStacks[i][topOfStack=game.centreStacks[i].length-1];
-          if(topOfPile==topOfStack+1){
-              m.from=PlayerPositionsEnum.PILE;
-              m.card=topOfStack;
-              m.to=GamePositionsEnum.BASE+i;
-              break;
-          }
-      }
-            
-      return m;
-  }
-  isValidMove(m:Move,game:Game):number{
-      let score:MoveScoresEnum;
-      
-      return score;
-  }
   private undoMove(move:Move):Move{
       let from=move.to;
       move.to=move.from;
@@ -88,15 +62,6 @@ export class MovesService {
 //      console.log(`Turns: ${this.turns.length}\n${JSON.stringify(this.turns)}`);
       let undoMoves:Move[]=[];
       if(this.turns.length>0){
-          this.turns.forEach((t,i)=>{
-             if(t instanceof Deal){
-//                 console.log(`Undo [${i}] Deal ${t.moves.length} cards`);
-             }else if(t instanceof Recycle){
-//                 console.log(`Undo [${i}] Recycle`);                 
-             }else{
-//                 console.log(`Undo [${i}] Turn ${t.moves.length} cards`);                 
-             }
-          });
           let currentTurn:Turn=this.turns[this.turns.length-1];
           while(currentTurn.moves.length==0){              
               this.turns.pop();

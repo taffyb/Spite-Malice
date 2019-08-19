@@ -1,0 +1,10 @@
+Is Top of Pile a Joker
+	? decide what to use it as
+else
+	can Move Top of Pile
+		move it
+	else
+		can play from Hand or Stack
+			
+		else
+			discard

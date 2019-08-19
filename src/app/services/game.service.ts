@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { v4 as uuid } from 'uuid';
 
 import {Game} from '../classes/Game';
 import {Player} from '../classes/Player';
@@ -17,15 +16,17 @@ import {MovesService} from './moves.service';
 export class GameService {
 
   games:Game[]=[];
+  autoplay:boolean=false;
 
   constructor(private movesService:MovesService) {
       let testGames=new TestGames();
       this.games = testGames.getGames();
   }
   
-  newGame():Game{
-      let guid = uuid();
+//  newGame(player1Guid:string,player2Guid:string,name:string):Game{
+newGame():Game{
       let game = new Game();
+      game.name=name;
       
       let p:Player= new Player();
       p.name = "Player 1";
@@ -64,18 +65,7 @@ export class GameService {
       });
       return activeGames;
   }
-  toFaceNumber(card:number):number{
-      let c:number;
-      if(card>0){
-          c=card%13;
-          if(c==0){
-              c=13;
-          }
-      }else{
-          c=0;
-      }
-      return c;
-  }
+
   getGame(guid:string):Game{
       let game:Game;
       this.games.forEach(g=>{
