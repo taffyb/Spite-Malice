@@ -1,5 +1,6 @@
 import {MoveScoresEnum} from './DeterministicEnum';
 import {PlayerPositionsEnum} from './Enums';
+import {PlayerTypesEnum} from './Enums';
 import {GamePositionsEnum} from './Enums';
 import {CardsEnum} from './Enums';
 import {Player} from './Player';
@@ -13,13 +14,19 @@ export class DeterministicPlayer extends AutoPlayer{
     
     constructor(){
         super();
+        this.type=PlayerTypesEnum.DETERMINISTIC;
     }
     
-    static fromPlayer(player:Player){
-        let dp = new this();
+    static fromPlayer(player:Player):DeterministicPlayer{
+        let dp:DeterministicPlayer = new this();
         dp.guid=player.guid;
         dp.name=player.name;
-        dp.cards= JSON.parse(JSON.stringify(player.cards));
+        if(player.cards){
+            dp.cards= JSON.parse(JSON.stringify(player.cards));
+        }else{
+            dp.initialiseCards();
+        }          
+        
         dp.isPrimary=false;
         return dp;
     }

@@ -1,21 +1,14 @@
 
 import { v4 as uuid } from 'uuid';
 import {PlayerPositionsEnum} from './Enums';
+import {PlayerTypesEnum} from './Enums';
 import {CardsEnum} from './Enums';
 
 export class Player {
   guid: string;
+  type:number=PlayerTypesEnum.BASE;
   name: string;
-  cards:any[]=[[CardsEnum.NO_CARD], /* PILE*/
-               CardsEnum.NO_CARD,   /* HAND_1*/
-               CardsEnum.NO_CARD,   /* HAND_2*/
-               CardsEnum.NO_CARD,   /* HAND_3*/
-               CardsEnum.NO_CARD,   /* HAND_4*/
-               CardsEnum.NO_CARD,   /* HAND_5*/
-               [CardsEnum.NO_CARD], /* STACK_1*/
-               [CardsEnum.NO_CARD], /* STACK_2*/
-               [CardsEnum.NO_CARD], /* STACK_3*/
-               [CardsEnum.NO_CARD]];/* STACK_4*/ 
+  cards:any[];
 
   isPrimary:boolean=false;
   isAutoplay:boolean=false;
@@ -23,7 +16,33 @@ export class Player {
   constructor(){
       this.guid=uuid();
   }
-
+  initialiseCards(){
+      this.cards = [[CardsEnum.NO_CARD], /* PILE*/
+                    CardsEnum.NO_CARD,   /* HAND_1*/
+                    CardsEnum.NO_CARD,   /* HAND_2*/
+                    CardsEnum.NO_CARD,   /* HAND_3*/
+                    CardsEnum.NO_CARD,   /* HAND_4*/
+                    CardsEnum.NO_CARD,   /* HAND_5*/
+                    [CardsEnum.NO_CARD], /* STACK_1*/
+                    [CardsEnum.NO_CARD], /* STACK_2*/
+                    [CardsEnum.NO_CARD], /* STACK_3*/
+                    [CardsEnum.NO_CARD]];/* STACK_4*/ 
+  }
+  /* Intrinsically NOT type safe */
+  static fromJSON(JSONString:string):Player{
+      let newPlayer:Player= new this();
+      let p=JSON.parse(JSONString);
+      newPlayer.guid=p.guid;
+      newPlayer.type=p.type;
+      newPlayer.name=p.name;
+      newPlayer.cards=p.cards;
+      newPlayer.isPrimary=p.isPrimary;
+      newPlayer.isAutoplay=p.isAutoplay;
+      return newPlayer;
+  }
+  getType():number{
+      return this.type;
+  }
   pileSize():number{
       return this.cards[PlayerPositionsEnum.PILE].length;
   }

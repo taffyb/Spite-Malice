@@ -9,6 +9,7 @@ import {PlayerPositionsEnum} from '../classes/Enums';
 import {GamePositionsEnum} from '../classes/Enums';
 import {CardsEnum} from '../classes/Enums';
 import {MovesService} from './moves.service';
+import {PlayerService} from './player.service';
 
 @Injectable({
   providedIn: 'root'
@@ -16,32 +17,30 @@ import {MovesService} from './moves.service';
 export class GameService {
 
   games:Game[]=[];
-  autoplay:boolean=false;
+  player1Guid:string;
+  player2Guid:string;
+  name:string="New";
+  
 
-  constructor(private movesService:MovesService) {
+  constructor(private movesService:MovesService,private playerService:PlayerService) {
       let testGames=new TestGames();
       this.games = testGames.getGames();
   }
   
-//  newGame(player1Guid:string,player2Guid:string,name:string):Game{
-newGame():Game{
+  newGame():Game{
       let game = new Game();
-      game.name=name;
+      game.name=this.name;
       
-      let p:Player= new Player();
-      p.name = "Player 1";
+      let p:Player= this.playerService.clonePlayer(this.player1Guid);
       p.isPrimary=true;
+      p.initialiseCards();
       game.players.push(p);
       
-      p = new Player();
-      p.name = "Player 2";
+      p = this.playerService.clonePlayer(this.player2Guid);
+      p.initialiseCards();
       game.players.push(p);
-            
-//      console.log(`Player[0].topOfPile=${this.toFaceNumber(game.players[0].viewCard(PlayerPositionsEnum.PILE))}`);
-//      console.log(`Player[1].topOfPile=${this.toFaceNumber(game.players[1].viewCard(PlayerPositionsEnum.PILE))}`);
       
       game.inPlay=true;
-//      this.moveService.subscribeToChanges(this);
       this.games.push(game);
       
       return game;

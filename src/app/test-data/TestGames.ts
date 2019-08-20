@@ -29,6 +29,7 @@ export class TestGames{
         let game:Game=new Game();
         game.name="Test Recycle Centre Stack";
         let player:Player=new Player();
+        player.initialiseCards();
         
         player.name="Player 1";
         player.cards[pp.PILE]=[c.NO_CARD,
@@ -49,6 +50,7 @@ export class TestGames{
         game.players.push(player);
               
         player=new Player();
+        player.initialiseCards();
         player.name="Player 2";
         player.cards[pp.PILE]=[c.NO_CARD,
                                s.DIAMONDS+c.FOUR,
@@ -101,6 +103,7 @@ export class TestGames{
         let game:Game=new Game();
         game.name="Test Pending Discard";
         let player:Player=new Player();
+        player.initialiseCards();
         
         player.name="Player 1";
         player.cards[pp.PILE]=[c.NO_CARD,
@@ -121,6 +124,7 @@ export class TestGames{
         game.players.push(player);
               
         player=new Player();
+        player.initialiseCards();
         player.name="Player 2";
         player.cards[pp.PILE]=[c.NO_CARD,
                                s.DIAMONDS+c.FOUR,
@@ -173,6 +177,7 @@ export class TestGames{
         let game:Game=new Game();
         game.name="Winning Hand";
         let player:Player=new Player();
+        player.initialiseCards();
         
         player.name="Player 1";
         player.cards[pp.PILE]=[c.NO_CARD,
@@ -190,6 +195,7 @@ export class TestGames{
         game.players.push(player);
               
         player=new Player();
+        player.initialiseCards();
         player.name="Player 2";
         player.cards[pp.PILE]=[c.NO_CARD,
                                s.DIAMONDS+c.FOUR,

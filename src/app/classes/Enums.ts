@@ -1,3 +1,7 @@
+export enum PlayerTypesEnum{
+    BASE,
+    DETERMINISTIC
+}
 export enum PlayerPositionsEnum{
     NO_POS=-1,
     PILE=0,

@@ -1,6 +1,7 @@
 import { Component, OnInit} from '@angular/core';
 import {Game} from '../classes/Game';
 import {GameService} from '../services/game.service';
+import {PlayerService} from '../services/player.service';
 import {PlayerPositionsEnum} from '../classes/Enums';
 import {GamePositionsEnum} from '../classes/Enums';
 import {CardsEnum} from '../classes/Enums';
@@ -16,6 +17,8 @@ import {SMUtils} from '../classes/SMUtils';
 export class DashboardComponent implements OnInit {
   games:Game[]=[];
   game:Game;
+  playerService:PlayerService;
+  gameService:GameService;
 
   PlayerPositions=PlayerPositionsEnum;
   GamePositions=GamePositionsEnum;
@@ -23,9 +26,10 @@ export class DashboardComponent implements OnInit {
   Suits=SuitsEnum;
   playerStacks:number[][]=[[CardsEnum.NO_CARD],[CardsEnum.NO_CARD],[CardsEnum.NO_CARD],[CardsEnum.NO_CARD]];
 
-  constructor(private gameSvc:GameService) { 
+  constructor(private gameSvc:GameService,playerSvc:PlayerService) { 
       this.games = gameSvc.getGames();
-      
+      this.playerService=playerSvc;    
+      this.gameService=gameSvc;      
   }
 
   ngOnInit() {

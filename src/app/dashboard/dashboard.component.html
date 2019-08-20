@@ -1,5 +1,17 @@
 
 <div class="list">
+  <a  routerLink="/play-area/new">New</a><p>
+  Game Name <input name="gamename" type="text" [(ngModel)]="gameService.name"/><br>  
+  Player 1 <select name="player1" [(ngModel)]="gameService.player1Guid">
+    <option *ngFor="let player of playerService.getPlayers()" [value]="player.guid">
+      {{player.name}}
+    </option>
+  </select><br>
+  Player 2 <select name="player2" [(ngModel)]="gameService.player2Guid">
+    <option *ngFor="let player of playerService.getPlayers()" [value]="player.guid">
+      {{player.name}}
+    </option>
+  </select><p>
   Saved Games
   <ul>
   	<li class="list-item" *ngFor="let g of games" >
@@ -13,6 +25,7 @@
   		</span>
   	</li>
   </ul>
+  
 </div>
 <div id="detail" *ngIf="game">
 
