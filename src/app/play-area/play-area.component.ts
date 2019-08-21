@@ -60,6 +60,7 @@ export class PlayAreaComponent implements OnInit, IMoveSubscriber {
                router.navigateByUrl(`/play-area/${this.game.guid}`);
            }else{
                this.game=this.gameSvc.getGame(gameId);
+               dealer.fillDeck();
                dealer.setGameDeck(this.game);
            }     
            this.moveSvc.subscribeToChanges(this);
