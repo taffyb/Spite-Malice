@@ -42,6 +42,16 @@ td.left {
 	color:black;
 	font-weight: normal;
 }
+.semiAuto{
+	color:black;
+	background-color:rgb(237,126,27);
+	font-weight: normal;
+}
+.fullAuto{
+	color:black;
+	background-color:rgb(60,235,29);
+	font-weight: normal;
+}
 div.player-hand{
 	display: inline-block;
 	vertical-align:top;

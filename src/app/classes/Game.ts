@@ -29,4 +29,16 @@ export class Game {
       let clone=JSON.parse(JSON.stringify(this));
       return clone;
   }
+
+  viewTopOfStack(stack:number):number{
+      let centreStack:number[]= this.centreStacks[stack];
+      let tos:number= centreStack[centreStack.length-1];
+      let j=0;
+      while(tos>CardsEnum.DECK){
+          j++;
+          //its a joker
+          tos=centreStack[centreStack.length-(1+j)]+j;
+      }      
+      return tos;
+  }
 }

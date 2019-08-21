@@ -118,7 +118,7 @@ export class TestGames{
         player.cards[pp.HAND_5]=s.SPADES+c.FIVE;
         player.cards[pp.STACK_1]=[c.NO_CARD,s.CLUBS+c.FIVE];
         player.cards[pp.STACK_2]=[c.NO_CARD,s.HEARTS+c.FOUR];
-        player.cards[pp.STACK_3]=[c.NO_CARD,s.SPADES+c.NINE];
+        player.cards[pp.STACK_3]=[c.NO_CARD,s.SPADES+c.NINE,s.CLUBS+c.SEVEN];
         player.cards[pp.STACK_4]=[c.NO_CARD];
         player.isPrimary=true;
         game.players.push(player);

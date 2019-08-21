@@ -3,6 +3,7 @@ import {ActivatedRoute, Router } from '@angular/router';
 
 import {Player} from '../classes/Player';
 import {AutoPlayer} from '../classes/AutoPlayer';
+import {IAutoplay} from '../classes/IAutoplay';
 import {DeterministicPlayer} from '../classes/DeterministicPlayer';
 import {Move} from '../classes/Move';
 import {Turn} from '../classes/Turn';
@@ -28,6 +29,7 @@ export class PlayAreaComponent implements OnInit, IMoveSubscriber {
   PlayerPositions=PlayerPositionsEnum;
   GamePositions=GamePositionsEnum;
   Cards=CardsEnum;
+  isFullAuto:boolean=false;
     
   playerStacks:number[][]=[[CardsEnum.NO_CARD],[CardsEnum.NO_CARD],[CardsEnum.NO_CARD],[CardsEnum.NO_CARD]];
   isPendingDiscard:boolean=false;
@@ -46,6 +48,7 @@ export class PlayAreaComponent implements OnInit, IMoveSubscriber {
            const gameId = route.snapshot.paramMap.get('gameId');
            if(!gameId || gameId=="new"){
                this.game=this.gameSvc.newGame();
+               dealer.fillDeck();
                dealer.deal(this.game.players);
                // set active player
                if(SMUtils.toFaceNumber(this.game.players[0].viewCard(PlayerPositionsEnum.PILE)) 
@@ -62,19 +65,19 @@ export class PlayAreaComponent implements OnInit, IMoveSubscriber {
            this.moveSvc.subscribeToChanges(this);
        });
   }
+  isPlayerAutoplay(pIdx):boolean{
+      let player:Player=this.game.players[pIdx];
+      let retVal:boolean=false;
   
+      if(player instanceof AutoPlayer){
+          retVal=true;
+      }
+      return retVal;
+  }
   ngOnInit() {
   }
-  viewTopOfStack(stack:number):number{
-      let centreStack:number[]= this.game.centreStacks[stack];
-      let tos:number= centreStack[centreStack.length-1];
-      let j=0;
-      while(tos>CardsEnum.DECK){
-          j++;
-          //its a joker
-          tos=centreStack[centreStack.length-(1+j)]+j;
-      }      
-      return tos;
+  viewTopOfStack(stack:number):number{          
+      return this.game.viewTopOfStack(stack);
   }
   toFaceNumber(card:number):number{
       return SMUtils.toFaceNumber(card);
@@ -82,7 +85,7 @@ export class PlayAreaComponent implements OnInit, IMoveSubscriber {
   private setActivePlayer(playerId){
       this.game.activePlayer=playerId;  
       let player:Player=this.game.players[playerId];
-      if(player instanceof AutoPlayer){
+      if((player instanceof AutoPlayer) && this.isFullAuto){
           let move:Move = player.findNextMove(this.game);
           this.onNewMoves([move]);
           while(!move.isDiscard){
@@ -90,6 +93,13 @@ export class PlayAreaComponent implements OnInit, IMoveSubscriber {
               this.onNewMoves([move]);
           }
       }
+  }
+  nextMove(){
+      let player:Player=this.game.players[this.game.activePlayer];
+      if((player instanceof AutoPlayer)){
+          let move:Move = player.findNextMove(this.game);
+          this.onNewMoves([move]);
+      }   
   }
   toggleActivePlayer(){
       let ap:number=this.game.activePlayer;

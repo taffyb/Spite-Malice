@@ -18,18 +18,29 @@
 		<!--  Main player row -->
 		<tr >
 			<td >
-				<span *ngIf="!p.isEditable" 
-					  [ngClass]="{'active':game.activePlayer==pIdx,
-								  'inactive':game.activePlayer!=pIdx}" 	
-					  (click)="p.isEditable=true"				  
-				>
-					<span *ngIf="p.isPrimary" >*</span >{{p.name}}
+				
+				<span *ngIf="!isPlayerAutoplay(pIdx)">
+					<span *ngIf="game.activePlayer==pIdx"  class="active">
+						<span *ngIf="p.isPrimary" >*</span >{{p.name}}
+					</span>	
+					<span *ngIf="game.activePlayer!=pIdx"  class="inactive">
+						<span *ngIf="p.isPrimary" >*</span >{{p.name}}
+					</span>	
 				</span>
-				<input name="{{p.guid}}" *ngIf="p.isEditable" 
-				(focusout)="p.isEditable=false" 
-				[(ngModel)]="p.name" />				
-			</td>
-			
+				<span *ngIf="isPlayerAutoplay(pIdx)">
+					<span *ngIf="game.activePlayer==pIdx"  
+						[ngClass]="{'semiAuto':!isFullAuto,
+									'fullAuto':isFullAuto
+								   }"
+					    (click)="nextMove()" (dblClick)="isFullAuto=true">
+						<span *ngIf="p.isPrimary" >*</span >{{p.name}}
+					</span>
+					<span *ngIf="game.activePlayer!=pIdx">
+						<span *ngIf="p.isPrimary" >*</span >{{p.name}}
+					</span>
+				</span>	
+			</td>							  
+								  
 			<td *ngFor="let c of p.cards;let pos=index" 
 				[ngClass]="{'from':(fromPosition==pos && game.activePlayer==pIdx) &&
 								   ((pos>=PlayerPositions.PILE && PlayerPositions.HAND_5>=pos) || 
@@ -177,7 +188,8 @@
 								   p.cards[fromPosition].length-3==stackRow,
 							'to':toPosition==PlayerPositions.STACK_1+stackCol &&
 							       fromPosition>=0 && game.activePlayer==pIdx &&
-								   p.cards[toPosition].length-3==stackRow,
+								   p.cards[toPosition].length-3==stackRow && 
+								   !isPendingDiscard,
 							 'left':stackCol==0}">
 			    <span *ngIf="pIdx==game.activePlayer"> <!-- This is the active Player -->
 			    	<!-- this stack has a card in this row -->		    	
@@ -223,15 +235,29 @@
 								A card is selected 
 								It is NOT this one.
 								The selected Card is from the players Hand
+								There is no pending discard
 							 -->						 
 							<span *ngIf="fromPosition>-1 &&
 										 !(fromPosition==PlayerPositions.STACK_1+stackCol) &&
-										 (fromPosition>=PlayerPositions.HAND_1 && PlayerPositions.HAND_5>=fromPosition)">			 
+										 (fromPosition>=PlayerPositions.HAND_1 && PlayerPositions.HAND_5>=fromPosition) &&
+										 !isPendingDiscard">			 
 				    			<span (mouseover)="toggleTarget(PlayerPositions.STACK_1+stackCol)" 
 								      (mouseout)="toggleTarget(-1)" 
 							          (click)="moveTo(PlayerPositions.STACK_1+stackCol)">
 						       			<card cardNo="{{p.cards[PlayerPositions.STACK_1+stackCol][2+stackRow]}}"></card>
 						       	</span>
+							</span>		
+							<!-- 
+								A card is selected 
+								It is NOT this one.
+								The selected Card is from the players Hand
+								There is a pending discard
+							 -->						 
+							<span *ngIf="fromPosition>-1 &&
+										 !(fromPosition==PlayerPositions.STACK_1+stackCol) &&
+										 (fromPosition>=PlayerPositions.HAND_1 && PlayerPositions.HAND_5>=fromPosition) &&
+										 isPendingDiscard">			 
+				    			<card cardNo="{{p.cards[PlayerPositions.STACK_1+stackCol][2+stackRow]}}"></card>
 							</span>	
 						</span> <!-- END this is the last card in the stack -->
 						<!-- ELSE not the last card -->

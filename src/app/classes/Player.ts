@@ -11,7 +11,6 @@ export class Player {
   cards:any[];
 
   isPrimary:boolean=false;
-  isAutoplay:boolean=false;
 
   constructor(){
       this.guid=uuid();
@@ -37,7 +36,6 @@ export class Player {
       newPlayer.name=p.name;
       newPlayer.cards=p.cards;
       newPlayer.isPrimary=p.isPrimary;
-      newPlayer.isAutoplay=p.isAutoplay;
       return newPlayer;
   }
   getType():number{
