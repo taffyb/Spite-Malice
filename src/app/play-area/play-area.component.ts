@@ -29,7 +29,7 @@ export class PlayAreaComponent implements OnInit, IMoveSubscriber {
   PlayerPositions=PlayerPositionsEnum;
   GamePositions=GamePositionsEnum;
   Cards=CardsEnum;
-  isFullAuto:boolean=false;
+  isFullAuto:boolean=true;
     
   playerStacks:number[][]=[[CardsEnum.NO_CARD],[CardsEnum.NO_CARD],[CardsEnum.NO_CARD],[CardsEnum.NO_CARD]];
   isPendingDiscard:boolean=false;
@@ -91,7 +91,8 @@ export class PlayAreaComponent implements OnInit, IMoveSubscriber {
           this.onNewMoves([move]);
           while(!move.isDiscard){
               move = player.findNextMove(this.game);
-              this.onNewMoves([move]);
+              this.zone.run(() => 
+              this.onNewMoves([move]));
           }
       }
   }
@@ -111,6 +112,7 @@ export class PlayAreaComponent implements OnInit, IMoveSubscriber {
       this.setActivePlayer(ap);
   }
   toggleMoveFrom(player:number,position:number){
+
       if(player == this.game.activePlayer){
           if(position==this.fromPosition){
               this.zone.run(() => this.fromPosition =-1);
@@ -281,5 +283,9 @@ export class PlayAreaComponent implements OnInit, IMoveSubscriber {
   }
   undo(){
       this.moveSvc.undo();
+  }
+  toggleFullAuto(){
+      this.isFullAuto!=this.isFullAuto;
+      console.log(`isFullAuto ${!this.isFullAuto}=>${this.isFullAuto}`);
   }
 }

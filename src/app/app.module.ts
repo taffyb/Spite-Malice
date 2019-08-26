@@ -8,13 +8,15 @@ import { PlayAreaComponent } from './play-area/play-area.component';
 import { CardComponent } from './card/card.component';
 import { AppRoutingModule } from './app-routing.module';
 import { DashboardComponent } from './dashboard/dashboard.component';
+import { ToggleComponent } from './toggle/toggle.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     PlayAreaComponent,
     CardComponent,
-    DashboardComponent
+    DashboardComponent,
+    ToggleComponent
   ],
   imports: [
     BrowserModule,

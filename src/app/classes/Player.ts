@@ -113,6 +113,14 @@ export class Player {
               throw new Error(`${position} is NOT a valid Position`);
       }
   }
+  viewTopCard(position:number):number{
+      let card:number=-1;
+  
+      if(position>=PlayerPositionsEnum.STACK_1 && position <=PlayerPositionsEnum.STACK_4){
+          card = this.cards[position][this.cards[position].length-1];
+      }
+      return card;
+  }
   viewCard(position:number,depth:number=1):number{
       let card:number=-1;
 

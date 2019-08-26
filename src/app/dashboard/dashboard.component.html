@@ -1,6 +1,8 @@
 
+<p>
 <div class="list">
-  <a  routerLink="/play-area/new">New</a><p>
+  <span *ngIf="!gameService.player1Guid || !gameService.player2Guid">New</span>
+  <a *ngIf="gameService.player1Guid && gameService.player2Guid" routerLink="/play-area/new">New</a><p>
   Game Name <input name="gamename" type="text" [(ngModel)]="gameService.name"/><br>  
   Player 1 <select name="player1" [(ngModel)]="gameService.player1Guid">
     <option *ngFor="let player of playerService.getPlayers()" [value]="player.guid">

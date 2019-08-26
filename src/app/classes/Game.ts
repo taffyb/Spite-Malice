@@ -29,7 +29,20 @@ export class Game {
       let clone=JSON.parse(JSON.stringify(this));
       return clone;
   }
-
+  static fromJSON(json:string):Game{
+      let game = new Game();
+      let jsonGame=JSON.parse(json);
+      
+      game.guid = jsonGame.guid;
+      game.name = jsonGame.name;
+      jsonGame.players.forEach(p=>{game.players.push(Player.fromJSON(JSON.stringify(p)));});
+      game.centreStacks= jsonGame.centreStacks;
+      game.activePlayer=jsonGame.activePlayer;
+      game.inPlay=jsonGame.inPlay;
+      game.recyclePile=jsonGame.recyclePile;
+      game.includeJokers=jsonGame.includeJokers;
+      return game;
+  }
   viewTopOfStack(stack:number):number{
       let centreStack:number[]= this.centreStacks[stack];
       let tos:number= centreStack[centreStack.length-1];

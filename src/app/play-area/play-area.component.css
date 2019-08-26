@@ -32,7 +32,10 @@ td.to {
   background-color: yellow;
 }
 td.left {
-  padding-left: 8px;
+  border-left: 8px #cccccc solid;
+}
+th.left {
+  border-left: 8px #cccccc solid;
 }
 .active{
 	color:red;

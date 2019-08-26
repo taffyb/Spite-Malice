@@ -5,15 +5,16 @@
 	<h2>{{game.gameOver}}</h2>
 </div>
 <div *ngIf="!game.gameOver">
+   Is Full Auto: <tb-toggle [(state)]="isFullAuto" ></tb-toggle><p>
    <div class="player-hand" *ngFor="let p of game.players;let pIdx=index">
 	
 	 <table class="player-hand">
 		<!-- Header Row -->
 		<tr >
 			<th>Player</th>
-			<th>Pile</th>
-			<th colspan=5>Hand</th>
-			<th colspan=4>Stack</th>
+			<th class="left" >Pile</th>
+			<th class="left" colspan=5>Hand</th>
+			<th class="left" colspan=4>Stack</th>
 		</tr>
 		<!--  Main player row -->
 		<tr >
@@ -32,7 +33,7 @@
 						[ngClass]="{'semiAuto':!isFullAuto,
 									'fullAuto':isFullAuto
 								   }"
-					    (click)="nextMove()" (dblClick)="isFullAuto=true">
+					    (click)="nextMove()" >
 						<span *ngIf="p.isPrimary" >*</span >{{p.name}}
 					</span>
 					<span *ngIf="game.activePlayer!=pIdx">
@@ -49,7 +50,7 @@
 							     fromPosition>=0 && 
 							     game.activePlayer==pIdx &&
 							     (pos >=PlayerPositions.STACK_1 && PlayerPositions.STACK_4>=pos && c.length<=2),
-							 'left':pos==PlayerPositions.HAND_1 || pos==PlayerPositions.STACK_1}" >
+							 'left':pos==PlayerPositions.PILE || pos==PlayerPositions.HAND_1 || pos==PlayerPositions.STACK_1}" >
 				<!-- 
 					If it is the Primary Player or the Active Player
 					then show all cards
@@ -61,30 +62,30 @@
 						<span *ngIf="fromPosition==PlayerPositions.NO_POS" 
 							(click)="toggleMoveFrom(pIdx,pos)">
 			    			<span *ngIf="pos==PlayerPositions.PILE" class="tooltip">
-			    			    <card cardNo="{{p.viewCard(pos)}}"></card>
+			    			    <card pos="{{pos}}" cardNo="{{p.viewCard(pos)}}"></card>
 			    				<span class="tooltiptext">{{p.cards[PlayerPositions.PILE].length-1}}</span>
 			    			</span>
 			    			<span *ngIf="pos>PlayerPositions.PILE && PlayerPositions.STACK_1>pos">
-			    				<card cardNo="{{p.viewCard(pos)}}"></card>
+			    				<card pos="{{pos}}" cardNo="{{p.viewCard(pos)}}"></card>
 			    			</span>
 							<!-- This is from the Player Stack 
 								 This is the last card-->
 							<span *ngIf="(pos>=PlayerPositions.STACK_1 && PlayerPositions.STACK_4>=pos) &&
 										 p.cards[pos].length==2" 
 								(click)="toggleMoveFrom(pIdx,pos)">
-				    			<card cardNo="{{p.viewCard(pos)}}"></card>
+				    			<card pos="{{pos}}" cardNo="{{p.viewCard(pos)}}"></card>
 							</span>
 							<!-- This is from the Player Stack 
 								 The stack is empty-->
 							<span *ngIf="(pos>=PlayerPositions.STACK_1 && PlayerPositions.STACK_4>=pos) &&
 										 2>p.cards[pos].length">
-				    			<card cardNo="{{p.viewCard(pos)}}"></card>
+				    			<card pos="{{pos}}" cardNo="{{p.viewCard(pos)}}"></card>
 							</span>
 							<!-- This is from the Player Stack 
 								 This is the not last card-->
 							<span *ngIf="(pos>=PlayerPositions.STACK_1 && pos<=PlayerPositions.STACK_4) &&
 										 p.cards[pos].length>2">
-				    			<card cardNo="{{p.viewCard(pos)}}"></card>
+				    			<card pos="{{pos}}" cardNo="{{p.viewCard(pos)}}"></card>
 							</span>
 						</span> <!-- No card Selected -->
 						
@@ -92,13 +93,13 @@
 						<span *ngIf="fromPosition>PlayerPositions.NO_POS">
 							<!-- This is the selected card -->
 							<span *ngIf="pos==fromPosition"  (click)="toggleMoveFrom(pIdx,pos)">
-			    				<card cardNo="{{p.viewCard(pos)}}"></card>
+			    				<card pos="{{pos}}" cardNo="{{p.viewCard(pos)}}"></card>
 			    			</span>
 			    			<!-- this is not the selected card -->
 			    			<span *ngIf="pos!=fromPosition">
 			    				<!-- If the selected card is from the Pile -->
 			    				<span *ngIf="fromPosition==PlayerPositions.PILE ">			    				
-					    			<card cardNo="{{p.viewCard(pos)}}"></card>
+					    			<card pos="{{pos}}" cardNo="{{p.viewCard(pos)}}"></card>
 								</span>
 								<!-- the selected card is from the hand -->
 								<span *ngIf="(fromPosition>=PlayerPositions.HAND_1 && fromPosition<=PlayerPositions.HAND_5)">
@@ -109,7 +110,7 @@
 							    			<span (mouseover)="toggleTarget(pos)" 
 												  (mouseout)="toggleTarget(-1)" 
 									              (click)="moveTo(pos)">
-									              <card cardNo="{{p.viewCard(pos)}}"></card>
+									              <card pos="{{pos}}" cardNo="{{p.viewCard(pos)}}"></card>
 									        </span>
 										</span>
 										<!-- 
@@ -117,18 +118,18 @@
 											or this is the PILE
 										-->
 										<span *ngIf="p.cards[pos].length>2">
-							    			<card cardNo="{{p.viewCard(pos)}}"></card>
+							    			<card pos="{{pos}}" cardNo="{{p.viewCard(pos)}}"></card>
 										</span>										
 									</span>
 									<!-- the position is from the hand -->
 									<span *ngIf="(pos>=PlayerPositions.HAND_1 && pos<=PlayerPositions.HAND_5) ||
 												 pos==PlayerPositions.PILE">
-										<card cardNo="{{p.viewCard(pos)}}"></card>
+										<card pos="{{pos}}" cardNo="{{p.viewCard(pos)}}"></card>
 									</span>
 								</span>
 								<!-- the selected card is from the stack -->								
 								<span *ngIf="(fromPosition>=PlayerPositions.STACK_1 && PlayerPositions.STACK_4>=fromPosition)">
-										<card cardNo="{{p.viewCard(pos)}}"></card>
+										<card pos="{{pos}}" cardNo="{{p.viewCard(pos)}}"></card>
 								</span>
 			    			</span>
 						</span>
@@ -138,7 +139,7 @@
 					<span *ngIf="p.viewCard(pos)==Cards.NO_CARD">
 						<!-- If it is not from the Stack just show a blank card-->
 						<span *ngIf="!(pos>=PlayerPositions.STACK_1 && pos<=PlayerPositions.STACK_4)">
-							<card cardNo="{{Cards.NO_CARD}}"></card>
+							<card pos="{{pos}}" cardNo="{{Cards.NO_CARD}}"></card>
 						</span>			
 						<!-- If this position it is from the Stack-->			
 						<span *ngIf="(pos>=PlayerPositions.STACK_1 && pos<=PlayerPositions.STACK_4)">
@@ -146,19 +147,19 @@
 							<span *ngIf="fromPosition>PlayerPositions.NO_POS">
 								<!-- if the selected card is from the stack -->
 								<span *ngIf="(fromPosition>=PlayerPositions.STACK_1 && fromPosition<=PlayerPositions.STACK_4)">
-									<card cardNo="{{Cards.NO_CARD}}"></card>
+									<card pos="{{pos}}" cardNo="{{Cards.NO_CARD}}"></card>
 								</span>
 								<!-- if the selected card is from the HAND -->
 								<span *ngIf="fromPosition>=PlayerPositions.HAND_1 && PlayerPositions.HAND_5>=fromPosition">				            
 					    			<span (mouseover)="toggleTarget(pos)" 
 									      (mouseout)="toggleTarget(-1)" 
 								          (click)="moveTo(pos)">
-							       		<card cardNo="{{Cards.NO_CARD}}"></card>
+							       		<card pos="{{pos}}" cardNo="{{Cards.NO_CARD}}"></card>
 							        </span>
 								</span>
 							</span>
 							<span *ngIf="fromPosition==PlayerPositions.NO_POS">
-								<card cardNo="{{Cards.NO_CARD}}"></card>
+								<card pos="{{pos}}" cardNo="{{Cards.NO_CARD}}"></card>
 							</span>
 						</span>
 					</span> <!-- END No Card Showing -->
@@ -166,14 +167,14 @@
 			    <span *ngIf="!(pIdx==game.activePlayer) && !p.isPrimary">
 			    	<span *ngIf="(pos>=PlayerPositions.HAND_1 && pos<=PlayerPositions.HAND_5)">
 				    	<span *ngIf="!(p.viewCard(pos)==Cards.NO_CARD)">
-							<card cardNo="back"></card>
+							<card pos="{{pos}}" cardNo="back"></card>
 						</span>
 					    <span *ngIf="(p.viewCard(pos)==Cards.NO_CARD)">
-							<card cardNo="{{Cards.NO_CARD}}"></card>
+							<card pos="{{pos}}" cardNo="{{Cards.NO_CARD}}"></card>
 					    </span>
 				    </span>
 				    <span *ngIf="(pos<PlayerPositions.HAND_1 || pos>PlayerPositions.HAND_5)">
-				    	<card cardNo="{{p.viewCard(pos)}}"></card>
+				    	<card pos="{{pos}}" cardNo="{{p.viewCard(pos)}}"></card>
 				   	</span>
 				</span>
 			    
@@ -210,14 +211,6 @@
 								(click)="toggleMoveFrom(pIdx,PlayerPositions.STACK_1+stackCol)">
 				    			<card cardNo="{{p.cards[PlayerPositions.STACK_1+stackCol][2+stackRow]}}"></card>
 							</span>
-							<!-- 
-								 A card is selected
-								 This is NOT the Selected stack
-							<span *ngIf="fromPosition>-1 && 
-										 fromPosition!=PlayerPositions.STACK_1+stackCol">
-				    			<card cardNo="{{p.cards[PlayerPositions.STACK_1+stackCol][2+stackRow]}}"></card>
-							</span>
-							-->
 							<!-- 
 								A card is selected 
 								It is NOT this one.

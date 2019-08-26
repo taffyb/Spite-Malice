@@ -1,0 +1,7 @@
+<div class="toggle">
+	<div *ngIf="!state" class="label-left"><span (click)="toggleMe()">OFF</span></div>
+	<div *ngIf="state" class="label-left off"><span  >OFF</span></div>
+	
+	<div *ngIf="state" class="label-right"><span (click)="toggleMe()" >ON</span></div>
+	<div *ngIf="!state" class="label-right off"><span  >ON</span></div>
+</div>

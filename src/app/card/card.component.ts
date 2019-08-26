@@ -1,13 +1,16 @@
 import { Component, OnInit,Input } from '@angular/core';
+import { useAnimation, transition, trigger, style, animate } from '@angular/animations';
+import { CardAnimation } from '../classes/CardAnimation';
+
+
 
 @Component({
     selector: 'card',
-    template: `<div><img  src="/assets/cards/{{filename()}}"/></div>`,
+    template: `<div id="c{{pos}}"><img  src="/assets/cards/{{filename()}}"/></div>`,
     styles: [`
         :host {
           float: left;
           padding: 0px;
-          /*border: 1px solid black;*/
           border-radius: 8px;
         }
         img{
@@ -15,10 +18,12 @@ import { Component, OnInit,Input } from '@angular/core';
           height:70px;
           opacity:0.75;
         }
-    `]
+    `],
+  animations: [CardAnimation]
   })
   export class CardComponent {
     @Input()cardNo:string;
+    @Input()pos:string;
     
     filename():string{
         let filename:string;

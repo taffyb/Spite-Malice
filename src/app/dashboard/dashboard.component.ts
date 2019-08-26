@@ -19,6 +19,7 @@ export class DashboardComponent implements OnInit {
   game:Game;
   playerService:PlayerService;
   gameService:GameService;
+  
 
   PlayerPositions=PlayerPositionsEnum;
   GamePositions=GamePositionsEnum;

@@ -19,7 +19,11 @@ export class PlayerService {
       this.players.push(p);
       
       p=new DeterministicPlayer();
-      p.name="The Machine";   
+      p.name="Dannie D.";   
+      this.players.push(p); 
+      
+      p=new DeterministicPlayer();
+      p.name="Doug D.";   
       this.players.push(p);   
   }
   findPlayer(guid:string):Player{
