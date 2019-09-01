@@ -55,7 +55,8 @@
 					If it is the Primary Player or the Active Player
 					then show all cards
 				 -->				
-			    <span *ngIf="p.isPrimary || (pIdx==game.activePlayer)">
+			    <!-- <span *ngIf="p.isPrimary || (pIdx==game.activePlayer)"> -->		
+			    <span *ngIf="(pIdx==game.activePlayer)">
 			    	<!-- If there is a card showing -->			    
 					<span *ngIf="p.viewCard(pos)>Cards.NO_CARD">
 						<!-- No card has been selected-->
@@ -164,7 +165,8 @@
 						</span>
 					</span> <!-- END No Card Showing -->
 				</span> <!-- END Primary / Active -->
-			    <span *ngIf="!(pIdx==game.activePlayer) && !p.isPrimary">
+			   <!-- <span *ngIf="!(pIdx==game.activePlayer) && !p.isPrimary"> --> 
+			    <span *ngIf="!(pIdx==game.activePlayer)">
 			    	<span *ngIf="(pos>=PlayerPositions.HAND_1 && pos<=PlayerPositions.HAND_5)">
 				    	<span *ngIf="!(p.viewCard(pos)==Cards.NO_CARD)">
 							<card pos="{{pos}}" cardNo="back"></card>
@@ -173,7 +175,11 @@
 							<card pos="{{pos}}" cardNo="{{Cards.NO_CARD}}"></card>
 					    </span>
 				    </span>
-				    <span *ngIf="(pos<PlayerPositions.HAND_1 || pos>PlayerPositions.HAND_5)">
+				    <span *ngIf="(pos==PlayerPositions.PILE)" class="tooltip">
+			    			    <card pos="{{pos}}" cardNo="{{p.viewCard(pos)}}"></card>
+			    				<span class="tooltiptext">{{p.cards[PlayerPositions.PILE].length-1}}</span>
+			    			</span>
+				    <span *ngIf="(pos>=PlayerPositions.STACK_1 && PlayerPositions.STACK_4>=pos)">
 				    	<card pos="{{pos}}" cardNo="{{p.viewCard(pos)}}"></card>
 				   	</span>
 				</span>
@@ -275,10 +281,15 @@
 	<p>
 	<p>
   <div id="game-row">
-  
-		<card cardNo="back"></card>
+  		<span class="tooltip">
+			<card cardNo="back"></card>			
+   			<span class="tooltiptext">{{dealer.deckCount()}}</span>
+		</span>
 		<div class="space"></div>
-		<card *ngIf="game.recyclePile.length>0" cardNo="back"></card>
+		<span *ngIf="game.recyclePile.length>0" class="tooltip">
+			<card cardNo="back"></card>			
+   			<span class="tooltiptext">{{game.recyclePile.length}}</span>
+		</span>
 		<card *ngIf="game.recyclePile.length==0" cardNo="{{Cards.NO_CARD}}"></card><p>
 		<div class="space"></div>	
 		<table id="centre-stacks">

@@ -12,20 +12,23 @@ import {CardsEnum} from '../classes/Enums';
   providedIn: 'root'
 })
 export class DealerService {
-  deck:number[]=[];
+  private deck:number[]=[];
 //  recyclePile:number[]=[]; 
   decks:number=2; //default play with two decks
 
   constructor() {
       this.fillDeck();
   }
-  public fillDeck(){
+  fillDeck(){
       this.deck=[];
       for(let d:number=0;d<this.decks;d++){      
           for(let i:number=1;i<=52;i++){
               this.deck.push(i);
           }
       }      
+  }
+  deckCount():number{
+      return this.deck.length;
   }
   setGameDeck(game:Game){
       this.fillDeck();

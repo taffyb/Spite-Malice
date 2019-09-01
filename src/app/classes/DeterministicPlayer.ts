@@ -88,19 +88,39 @@ export class DeterministicPlayer extends AutoPlayer{
         for(let j=PlayerPositionsEnum.HAND_1;j<=PlayerPositionsEnum.HAND_5;j++){        
             for(let i=PlayerPositionsEnum.STACK_1;i<=PlayerPositionsEnum.STACK_4;i++){
                 if((this.viewCard(j)!=CardsEnum.NO_CARD) && (SMUtils.toFaceNumber(this.viewCard(j))==SMUtils.toFaceNumber(this.viewTopCard(i))-1)){
-                    m=new Move();
-                    m.from=j;
-                    m.card=this.viewCard(j);
-                    m.to=i;
-                    m.score=MoveScoresEnum.DISCARD_IN_SEQUENCE;
-                    m.isDiscard=true;
-                    moves.push(m);
+                    
+                        m=new Move();
+                        m.from=j;
+                        m.card=this.viewCard(j);
+                        m.to=i;//but lets not block ourselves
+                        if(SMUtils.toFaceNumber(this.viewCard(j)) != SMUtils.toFaceNumber(this.viewCard(PlayerPositionsEnum.PILE))){
+                            m.score=MoveScoresEnum.DISCARD_IN_SEQUENCE+MoveScoresEnum.DISCARD_BLOCK_SELF;
+                        }else{
+                            m.score=MoveScoresEnum.DISCARD_IN_SEQUENCE;
+                        }
+                        m.isDiscard=true;
+                        moves.push(m);
                 }
             }
-        }
+        } 
 //        if(moves.length>0){console.log(`Discard from Hand in sequence: \n${JSON.stringify(moves)}`);}
         allMoves.push(...moves);
-        moves=[];
+//        moves=[];
+//        //check if for cards that continue a sequence on the stack
+//        for(let j=PlayerPositionsEnum.HAND_1;j<=PlayerPositionsEnum.HAND_5;j++){        
+//            for(let i=PlayerPositionsEnum.STACK_1;i<=PlayerPositionsEnum.STACK_4;i++){
+//                if((this.viewCard(j)!=CardsEnum.NO_CARD) && (SMUtils.toFaceNumber(this.viewCard(j))==SMUtils.toFaceNumber(this.viewTopCard(i)))){
+//                    
+//                        m=new Move();
+//                        m.from=j;
+//                        m.card=this.viewCard(j);
+//                        m.to=i;
+//                        m.score=MoveScoresEnum.DISCARD_IN_SEQUENCE;
+//                        m.isDiscard=true;
+//                        moves.push(m);
+//                }
+//            }
+//        } 
         if(moves.length==0){
             for(let j=PlayerPositionsEnum.HAND_1;j<=PlayerPositionsEnum.HAND_5;j++){
                 if(this.viewCard(j)!=CardsEnum.NO_CARD){

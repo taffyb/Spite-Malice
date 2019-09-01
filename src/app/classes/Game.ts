@@ -3,6 +3,7 @@ import { v4 as uuid } from 'uuid';
 import {PlayerPositionsEnum} from './Enums';
 import {CardsEnum} from './Enums';
 import {Player} from './Player';
+import {Move} from './Move';
 
 import {DealerService} from '../services/Dealer.Service';
 import {MovesService} from '../services/Moves.Service';
@@ -53,5 +54,8 @@ export class Game {
           tos=centreStack[centreStack.length-(1+j)]+j;
       }      
       return tos;
+  }
+  perfromMove(move:Move){
+      
   }
 }

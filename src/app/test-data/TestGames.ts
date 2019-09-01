@@ -14,6 +14,7 @@ export class TestGames{
         this.games.push(this.testGame_1());
         this.games.push(this.testGame_2());
         this.games.push(this.testGame_3());
+        this.games.push(this.testGame_4());
     }
 
     /*
@@ -209,6 +210,75 @@ export class TestGames{
         player.cards[pp.STACK_2]=[c.NO_CARD,s.SPADES+c.KING];
         player.cards[pp.STACK_3]=[c.NO_CARD,s.SPADES+c.TEN];
         player.cards[pp.STACK_4]=[c.NO_CARD,s.CLUBS+c.SIX];
+        game.players.push(player);
+        
+        game.centreStacks[gp.STACK_1]=[c.NO_CARD,
+                                      s.DIAMONDS+c.ACE,
+                                      s.DIAMONDS+c.TWO,
+                                      s.DIAMONDS+c.THREE,
+                                      s.DIAMONDS+c.FOUR,
+                                      s.DIAMONDS+c.FIVE,
+                                      s.DIAMONDS+c.SIX,
+                                      s.DIAMONDS+c.SEVEN,
+                                      s.DIAMONDS+c.EIGHT,
+                                      s.DIAMONDS+c.NINE,
+                                      s.DIAMONDS+c.TEN,
+                                      s.DIAMONDS+c.JACK,
+                                      s.DIAMONDS+c.QUEEN];
+        game.centreStacks[gp.STACK_2]=[c.NO_CARD];
+        game.centreStacks[gp.STACK_3]=[c.NO_CARD];
+        game.centreStacks[gp.STACK_4]=[c.NO_CARD];
+        
+        
+        game.activePlayer=0;
+//        console.log(`Test 1: GameGUID=${game.guid}`);
+//        console.log(`Centre Stacks: ${JSON.stringify(game.centreStacks)}`);
+        return game;        
+    }
+    /*
+     * Set up game ready to recycle centre stack
+     *  
+     */ 
+    testGame_4():Game{
+        const pp=PlayerPositionsEnum;
+        const gp=GamePositionsEnum;
+        const s=SuitsEnum;
+        const c=CardsEnum;
+        
+        let game:Game=new Game();
+        game.name="Starting position";
+        let player:Player=new Player();
+        player.initialiseCards();
+        
+        player.name="Player 1";
+        player.cards[pp.PILE]=[c.NO_CARD,
+                               s.HEARTS+c.ACE];
+        player.cards[pp.HAND_1]=s.HEARTS+c.ACE;
+        player.cards[pp.HAND_2]=s.HEARTS+c.THREE;
+        player.cards[pp.HAND_3]=s.HEARTS+c.NINE;
+        player.cards[pp.HAND_4]=s.HEARTS+c.JACK;
+        player.cards[pp.HAND_5]=s.SPADES+c.FIVE;
+        player.cards[pp.STACK_1]=[c.NO_CARD,s.CLUBS+c.FIVE];
+        player.cards[pp.STACK_2]=[c.NO_CARD,s.HEARTS+c.FOUR];
+        player.cards[pp.STACK_3]=[c.NO_CARD,s.SPADES+c.NINE];
+        player.cards[pp.STACK_4]=[c.NO_CARD,s.CLUBS+c.KING];
+        player.isPrimary=true;
+        game.players.push(player);
+              
+        player=new Player();
+        player.initialiseCards();
+        player.name="Player 2";
+        player.cards[pp.PILE]=[c.NO_CARD,
+                               s.CLUBS+c.ACE];
+        player.cards[pp.HAND_1]=s.HEARTS+c.ACE;
+        player.cards[pp.HAND_2]=s.HEARTS+c.THREE;
+        player.cards[pp.HAND_3]=s.HEARTS+c.NINE;
+        player.cards[pp.HAND_4]=s.HEARTS+c.JACK;
+        player.cards[pp.HAND_5]=s.SPADES+c.FIVE;
+        player.cards[pp.STACK_1]=[c.NO_CARD,s.HEARTS+c.FIVE];
+        player.cards[pp.STACK_2]=[c.NO_CARD,s.SPADES+c.FOUR];
+        player.cards[pp.STACK_3]=[c.NO_CARD,s.DIAMONDS+c.NINE];
+        player.cards[pp.STACK_4]=[c.NO_CARD,s.HEARTS+c.KING];
         game.players.push(player);
         
         game.centreStacks[gp.STACK_1]=[c.NO_CARD,

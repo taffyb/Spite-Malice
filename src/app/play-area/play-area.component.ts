@@ -29,7 +29,7 @@ export class PlayAreaComponent implements OnInit, IMoveSubscriber {
   PlayerPositions=PlayerPositionsEnum;
   GamePositions=GamePositionsEnum;
   Cards=CardsEnum;
-  isFullAuto:boolean=true;
+  isFullAuto:boolean=false;
     
   playerStacks:number[][]=[[CardsEnum.NO_CARD],[CardsEnum.NO_CARD],[CardsEnum.NO_CARD],[CardsEnum.NO_CARD]];
   isPendingDiscard:boolean=false;
@@ -50,18 +50,40 @@ export class PlayAreaComponent implements OnInit, IMoveSubscriber {
                this.game=this.gameSvc.newGame();
                dealer.fillDeck();
                dealer.deal(this.game.players);
+               
                // set active player
+               let activePlayer:number=0;
+               
                if(SMUtils.toFaceNumber(this.game.players[0].viewCard(PlayerPositionsEnum.PILE)) 
                   >  
-                   SMUtils.toFaceNumber(this.game.players[1].viewCard(PlayerPositionsEnum.PILE))){
+                  SMUtils.toFaceNumber(this.game.players[1].viewCard(PlayerPositionsEnum.PILE))){
                    
-                   this.game.activePlayer=1;
+                   activePlayer=1;
                }
+               if(SMUtils.toFaceNumber(this.game.players[0].viewCard(PlayerPositionsEnum.PILE)) 
+                       ==  
+                  SMUtils.toFaceNumber(this.game.players[1].viewCard(PlayerPositionsEnum.PILE))){
+                   for(let i:number=PlayerPositionsEnum.STACK_1;i<=PlayerPositionsEnum.STACK_4;i++){
+                       if(SMUtils.toFaceNumber(this.game.players[0].viewCard(i)) 
+                           >  
+                          SMUtils.toFaceNumber(this.game.players[1].viewCard(i))){
+                            
+                            activePlayer=1;
+                            break;
+                       }else if(SMUtils.toFaceNumber(this.game.players[0].viewCard(i)) 
+                                   ==  
+                                SMUtils.toFaceNumber(this.game.players[1].viewCard(i))){
+                           continue;
+                       }
+                   }
+               }
+               this.setActivePlayer(activePlayer);
                router.navigateByUrl(`/play-area/${this.game.guid}`);
            }else{
                this.game=this.gameSvc.getGame(gameId);
                dealer.fillDeck();
                dealer.setGameDeck(this.game);
+               
            }     
            this.moveSvc.subscribeToChanges(this);
        });
