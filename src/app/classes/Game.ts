@@ -1,9 +1,11 @@
 import { v4 as uuid } from 'uuid';
 
 import {PlayerPositionsEnum} from './Enums';
+import {GamePositionsEnum} from './Enums';
 import {CardsEnum} from './Enums';
 import {Player} from './Player';
 import {Move} from './Move';
+import {SMUtils} from './SMUtils';
 
 import {DealerService} from '../services/Dealer.Service';
 import {MovesService} from '../services/Moves.Service';
@@ -34,6 +36,7 @@ export class Game {
       let game = new Game();
       let jsonGame=JSON.parse(json);
       
+//      console.log(`Game.fromJSON: ${json}`);
       game.guid = jsonGame.guid;
       game.name = jsonGame.name;
       jsonGame.players.forEach(p=>{game.players.push(Player.fromJSON(JSON.stringify(p)));});
@@ -55,7 +58,24 @@ export class Game {
       }      
       return tos;
   }
-  perfromMove(move:Move){
+  applyMove(move:Move){
+      let activePlayer:Player=this.players[this.activePlayer];
+      //remove card FROM
+      activePlayer.removeCard(move.from);
       
+      //add card TO
+      if(move.to>PlayerPositionsEnum.STACK_4){
+          this.centreStacks[move.to-GamePositionsEnum.BASE].push(move.card);
+          //if this fills the stack then recycle it.
+          if(this.viewTopOfStack(move.to-GamePositionsEnum.BASE)==CardsEnum.KING){              
+              this.addToRecyclePile(this.centreStacks[move.to-GamePositionsEnum.BASE], this);
+          }              
+      }
+  }
+
+  addToRecyclePile(cards:number[],game:Game){
+      for(let c=0;c<cards.length-1;c++){
+          game.recyclePile.push(cards[c]);
+      }
   }
 }

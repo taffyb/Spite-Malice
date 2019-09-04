@@ -1,5 +1,6 @@
 import {Game} from '../classes/Game';
 import {Player} from '../classes/Player';
+import {RecursiveDeterministicPlayer} from '../classes/RecursiveDeterministicPlayer';
 import { v4 as uuid } from 'uuid';
 import {PlayerPositionsEnum} from '../classes/Enums';
 import {GamePositionsEnum} from '../classes/Enums';
@@ -28,7 +29,7 @@ export class TestGames{
         const c=CardsEnum;
         
         let game:Game=new Game();
-        game.name="Test Recycle Centre Stack";
+        game.name="Recursive Deterministic Player";
         let player:Player=new Player();
         player.initialiseCards();
         
@@ -47,15 +48,14 @@ export class TestGames{
         player.cards[pp.STACK_2]=[c.NO_CARD,s.HEARTS+c.FOUR,s.SPADES+c.THREE,s.SPADES+c.TWO,s.DIAMONDS+c.ACE];
         player.cards[pp.STACK_3]=[c.NO_CARD,s.SPADES+c.NINE,c.JOKER];
         player.cards[pp.STACK_4]=[c.NO_CARD,c.JOKER];
-        player.isPrimary=true;
         game.players.push(player);
               
-        player=new Player();
+        player=new RecursiveDeterministicPlayer();
         player.initialiseCards();
         player.name="Player 2";
         player.cards[pp.PILE]=[c.NO_CARD,
                                s.DIAMONDS+c.FOUR,
-                               s.HEARTS+c.TWO];
+                               s.HEARTS+c.ACE];
         player.cards[pp.HAND_1]=s.CLUBS+c.ACE;
         player.cards[pp.HAND_2]=s.CLUBS+c.THREE;
         player.cards[pp.HAND_3]=s.SPADES+c.THREE;
@@ -65,6 +65,7 @@ export class TestGames{
         player.cards[pp.STACK_2]=[c.NO_CARD,s.SPADES+c.KING];
         player.cards[pp.STACK_3]=[c.NO_CARD,s.SPADES+c.TEN];
         player.cards[pp.STACK_4]=[c.NO_CARD,s.CLUBS+c.SIX];
+        player.isPrimary=true;
         game.players.push(player);
         
         game.centreStacks[gp.STACK_1]=[c.NO_CARD,
@@ -85,7 +86,7 @@ export class TestGames{
         game.centreStacks[gp.STACK_4]=[c.NO_CARD];
         
         
-        game.activePlayer=0;
+        game.activePlayer=1;
 //        console.log(`Test 1: GameGUID=${game.guid}`);
 //        console.log(`Centre Stacks: ${JSON.stringify(game.centreStacks)}`);
         return game;        

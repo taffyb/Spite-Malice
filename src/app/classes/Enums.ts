@@ -1,6 +1,7 @@
 export enum PlayerTypesEnum{
     BASE,
-    DETERMINISTIC
+    DETERMINISTIC,
+    REC_DETERMINISTIC
 }
 export enum PlayerPositionsEnum{
     NO_POS=-1,

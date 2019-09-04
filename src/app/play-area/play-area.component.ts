@@ -291,7 +291,7 @@ export class PlayAreaComponent implements OnInit, IMoveSubscriber {
               let stack:number[]= this.game.centreStacks[m.to-GamePositionsEnum.BASE];
 //              console.log(`Recycle centre stack: ${m.to} ${JSON.stringify(this.game.centreStacks[m.to-GamePositionsEnum.BASE])}`);
               this.moveSvc.addRecycle(stack,m.to);
-              this.dealer.addToRecyclePile(stack,this.game);
+              this.game.addToRecyclePile(stack,this.game);
               this.game.centreStacks[m.to-GamePositionsEnum.BASE]=[CardsEnum.NO_CARD]
           }
           if(m.from==PlayerPositionsEnum.PILE && this.game.players[this.game.activePlayer].viewCard(m.from)==CardsEnum.NO_CARD){

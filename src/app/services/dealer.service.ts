@@ -138,11 +138,11 @@ export class DealerService {
       }
       return nextCard;
   }
-  addToRecyclePile(cards:number[],game:Game){
-      for(let c=0;c<cards.length-1;c++){
-          game.recyclePile.push(cards[c]);
-      }
-  }
+//  addToRecyclePile(cards:number[],game:Game){
+//      for(let c=0;c<cards.length-1;c++){
+//          game.recyclePile.push(cards[c]);
+//      }
+//  }
   fillHand(player:Player,game:Game):Turn{
       let c:number=0;
       let deal:Deal=new Deal();

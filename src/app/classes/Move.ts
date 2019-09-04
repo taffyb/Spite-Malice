@@ -5,4 +5,6 @@ export class Move {
   to: number;
   isDiscard:boolean=false;
   score:number;
+  nextMoves:Move[];
+  previousMove:Move;
 }

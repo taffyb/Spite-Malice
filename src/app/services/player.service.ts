@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import {Player} from '../classes/Player';
 import {PlayerTypesEnum} from '../classes/Enums';
 import {DeterministicPlayer} from '../classes/DeterministicPlayer';
+import {RecursiveDeterministicPlayer} from '../classes/RecursiveDeterministicPlayer';
 
 @Injectable({
   providedIn: 'root'
@@ -25,6 +26,12 @@ export class PlayerService {
       p=new DeterministicPlayer();
       p.name="Doug D.";   
       this.players.push(p);   
+      
+
+      p=new RecursiveDeterministicPlayer();
+      p.name="Roger D.";   
+      this.players.push(p);   
+      
   }
   findPlayer(guid:string):Player{
       let retVal:Player=null;

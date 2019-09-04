@@ -282,7 +282,8 @@
 	<p>
   <div id="game-row">
   		<span class="tooltip">
-			<card cardNo="back"></card>			
+			<card *ngIf="dealer.deckCount()>0" cardNo="back"></card>
+			<card *ngIf="dealer.deckCount()==0" cardNo="Cards.NO_CARD"></card>			
    			<span class="tooltiptext">{{dealer.deckCount()}}</span>
 		</span>
 		<div class="space"></div>
