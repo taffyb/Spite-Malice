@@ -296,7 +296,11 @@ export class PlayAreaComponent implements OnInit, IMoveSubscriber {
           }
           if(m.from==PlayerPositionsEnum.PILE && this.game.players[this.game.activePlayer].viewCard(m.from)==CardsEnum.NO_CARD){
     //        Game Over
-              this.game.gameOver=this.game.players[this.game.activePlayer].name + " won!.";
+              let otherPlayer:number = (this.game.activePlayer-1>=0?0:1);
+              this.game.gameOver=`${this.game.players[this.game.activePlayer].name}  won!.\n`+
+                  `${this.game.players[otherPlayer].name} still had `+
+                  `${this.game.players[otherPlayer].cards[PlayerPositionsEnum.PILE].length-1} card`+
+                  `${(this.game.players[otherPlayer].cards[PlayerPositionsEnum.PILE].length-1)==1?'':'s'} left.`;
           }
       });
   }

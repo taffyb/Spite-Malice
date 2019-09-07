@@ -11,6 +11,7 @@ import {DealerService} from '../services/Dealer.Service';
 import {MovesService} from '../services/Moves.Service';
 
 export class Game {
+  id:number=0;
   guid: string;
   name: string;
   players:Player[]=[]; 
@@ -45,6 +46,7 @@ export class Game {
       game.inPlay=jsonGame.inPlay;
       game.recyclePile=jsonGame.recyclePile;
       game.includeJokers=jsonGame.includeJokers;
+      game.id=jsonGame.id+1;
       return game;
   }
   viewTopOfStack(stack:number):number{
@@ -70,6 +72,8 @@ export class Game {
           if(this.viewTopOfStack(move.to-GamePositionsEnum.BASE)==CardsEnum.KING){              
               this.addToRecyclePile(this.centreStacks[move.to-GamePositionsEnum.BASE], this);
           }              
+      }else{
+          activePlayer.addCard(move.card,move.to);
       }
   }
 

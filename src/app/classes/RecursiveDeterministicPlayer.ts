@@ -39,7 +39,9 @@ export class RecursiveDeterministicPlayer extends AutoPlayer{
         if(this.moves.length>0){
             m = this.moves.splice(0,1)[0]; 
         }else{
-            moves=this.findNextMoves(game, possibleMoves);
+            this.findNextMoves(game, possibleMoves);
+            moves=possibleMoves;
+//            console.log(`all found moves:\n${SMUtils.movesToString(moves)}`);
             let bestFinalMove=this.findTopMove(moves);
             if(bestFinalMove){
                 this.moves.push(bestFinalMove);
@@ -48,6 +50,7 @@ export class RecursiveDeterministicPlayer extends AutoPlayer{
                     this.moves.splice(0,0,previousMove);
                     bestFinalMove=previousMove;
                 }
+//                console.log(`Move: ${SMUtils.movesToString(this.moves)}`);
                 m = this.moves.splice(0,1)[0];                
             }
         }
@@ -56,7 +59,7 @@ export class RecursiveDeterministicPlayer extends AutoPlayer{
             m=this.findTopDiscardMove(possibleMoves);
         }
            
-        console.log(`Move: ${SMUtils.moveToString(m)}`);
+//        console.log(`Move: ${SMUtils.moveToString(m)}`);
         return m;              
     }
     findTopMove(moves:Move[]):Move{    
@@ -66,7 +69,7 @@ export class RecursiveDeterministicPlayer extends AutoPlayer{
     
         if(moves.length>0){
             moves.sort((n1:Move,n2:Move) => (n1.score - n2.score)*-1);
-    //        console.log(`All Moves: ${JSON.stringify(moves)}`);
+            console.log(`Sorted Moves: ${SMUtils.movesToString(moves)}`);
             topMoves.push(moves[0]);
             score=moves[0].score;
             topMoves[0].score== Math.floor(Math.random() * (moves.length));
@@ -79,7 +82,7 @@ export class RecursiveDeterministicPlayer extends AutoPlayer{
                     topMoves[topMoves.length-1].score = Math.floor(Math.random() * (moves.length));
                 }
             }
-    //        console.log(`Before sort Top Moves: ${JSON.stringify(topMoves)}`); 
+//            console.log(`Before sort Top Moves: ${SMUtils.movesToString(topMoves)}`); 
            topMoves= topMoves.sort((n1:Move,n2:Move) => (n1.score - n2.score)*-1);
     //        console.log(`Sorted Top Moves: ${JSON.stringify(topMoves)}`); 
             topMove=topMoves[0];//pick the first top move.
@@ -88,6 +91,7 @@ export class RecursiveDeterministicPlayer extends AutoPlayer{
     return topMove; 
     }
     findNextMoves(game:Game,possibleMoves:Move[]):Move[]{
+//        console.log(`game:\n${JSON.stringify(game)}`);
         let m:Move;
         let moves:Move[]=[];
         let allMoves:Move[]=[];
@@ -135,31 +139,32 @@ export class RecursiveDeterministicPlayer extends AutoPlayer{
             case PlayerPositionsEnum.HAND_3:
             case PlayerPositionsEnum.HAND_4:
             case PlayerPositionsEnum.HAND_5:
-                
-//            Possible moves from Hand to Centre Stack              
-              for(let gp=GamePositionsEnum.STACK_1;gp<=GamePositionsEnum.STACK_4;gp++){
-                  if(SMUtils.isJoker(game, activePlayer, pp) || 
-                  SMUtils.difference(game, activePlayer, pp, GamePositionsEnum.BASE+gp)==1){
-                    m=new Move();
-                    m.from=pp;
-                    m.card=this.viewCard(pp);
-                    m.to=GamePositionsEnum.BASE+gp;
-                    m.score=(MoveScoresEnum.PLAY_FROM_HAND+MoveScoresEnum.ADD_TO_STACK); 
-                    moves.push(m);
+                if(SMUtils.toFaceNumber(SMUtils.cardValue(game,activePlayer,pp))!=CardsEnum.NO_CARD){  
+    //            Possible moves from Hand to Centre Stack              
+                  for(let gp=GamePositionsEnum.STACK_1;gp<=GamePositionsEnum.STACK_4;gp++){
+                      if(SMUtils.isJoker(game, activePlayer, pp) || 
+                      SMUtils.difference(game, activePlayer, pp, GamePositionsEnum.BASE+gp)==1){
+                        m=new Move();
+                        m.from=pp;
+                        m.card=SMUtils.cardValue(game,activePlayer,pp);
+                        m.to=GamePositionsEnum.BASE+gp;
+                        m.score=(MoveScoresEnum.PLAY_FROM_HAND+MoveScoresEnum.ADD_TO_STACK); 
+                        moves.push(m);
+                      }
                   }
-              }
-              
-//            Posible moves from Hand to Player Stack (an open space)              
-              for(let ps=PlayerPositionsEnum.STACK_1;ps<=PlayerPositionsEnum.STACK_4;ps++){
-                  if(SMUtils.toFaceNumber(this.viewCard(ps))==CardsEnum.NO_CARD){
-                    m=new Move();
-                    m.from=pp;
-                    m.card=this.viewCard(pp);
-                    m.to=ps;
-                    m.score=(MoveScoresEnum.PLAY_FROM_HAND+MoveScoresEnum.OPEN_A_SPACE+this.viewCard(pp));
-                    moves.push(m);
+                  
+    //            Posible moves from Hand to Player Stack (an open space)              
+                  for(let ps=PlayerPositionsEnum.STACK_1;ps<=PlayerPositionsEnum.STACK_4;ps++){
+                      if(SMUtils.toFaceNumber(SMUtils.cardValue(game,activePlayer,ps))==CardsEnum.NO_CARD){
+                        m=new Move();
+                        m.from=pp;
+                        m.card=SMUtils.cardValue(game,activePlayer,pp);
+                        m.to=ps;
+                        m.score=(MoveScoresEnum.PLAY_FROM_HAND+MoveScoresEnum.OPEN_A_SPACE+SMUtils.toFaceNumber(SMUtils.cardValue(game,activePlayer,pp)));
+                        moves.push(m);
+                      }
                   }
-              }
+                }
               allMoves.push(...moves);
               moves=[];
               break;
@@ -170,17 +175,21 @@ export class RecursiveDeterministicPlayer extends AutoPlayer{
                 
 //              Posible moves from Player Stack to Centre Stack                
                 for(let gp=GamePositionsEnum.STACK_1;gp<=GamePositionsEnum.STACK_4;gp++){
+                    
                     if(SMUtils.isJoker(game, activePlayer, pp) || 
                     SMUtils.difference(game, activePlayer, pp, GamePositionsEnum.BASE+gp)==1){
+//                        if(pp==8){console.log(`isJoker:${SMUtils.isJoker(game, activePlayer, pp)} ||
+//                        difference:(${SMUtils.toFaceNumber(SMUtils.cardValue(game,activePlayer,pp))}-${SMUtils.toFaceNumber(SMUtils.cardValue(game,activePlayer,GamePositionsEnum.BASE+gp))})==${SMUtils.difference(game, activePlayer, pp, GamePositionsEnum.BASE+gp)}`);}
                       m=new Move();
                       m.from=pp;
-                      m.card=this.viewTopCard(pp);
+                      m.card=SMUtils.cardValue(game,activePlayer,pp);
                       m.to=GamePositionsEnum.BASE+gp;
                       m.score=(MoveScoresEnum.PLAY_FROM_STACK+MoveScoresEnum.ADD_TO_STACK);
                       moves.push(m);
                     }
                 }
                 allMoves.push(...moves);
+//                console.log(`Game[${game.id}] ${SMUtils.movesToString(moves)}`);
                 moves=[];
                 break;               
             }
@@ -188,6 +197,7 @@ export class RecursiveDeterministicPlayer extends AutoPlayer{
     
 //        Now for each move identified apply that move and see where we could move next
         if(allMoves.length>0){
+//            console.log(`allMoves:\n${SMUtils.movesToString(allMoves)}`);
             for(let i=0;i<allMoves.length;i++){
                 let m:Move=allMoves[i];
                 let localGame:Game=Game.fromJSON(JSON.stringify(game));
@@ -196,16 +206,19 @@ export class RecursiveDeterministicPlayer extends AutoPlayer{
                   //If this is a move from the PILE we can't look further as we don't know what the next card is.
                     possibleMoves.push(m);
                 }else{
+//                    console.log(`B4 apply move:${SMUtils.moveToString(m)}\nlocalGame:${JSON.stringify(localGame)}`);
                     localGame.applyMove(m);
+//                    console.log(`After apply move:\nlocalGame:${JSON.stringify(localGame)}`);
                     if(activePlayer.cardsInHand()==0){
                         //Increase score of move because will get 5 new cards
                         
                         //Stop looking for further moves until have refilled hand
                     }else{
                         m.nextMoves=this.findNextMoves(localGame,possibleMoves); 
+                        
                         if(m.nextMoves.length==0){
                             //Reduce if it allows oposition to play from their PILE
-                            //Reduce by less if allows oposition to play a card (the more moves the worse)     
+                            //Reduce by less if allows oposition to play a card (the more moves the worse)   
                             
                             //wind back and calculate an overall Final Score
                             m.score=this.calculateOverallScore(m);
@@ -213,6 +226,7 @@ export class RecursiveDeterministicPlayer extends AutoPlayer{
                             //add to possible moves
                             possibleMoves.push(m);
                         }else{
+//                            console.log(`after move:${SMUtils.moveToString(m)}\n${SMUtils.movesToString(m.nextMoves)}`);
                             m.nextMoves.forEach(nextMove=>{
                                nextMove.previousMove=m; 
                             });
@@ -221,19 +235,20 @@ export class RecursiveDeterministicPlayer extends AutoPlayer{
                 } 
              }            
         }
-//        console.log(`allMoves:${JSON.stringify(allMoves)}`);
+//        console.log(`allMoves:\n${SMUtils.movesToString(allMoves)}`);
         return allMoves;
     }
     calculateOverallScore(finalMove:Move):number{
-        let score:number=0;
         let move:Move=finalMove;
+        let score:number=move.score;
+        
         while(move.previousMove){
             score+=finalMove.previousMove.score;
             move=move.previousMove;
         }
-        return score;
-        
+        return score;        
     }
+    
     findTopDiscardMove(moves:Move[]):Move{     
         let topMoves:Move[]=[];
         let score:number;  

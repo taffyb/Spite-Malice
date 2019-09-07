@@ -38,7 +38,11 @@ export class SMUtils{
         if(position>=GamePositionsEnum.BASE){
             card=game.viewTopOfStack(position-GamePositionsEnum.BASE);
         }else{
-            card=player.viewCard(position);
+            if(position<PlayerPositionsEnum.STACK_1){
+                card=player.viewCard(position);
+            }else{
+                card=player.viewTopCard(position);
+            }   
         }
         return card;
     }
@@ -46,11 +50,20 @@ export class SMUtils{
         let card:number = this.toFaceNumber(this.cardValue(game, player, position));
         return card == CardsEnum.JOKER;
     }
+    static movesToString(moves:Move[]):string{
+        let str:string="";
+        str="[";
+        moves.forEach(m=>{
+            str+=this.moveToString(m)+",";
+        });
+        str+="]";
+        return str;
+    }
     static moveToString(m:Move):string{
         let str:string="";
     
         str+=`{`;
-        str+=`from:${m.from},to:${m.to},card:${m.card}(${this.toFaceNumber(m.card)}),isDiscard:${m.isDiscard}`;
+        str+=`from:${m.from},to:${m.to},card:${m.card}(${this.toFaceNumber(m.card)}),isDiscard:${m.isDiscard},score:${m.score}`;
         if(m.previousMove){
             str+='\npreviousMove:true';
         }
