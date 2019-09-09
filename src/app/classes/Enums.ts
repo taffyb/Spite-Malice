@@ -57,5 +57,6 @@ export enum CardsEnum{
 export enum TurnEnum{
     PLAYER=0,
     DEALER,
-    RECYCLE
+    RECYCLE,
+    PLAYER_SWITCH
 }

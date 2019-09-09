@@ -20,6 +20,7 @@ export class Game {
   inPlay:boolean=false;
   recyclePile:number[]=[];
   gameOver:string="";
+  isDraw:boolean=false;
   includeJokers:number=4; //maximum 4 (per deck)
 
   constructor() {

@@ -4,7 +4,7 @@ import {TurnEnum} from './Enums';
 export class Recycle extends Turn{
     constructor(){
         super();
-        this.type=TurnEnum.RECYCLE;
+        this._type=TurnEnum.RECYCLE;
     }
     
 }

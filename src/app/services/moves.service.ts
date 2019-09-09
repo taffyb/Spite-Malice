@@ -5,28 +5,29 @@ import {Deal} from '../classes/Deal';
 import {Recycle} from '../classes/Recycle';
 import {IMoveSubscriber} from '../classes/IMoveSubscriber';
 import {GamePositionsEnum} from '../classes/Enums';
+import {TurnEnum} from '../classes/Enums';
 
 @Injectable({
   providedIn: 'root'
 })
 export class MovesService {
-  turns:Turn[]=[];
+  private turns:Turn[]=[];
   subscriber:any;
   
 
   constructor() { }
   
   addRecycle(stack:number[],pos:number){
-      let recycle:Turn = new Recycle();
+      let recycling:Turn = new Recycle();
       let move:Move;
       stack.forEach(c=>{
           move=new Move();
           move.from=pos;
           move.card=c;
           move.to=GamePositionsEnum.RECYCLE_PILE;
-          recycle.moves.push(move);
+          recycling.moves.push(move);
       });
-      this.turns.push(recycle);
+      this.addTurn(recycling);
       this.turns.push(new Turn());
   }
   addTurn(turn:Turn){
@@ -59,48 +60,62 @@ export class MovesService {
       return move;
   }
   undo(){
-//      console.log(`Turns: ${this.turns.length}\n${JSON.stringify(this.turns)}`);
+      console.log(`{moves.service.undo} Turns: ${this.turns.length}\n${JSON.stringify(this.turns)}`);
       let undoMoves:Move[]=[];
-      if(this.turns.length>0){
+      if(this.turns && this.turns.length>0){          
           let currentTurn:Turn=this.turns[this.turns.length-1];
-          while(currentTurn.moves.length==0){              
-              this.turns.pop();
-              currentTurn=this.turns[this.turns.length-1];
+          switch(currentTurn.type){
+          case TurnEnum.PLAYER:
+              break;
+          case TurnEnum.DEALER:
+              break;
+          case TurnEnum.RECYCLE:
+              break;
+          case TurnEnum.PLAYER_SWITCH:
+              break;
           }
-          if(currentTurn instanceof Deal){
-              for(let i:number=currentTurn.moves.length-1;i>0;i--){
-                  let m:Move=currentTurn.moves[i];
-                  undoMoves.push(this.undoMove(m));
-              }              
-              this.turns.pop();
-//              this.subscriber.onUndoActivePlayer();
-              currentTurn=this.turns[this.turns.length-1];
-          } 
-          if(currentTurn instanceof Recycle){
-              //remove the top of the stack because that will be undone when the top card is moved back to the player
-              currentTurn.moves.pop();
-              for(let i:number=0;i<currentTurn.moves.length;i++){
-                  let m:Move=currentTurn.moves[i];
-                  undoMoves.push(this.undoMove(m));
-              }              
-              this.turns.pop();
-              currentTurn=this.turns[this.turns.length-1];              
-          }
-          if(currentTurn.moves.length==0){
-              this.turns.pop();
-              if(this.turns.length>0){
+          if(this.turns[this.turns.length-1].moves.length>0){
+              while(currentTurn.moves.length==0){              
+                  this.turns.pop();
                   currentTurn=this.turns[this.turns.length-1];
               }
-          }         
-          if(currentTurn && currentTurn.moves.length>0){
-              let move:Move=currentTurn.moves.pop();
-              undoMoves.push(this.undoMove(move));
-              console.log(`[moves.service] move:${JSON.stringify(move)}`);
-              if(move.isDiscard){
-                  console.log(`[moves.service] call onUndoActivePlayer()`);
-                  this.subscriber.onUndoActivePlayer();
+              if(currentTurn instanceof Deal){
+                  for(let i:number=currentTurn.moves.length-1;i>0;i--){
+                      let m:Move=currentTurn.moves[i];
+                      undoMoves.push(this.undoMove(m));
+                  }              
+                  this.turns.pop();
+//                  this.subscriber.onUndoActivePlayer();
+                  currentTurn=this.turns[this.turns.length-1];
+              } 
+              if(currentTurn instanceof Recycle){
+                  //remove the top of the stack because that will be undone when the top card is moved back to the player
+                  currentTurn.moves.pop();
+                  for(let i:number=0;i<currentTurn.moves.length;i++){
+                      let m:Move=currentTurn.moves[i];
+                      undoMoves.push(this.undoMove(m));
+                  }              
+                  this.turns.pop();
+                  currentTurn=this.turns[this.turns.length-1];              
               }
+              if(currentTurn.moves.length==0){
+                  this.turns.pop();
+                  if(this.turns.length>0){
+                      currentTurn=this.turns[this.turns.length-1];
+                  }
+              }         
+              if(currentTurn && currentTurn.moves.length>0){
+                  let move:Move=currentTurn.moves.pop();
+                  undoMoves.push(this.undoMove(move));
+                  console.log(`[moves.service.undo] move:${JSON.stringify(move)}`);
+                  if(move.isDiscard){
+                      console.log(`[moves.service.undo] call onUndoActivePlayer()`);
+                      this.subscriber.onUndoActivePlayer();
+                  }
+              }
+              
           }
+          
           this.subscriber.onUndo(undoMoves);  
       }           
   }
