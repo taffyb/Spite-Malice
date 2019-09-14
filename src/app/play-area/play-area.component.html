@@ -99,7 +99,7 @@
 						</span> <!-- No card Selected -->
 						
 						<!-- There is a Selected card -->
-						<span *ngIf="fromPosition>PlayerPositions.NO_POS">
+						<span *ngIf="fromPosition>=PlayerPositions.NO_POS">
 							<!-- This is the selected card -->
 							<span *ngIf="pos==fromPosition"  (click)="toggleMoveFrom(pIdx,pos)">
 			    				<card pos="{{pos}}" cardNo="{{p.viewCard(pos)}}"></card>
@@ -107,7 +107,7 @@
 			    			<!-- this is not the selected card -->
 			    			<span *ngIf="pos!=fromPosition">
 			    				<!-- If the selected card is from the Pile -->
-			    				<span *ngIf="fromPosition==PlayerPositions.PILE ">			    				
+			    				<span *ngIf="fromPosition==PlayerPositions.PILE ">			
 					    			<card pos="{{pos}}" cardNo="{{p.viewCard(pos)}}"></card>
 								</span>
 								<!-- the selected card is from the hand -->
@@ -151,11 +151,12 @@
 							<card pos="{{pos}}" cardNo="{{Cards.NO_CARD}}"></card>
 						</span>			
 						<!-- If this position it is from the Stack-->			
-						<span *ngIf="(pos>=PlayerPositions.STACK_1 && pos<=PlayerPositions.STACK_4)">
+						<span *ngIf="(pos>=PlayerPositions.STACK_1 && PlayerPositions.STACK_4>=pos)">
 							<!-- if there is a selected card -->
 							<span *ngIf="fromPosition>PlayerPositions.NO_POS">
-								<!-- if the selected card is from the stack -->
-								<span *ngIf="(fromPosition>=PlayerPositions.STACK_1 && fromPosition<=PlayerPositions.STACK_4)">
+								<!-- if the selected card is from the stack or the Pile-->
+								<span *ngIf="(fromPosition>=PlayerPositions.STACK_1 && PlayerPositions.STACK_4>=fromPosition) ||
+								              fromPosition==PlayerPositions.PILE">
 									<card pos="{{pos}}" cardNo="{{Cards.NO_CARD}}"></card>
 								</span>
 								<!-- if the selected card is from the HAND -->
