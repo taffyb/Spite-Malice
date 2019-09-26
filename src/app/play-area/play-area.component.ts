@@ -78,7 +78,7 @@ export class PlayAreaComponent implements OnInit, IMoveSubscriber {
                    }
                }
                this.setActivePlayer(activePlayer);
-               router.navigateByUrl(`/play-area/${this.game.guid}`);
+               router.navigateByUrl(`/play-area/${this.game.uuid}`);
            }else{
                this.game=this.gameSvc.getGame(gameId);
                dealer.fillDeck();
@@ -113,8 +113,9 @@ export class PlayAreaComponent implements OnInit, IMoveSubscriber {
           this.onNewMoves([move]);
           while(!move.isDiscard){
               move = player.findNextMove(this.game);
-              this.zone.run(() => 
-              this.onNewMoves([move]));
+              this.moveSvc.addMove(move);
+//              this.zone.run(() => 
+//              this.onNewMoves([move]));
           }
       }
   }
@@ -122,7 +123,8 @@ export class PlayAreaComponent implements OnInit, IMoveSubscriber {
       let player:Player=this.game.players[this.game.activePlayer];
       if((player instanceof AutoPlayer)){
           let move:Move = player.findNextMove(this.game);
-          this.onNewMoves([move]);
+          this.moveSvc.addMove(move);
+//          this.onNewMoves([move]);
       }   
   }
   toggleActivePlayer(){
@@ -134,7 +136,7 @@ export class PlayAreaComponent implements OnInit, IMoveSubscriber {
       this.setActivePlayer(ap);
   }
   toggleMoveFrom(player:number,position:number){
-
+//      console.log(`toggleMoveFrom(position:${position})`);
       if(player == this.game.activePlayer){
           if(position==this.fromPosition){
               this.zone.run(() => this.fromPosition =-1);
@@ -152,7 +154,7 @@ export class PlayAreaComponent implements OnInit, IMoveSubscriber {
   }
   moveTo(stack:number){
       let move:Move = new Move();
-      move.player= this.game.players[this.game.activePlayer].guid;
+      move.puuid= this.game.players[this.game.activePlayer].uuid;
       let sCount:number=0;
       move.from = this.fromPosition;
       const from:number=this.fromPosition;
@@ -227,7 +229,7 @@ export class PlayAreaComponent implements OnInit, IMoveSubscriber {
       moves.forEach(m=>{   
           //determine the player who made the move
           this.game.players.forEach(p=>{
-             if(p.guid==m.player){
+             if(p.uuid==m.puuid){
                  player=p;
              }
           });

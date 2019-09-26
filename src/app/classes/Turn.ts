@@ -4,11 +4,11 @@ import { v4 as uuid } from 'uuid';
 
 export class Turn {
   protected _type:number=TurnEnum.PLAYER;
-  private guid: string;
+  private uuid: string;
   moves: Move[]=[];
 
   constructor(){
-      this.guid= uuid();
+      this.uuid= uuid();
   }
   get type():number{
       return this._type;

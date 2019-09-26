@@ -3,6 +3,7 @@ import {PlayerPositionsEnum} from './Enums';
 import {GamePositionsEnum} from './Enums';
 import {Game} from './Game';
 import {Move} from './Move';
+import {AutoMove} from './AutoMove';
 import {Player} from './Player';
 
 export class SMUtils{
@@ -59,22 +60,23 @@ export class SMUtils{
         str+="]";
         return str;
     }
-    static moveToString(m:Move):string{
+    static moveToString(m:Move,depth:number=0):string{
         let str:string="";
+               
     
-        str+=`{`;
-        str+=`from:${m.from},to:${m.to},card:${m.card}(${this.toFaceNumber(m.card)}),isDiscard:${m.isDiscard},score:${m.score}`;
-        if(m.previousMove){
-            str+='\npreviousMove:true';
+        str+= " ".repeat(depth);
+        if(m instanceof AutoMove){
+            str+=`${(m.previousMove?"prev<= ":" ")}[${m.card}/${this.toFaceNumber(m.card)}]${m.from}->${m.to} ${m.score?'<'+m.score+'>':''} ${m.isDiscard?"Discard":""}`;
+            if(m.nextMoves){
+                depth+=1;
+                m.nextMoves.forEach(m=>{
+                    str+=`\n`;
+                    str+=this.moveToString(m,depth);
+                });            
+            }
+        }else{
+            str+=`[${m.card}/${this.toFaceNumber(m.card)}]${m.from}->${m.to} ${m.isDiscard?"Discard":""}`;
         }
-        if(m.nextMoves){
-            str+=`\nnextMoves:[`
-            m.nextMoves.forEach(m=>{
-                str+=this.moveToString(m);
-            });
-            str+=`]`;            
-        }
-        str+=`}`
         return str;
     }
 }

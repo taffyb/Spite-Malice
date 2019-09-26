@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import {Move} from '../classes/Move';
 import {Turn} from '../classes/Turn';
 import {Deal} from '../classes/Deal';
+import {SMUtils} from '../classes/SMUtils';
 import {Recycle} from '../classes/Recycle';
 import {IMoveSubscriber} from '../classes/IMoveSubscriber';
 import {GamePositionsEnum} from '../classes/Enums';
@@ -12,7 +13,7 @@ import {TurnEnum} from '../classes/Enums';
 })
 export class MovesService {
   private turns:Turn[]=[];
-  subscriber:any;
+  subscriber:IMoveSubscriber;
   
 
   constructor() { }
@@ -35,13 +36,14 @@ export class MovesService {
   }
   addMove(move:Move){
       if(this.turns.length==0){
-          this.turns.push(new Turn());
+          this.addTurn(new Turn());
       }
       this.turns[this.turns.length-1].moves.push(move);
       if(move.isDiscard){
 //          console.log(`Turn: ${JSON.stringify(this.turns[this.turns.length-1])}`);
-          this.turns.push(new Turn());
+          this.addTurn(new Turn());
       }
+     console.log(`move: ${SMUtils.moveToString(move)}`);
       this.publish(move);
   }
   
@@ -85,7 +87,6 @@ export class MovesService {
                       undoMoves.push(this.undoMove(m));
                   }              
                   this.turns.pop();
-//                  this.subscriber.onUndoActivePlayer();
                   currentTurn=this.turns[this.turns.length-1];
               } 
               if(currentTurn instanceof Recycle){
@@ -118,5 +119,8 @@ export class MovesService {
           
           this.subscriber.onUndo(undoMoves);  
       }           
+  }
+  saveTurn(){
+      
   }
 }

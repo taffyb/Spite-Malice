@@ -1,10 +1,8 @@
-export class Move {
-  player:string;
-  from: number;
-  card: number;
-  to: number;
-  isDiscard:boolean=false;
-  score:number;
-  nextMoves:Move[];
-  previousMove:Move;
+export class Move{
+    puuid:string;
+    from: number;
+    card: number;
+    to: number;
+    isDiscard:boolean=false;
+    
 }

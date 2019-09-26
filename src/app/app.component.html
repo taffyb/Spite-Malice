@@ -3,6 +3,8 @@
 <ul class="main-menu">
 	<li class="tab" [ngClass]="{'active':activeTab==Tabs.DASHBOARD}" (click)="activeTab=Tabs.DASHBOARD"><a routerLink="/dashboard">Dashboard</a></li>
 	<li *ngFor="let g of gameService.getActiveGames();let gIdx=index" class="tab" [ngClass]="{'active':activeTab==g.guid}" 
-	  (click)="activeTab=g.guid" ><a  routerLink="/play-area/{{g.guid}}">{{g.name}}</a><span (click)="gameService.removeGame(g.guid)">x</span>
+	  (click)="activeTab=g.guid" >
+	  <a  routerLink="/play-area/{{g.guid}}">{{g.name}}</a>
+	  <span class="close" (click)="gameService.removeGame(g.guid)">x</span>
 </ul>
 <router-outlet></router-outlet>

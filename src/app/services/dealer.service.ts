@@ -156,7 +156,7 @@ export class DealerService {
 //              console.log(`add card ${nextCard} to position ${i}`);
               c++;
               move = new Move();
-              move.player=player.guid;
+              move.puuid=player.uuid;
               move.from=GamePositionsEnum.DECK;
               move.card=nextCard;
               move.to=i;

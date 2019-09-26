@@ -5,7 +5,7 @@ import {PlayerTypesEnum} from './Enums';
 import {CardsEnum} from './Enums';
 
 export class Player {
-  guid: string;
+  uuid: string;
   type:number=PlayerTypesEnum.BASE;
   name: string;
   cards:any[];
@@ -13,7 +13,7 @@ export class Player {
   isPrimary:boolean=false;
 
   constructor(){
-      this.guid=uuid();
+      this.uuid=uuid();
   }
   initialiseCards(){
       this.cards = [[CardsEnum.NO_CARD], /* PILE*/
@@ -31,7 +31,7 @@ export class Player {
   static fromJSON(JSONString:string):Player{
       let newPlayer:Player= new this();
       let p=JSON.parse(JSONString);
-      newPlayer.guid=p.guid;
+      newPlayer.uuid=p.guid;
       newPlayer.type=p.type;
       newPlayer.name=p.name;
       newPlayer.cards=p.cards;

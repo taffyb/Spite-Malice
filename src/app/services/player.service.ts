@@ -25,34 +25,38 @@ export class PlayerService {
       
       p=new DeterministicPlayer();
       p.name="Doug D.";   
-      this.players.push(p);   
-      
+      this.players.push(p);         
 
       p=new RecursiveDeterministicPlayer();
       p.name="Roger D.";   
       this.players.push(p);   
       
   }
-  findPlayer(guid:string):Player{
+  findPlayer(puuid:string):Player{
       let retVal:Player=null;
       this.players.forEach(p=>{
-         if(p.guid==guid){
+         if(p.uuid==puuid){
              retVal=p;
          } 
       });
       return retVal;
   }
   getPlayers():Player[]{
+//      console.log(`PlayerSvc.getPlayers :${JSON.stringify(this.players)}`)
       return this.players;
   }
-  clonePlayer(guid:string):Player{
+  clonePlayer(puuid:string):Player{
       
-      let player:Player=Player.fromJSON(JSON.stringify(this.findPlayer(guid)));
+      let player:Player=Player.fromJSON(JSON.stringify(this.findPlayer(puuid)));
       let playerType = player.getType();
       if(playerType!=PlayerTypesEnum.BASE){
-          if(playerType=PlayerTypesEnum.DETERMINISTIC){
-              
-              player = DeterministicPlayer.fromPlayer(player);
+          switch(playerType){
+              case PlayerTypesEnum.DETERMINISTIC:
+                  player = DeterministicPlayer.fromPlayer(player);
+                  break;
+              case PlayerTypesEnum.REC_DETERMINISTIC:
+                  player = RecursiveDeterministicPlayer.fromPlayer(player);
+                  break
           }
       }
       return player;

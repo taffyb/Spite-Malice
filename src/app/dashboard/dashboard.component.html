@@ -1,16 +1,16 @@
 
 <p>
 <div class="list">
-  <span *ngIf="!gameService.player1Guid || !gameService.player2Guid">New</span>
-  <a *ngIf="gameService.player1Guid && gameService.player2Guid" routerLink="/play-area/new">New</a><p>
+  <span *ngIf="!gameService.puuid1 || !gameService.puuid2">New</span>
+  <a *ngIf="gameService.puuid1 && gameService.puuid2" routerLink="/play-area/new">New</a><p>
   Game Name <input name="gamename" type="text" [(ngModel)]="gameService.name"/><br>  
-  Player 1 <select name="player1" [(ngModel)]="gameService.player1Guid">
-    <option *ngFor="let player of playerService.getPlayers()" [value]="player.guid">
+  Player 1 <select name="player1" [(ngModel)]="gameService.puuid1">
+    <option *ngFor="let player of playerService.getPlayers()" [value]="player.uuid">
       {{player.name}}
     </option>
   </select><br>
-  Player 2 <select name="player2" [(ngModel)]="gameService.player2Guid">
-    <option *ngFor="let player of playerService.getPlayers()" [value]="player.guid">
+  Player 2 <select name="player2" [(ngModel)]="gameService.puuid2">
+    <option *ngFor="let player of playerService.getPlayers()" [value]="player.uuid">
       {{player.name}}
     </option>
   </select><p>
@@ -18,12 +18,12 @@
   <ul>
   	<li class="list-item" *ngFor="let g of games" >
   		<span *ngIf="!g.isEditable">
-	  		<span (click)="setGame(g.guid)">{{g.name}}</span>
-	  		<a routerLink="/play-area/{{g.guid}}" (click)="g.inPlay=true">[play]</a>
+	  		<span (click)="setGame(g.uuid)">{{g.name}}</span>
+	  		<a routerLink="/play-area/{{g.uuid}}" (click)="g.inPlay=true">[play]</a>
 	  		<span (click)="g.isEditable=true">[edit]</span>
   		</span>
   		<span *ngIf="g.isEditable">
-  			<input name="g.guid" [(ngModel)]="g.name" (focusout)="g.isEditable=false">
+  			<input name="g.uuid" [(ngModel)]="g.name" (focusout)="g.isEditable=false">
   		</span>
   	</li>
   </ul>

@@ -7,12 +7,9 @@ import {Player} from './Player';
 import {Move} from './Move';
 import {SMUtils} from './SMUtils';
 
-import {DealerService} from '../services/Dealer.Service';
-import {MovesService} from '../services/Moves.Service';
-
 export class Game {
   id:number=0;
-  guid: string;
+  uuid: string;
   name: string;
   players:Player[]=[]; 
   centreStacks:number[][]=[[CardsEnum.NO_CARD],[CardsEnum.NO_CARD],[CardsEnum.NO_CARD],[CardsEnum.NO_CARD]];
@@ -24,7 +21,7 @@ export class Game {
   includeJokers:number=4; //maximum 4 (per deck)
 
   constructor() {
-      this.guid=uuid();
+      this.uuid=uuid();
       this.name="New Game"; 
   }
   nextTurn(){
@@ -39,7 +36,7 @@ export class Game {
       let jsonGame=JSON.parse(json);
       
 //      console.log(`Game.fromJSON: ${json}`);
-      game.guid = jsonGame.guid;
+      game.uuid = jsonGame.guid;
       game.name = jsonGame.name;
       jsonGame.players.forEach(p=>{game.players.push(Player.fromJSON(JSON.stringify(p)));});
       game.centreStacks= jsonGame.centreStacks;

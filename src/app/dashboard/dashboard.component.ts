@@ -27,7 +27,7 @@ export class DashboardComponent implements OnInit {
   Suits=SuitsEnum;
   playerStacks:number[][]=[[CardsEnum.NO_CARD],[CardsEnum.NO_CARD],[CardsEnum.NO_CARD],[CardsEnum.NO_CARD]];
 
-  constructor(private gameSvc:GameService,playerSvc:PlayerService) { 
+  constructor(gameSvc:GameService,playerSvc:PlayerService) { 
       this.games = gameSvc.getGames();
       this.playerService=playerSvc;    
       this.gameService=gameSvc;      
@@ -35,9 +35,10 @@ export class DashboardComponent implements OnInit {
 
   ngOnInit() {
   }
+  
   setGame(guid:string){
 //      console.log(`GUID: ${guid}`);
-      this.game = this.gameSvc.getGame(guid);
+      this.game = this.gameService.getGame(guid);
   }
   toFaceNumber(card:number):number{      
       return SMUtils.toFaceNumber(card);

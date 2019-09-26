@@ -17,8 +17,8 @@ import {PlayerService} from './player.service';
 export class GameService {
 
   games:Game[]=[];
-  player1Guid:string;
-  player2Guid:string;
+  puuid1:string;
+  puuid2:string;
   name:string="New";
   
 
@@ -31,12 +31,12 @@ export class GameService {
       let game = new Game();
       game.name=this.name;
       
-      let p:Player= this.playerService.clonePlayer(this.player1Guid);
+      let p:Player= this.playerService.clonePlayer(this.puuid1);
       p.isPrimary=true;
       p.initialiseCards();
       game.players.push(p);
       
-      p = this.playerService.clonePlayer(this.player2Guid);
+      p = this.playerService.clonePlayer(this.puuid2);
       p.initialiseCards();
       game.players.push(p);
       
@@ -47,7 +47,7 @@ export class GameService {
   }
   removeGame(gameId:string){
       this.games.forEach((g,i)=>{
-         if(g.guid==gameId){
+         if(g.uuid==gameId){
              this.games.splice(i,1);
          } 
       });
@@ -68,7 +68,7 @@ export class GameService {
   getGame(guid:string):Game{
       let game:Game;
       this.games.forEach(g=>{
-          if(g.guid==guid){
+          if(g.uuid==guid){
               game = g;
           }
       });

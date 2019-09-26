@@ -6,6 +6,7 @@ import {CardsEnum} from './Enums';
 import {Player} from './Player';
 import {Game} from './Game';
 import {Move} from './Move';
+import {AutoMove} from './AutoMove';
 import {SMUtils} from './SMUtils';
 import {AutoPlayer} from './AutoPlayer';
 
@@ -19,7 +20,7 @@ export class DeterministicPlayer extends AutoPlayer{
     
     static fromPlayer(player:Player):DeterministicPlayer{
         let dp:DeterministicPlayer = new this();
-        dp.guid=player.guid;
+        dp.uuid=player.uuid;
         dp.name=player.name;
         if(player.cards){
             dp.cards= JSON.parse(JSON.stringify(player.cards));
@@ -33,7 +34,7 @@ export class DeterministicPlayer extends AutoPlayer{
 
     findNextMove(game:Game):Move{
         let m:Move;        
-        let moves:Move[];
+        let moves:AutoMove[];
     
         moves=this.validMoves(game);
         if(moves.length>0){
@@ -48,13 +49,13 @@ export class DeterministicPlayer extends AutoPlayer{
         return m;
               
     }
-    findTopMove(moves:Move[]):Move{     
-        let topMoves:Move[]=[];
+    findTopMove(moves:AutoMove[]):AutoMove{     
+        let topMoves:AutoMove[]=[];
         let score:number;  
-        let topMove:Move;
+        let topMove:AutoMove;
     
         if(moves.length>0){
-            moves.sort((n1:Move,n2:Move) => (n1.score - n2.score)*-1);
+            moves.sort((n1:AutoMove,n2:AutoMove) => (n1.score - n2.score)*-1);
 //            console.log(`All Moves: ${JSON.stringify(moves)}`);
             topMoves.push(moves[0]);
             score=moves[0].score;
@@ -69,18 +70,18 @@ export class DeterministicPlayer extends AutoPlayer{
                 }
             }
 //            console.log(`Before sort Top Moves: ${JSON.stringify(topMoves)}`); 
-           topMoves= topMoves.sort((n1:Move,n2:Move) => (n1.score - n2.score)*-1);
+           topMoves= topMoves.sort((n1:AutoMove,n2:AutoMove) => (n1.score - n2.score)*-1);
 //            console.log(`Sorted Top Moves: ${JSON.stringify(topMoves)}`); 
             topMove=topMoves[0];
         }
         
         return topMove; //pick the first top move.
     }
-    private discardMoves(game:Game):Move[]{
+    private discardMoves(game:Game):AutoMove[]{
         let score:number;
-        let allMoves:Move[]=[];
-        let moves:Move[]=[];
-        let m:Move;
+        let allMoves:AutoMove[]=[];
+        let moves:AutoMove[]=[];
+        let m:AutoMove;
         //there is no move identified yet     
         //Discard
             
@@ -89,7 +90,7 @@ export class DeterministicPlayer extends AutoPlayer{
             for(let i=PlayerPositionsEnum.STACK_1;i<=PlayerPositionsEnum.STACK_4;i++){
                 if((this.viewCard(j)!=CardsEnum.NO_CARD) && (SMUtils.toFaceNumber(this.viewCard(j))==SMUtils.toFaceNumber(this.viewTopCard(i))-1)){
                     
-                        m=new Move();
+                        m=new AutoMove();
                         m.from=j;
                         m.card=this.viewCard(j);
                         m.to=i;//but lets not block ourselves
@@ -125,7 +126,7 @@ export class DeterministicPlayer extends AutoPlayer{
             for(let j=PlayerPositionsEnum.HAND_1;j<=PlayerPositionsEnum.HAND_5;j++){
                 if(this.viewCard(j)!=CardsEnum.NO_CARD){
                     for(let i=PlayerPositionsEnum.STACK_1;i<=PlayerPositionsEnum.STACK_4;i++){
-                        m=new Move();
+                        m=new AutoMove();
                         m.from=j;
                         m.card=this.viewCard(j);
                         m.to=i;
@@ -141,11 +142,11 @@ export class DeterministicPlayer extends AutoPlayer{
         
         return allMoves;
     }
-    private validMoves(game:Game):Move[]{
+    private validMoves(game:Game):AutoMove[]{
         let score:number;
-        let allMoves:Move[]=[]
-        let moves:Move[]=[];
-        let m:Move;
+        let allMoves:AutoMove[]=[]
+        let moves:AutoMove[]=[];
+        let m:AutoMove;
         
         for(let pos=0;pos<=PlayerPositionsEnum.STACK_4;pos++){
             if(SMUtils.toFaceNumber(this.viewCard(pos))==CardsEnum.NO_CARD){
@@ -153,7 +154,7 @@ export class DeterministicPlayer extends AutoPlayer{
             }
             switch(pos){
             
-                case PlayerPositionsEnum.PILE:
+                case PlayerPositionsEnum.PILE: 
                     moves=[];
                     
 //                    Posible moves from Pile
@@ -161,7 +162,7 @@ export class DeterministicPlayer extends AutoPlayer{
                     for(let s=0;s<=GamePositionsEnum.STACK_4;s++){
                         if(SMUtils.toFaceNumber(this.viewCard(pos))==CardsEnum.JOKER || 
                         SMUtils.toFaceNumber(this.viewCard(pos))==SMUtils.toFaceNumber(game.viewTopOfStack(s))+1){
-                          m=new Move();
+                          m=new AutoMove();
                           m.from=pos;
                           m.card=this.viewCard(pos);
                           m.to=GamePositionsEnum.BASE+s;
@@ -184,7 +185,7 @@ export class DeterministicPlayer extends AutoPlayer{
                     for(let s=0;s<=GamePositionsEnum.STACK_4;s++){
                         if(SMUtils.toFaceNumber(this.viewCard(pos))==CardsEnum.JOKER || 
                         SMUtils.toFaceNumber(this.viewCard(pos))==SMUtils.toFaceNumber(game.viewTopOfStack(s))+1){
-                          m=new Move();
+                          m=new AutoMove();
                           m.from=pos;
                           m.card=this.viewCard(pos);
                           m.to=GamePositionsEnum.BASE+s;
@@ -200,7 +201,7 @@ export class DeterministicPlayer extends AutoPlayer{
                     
                     for(let s=PlayerPositionsEnum.STACK_1;s<=PlayerPositionsEnum.STACK_4;s++){
                         if(SMUtils.toFaceNumber(this.viewCard(s))==CardsEnum.NO_CARD){
-                          m=new Move();
+                          m=new AutoMove();
                           m.from=pos;
                           m.card=this.viewCard(pos);
                           m.to=s;
@@ -222,7 +223,7 @@ export class DeterministicPlayer extends AutoPlayer{
                     for(let s=0;s<=GamePositionsEnum.STACK_4;s++){
                         if(SMUtils.toFaceNumber(this.viewTopCard(pos))==CardsEnum.JOKER || 
                         SMUtils.toFaceNumber(this.viewTopCard(pos))==SMUtils.toFaceNumber(game.viewTopOfStack(s))+1){
-                          m=new Move();
+                          m=new AutoMove();
                           m.from=pos;
                           m.card=this.viewTopCard(pos);
                           m.to=GamePositionsEnum.BASE+s;
@@ -238,7 +239,7 @@ export class DeterministicPlayer extends AutoPlayer{
             
         return allMoves;
     }
-    lookAhead(game:Game,move:Move):number{
+    lookAhead(game:Game,move:AutoMove):number{
         let modifier:number=0;
         game= Game.fromJSON(JSON.stringify(game));
         if(!move.isDiscard){
@@ -261,7 +262,7 @@ export class DeterministicPlayer extends AutoPlayer{
                 }
                 
 //                Can I now move another card
-                let moves:Move[] = this.validMoves(game);
+                let moves:AutoMove[] = this.validMoves(game);
                 if(moves.length>0){
                     
                     modifier+= this.findTopMove(moves).score;
