@@ -13,7 +13,7 @@ import {TurnEnum} from '../classes/Enums';
 })
 export class MovesService {
   private turns:Turn[]=[];
-  subscriber:IMoveSubscriber;
+  subscribers:IMoveSubscriber[];
   
 
   constructor() { }
@@ -48,10 +48,10 @@ export class MovesService {
   }
   
   subscribeToChanges(subscriber:IMoveSubscriber){
-      this.subscriber=subscriber;
+      this.subscribers.push(subscriber);
   }
   private publish(move:Move){
-      this.subscriber.onNewMoves([move]);
+      this.subscribers.forEach(s=>{s.onNewMoves([move]);});
       
   }
   private undoMove(move:Move):Move{
@@ -111,13 +111,13 @@ export class MovesService {
                   console.log(`[moves.service.undo] move:${JSON.stringify(move)}`);
                   if(move.isDiscard){
                       console.log(`[moves.service.undo] call onUndoActivePlayer()`);
-                      this.subscriber.onUndoActivePlayer();
+                      this.subscribers.forEach(s=>{s.onUndoActivePlayer();});
                   }
               }
               
           }
           
-          this.subscriber.onUndo(undoMoves);  
+          this.subscribers.forEach(s=>{s.onUndo(undoMoves);});  
       }           
   }
   saveTurn(){
