@@ -45,7 +45,8 @@ export class DeterministicPlayer extends AutoPlayer{
             m=this.findTopMove(moves);
         }
            
-        console.log(`Move: {discard:${m.isDiscard}, from:${m.from},card:${SMUtils.toFaceNumber(m.card)},to:${m.to} [${JSON.stringify(m)}]`);
+//        console.log(`Move: {discard:${m.isDiscard}, from:${m.from},card:${SMUtils.toFaceNumber(m.card)},to:${m.to} [${JSON.stringify(m)}]`);
+        m.puuid=this.uuid;
         return m;
               
     }

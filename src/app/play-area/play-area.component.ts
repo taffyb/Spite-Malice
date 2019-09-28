@@ -7,6 +7,8 @@ import {IAutoplay} from '../classes/IAutoplay';
 import {DeterministicPlayer} from '../classes/DeterministicPlayer';
 import {Move} from '../classes/Move';
 import {Turn} from '../classes/Turn';
+import {Deal} from '../classes/Deal';
+import {PlayerSwitch} from '../classes/PlayerSwitch';
 import {IMoveSubscriber} from '../classes/IMoveSubscriber';
 
 import {DealerService} from '../services/dealer.service';
@@ -152,6 +154,7 @@ export class PlayAreaComponent implements OnInit, IMoveSubscriber {
   }
   moveTo(stack:number){
       let move:Move = new Move();
+//      console.log(`activePlayer: ${this.game.activePlayer} uuid:${this.game.players[this.game.activePlayer].uuid}`);
       move.puuid= this.game.players[this.game.activePlayer].uuid;
       let sCount:number=0;
       move.from = this.fromPosition;
@@ -183,6 +186,7 @@ export class PlayAreaComponent implements OnInit, IMoveSubscriber {
          move.isDiscard=true;
          this.isPendingDiscard=false;
       }
+      
       this.moveSvc.addMove(move);
       this.fromPosition=-1;
       this.toPosition=-1;
@@ -256,8 +260,8 @@ export class PlayAreaComponent implements OnInit, IMoveSubscriber {
           }else if(m.to>PlayerPositionsEnum.STACK_4){
               this.game.centreStacks[m.to-GamePositionsEnum.BASE].push(m.card);
           }else{
-              player.addCard(m.card,m.to);    
-          }          
+              this.zone.run(() =>{player.addCard(m.card,m.to); });   
+          }    
       });
   }
   onNewMoves(moves:Move[]){
@@ -273,9 +277,10 @@ export class PlayAreaComponent implements OnInit, IMoveSubscriber {
           }
           if(m.isDiscard){
     //          console.log(`Discard: ${JSON.stringify(moves)}`);
-              let deal:Turn;
+              let deal:Deal;
               deal=this.dealer.fillHand(this.game.players[nextPlayer],this.game);
               this.moveSvc.addTurn(deal);
+              this.moveSvc.addTurn(new PlayerSwitch());
               this.zone.run(() => this.setActivePlayer(nextPlayer)); 
               this.game.nextTurn();
           }else{
@@ -283,7 +288,9 @@ export class PlayAreaComponent implements OnInit, IMoveSubscriber {
               this.zone.run(() => null);
           }
           if(this.game.players[this.game.activePlayer].cardsInHand()==0){
-              this.zone.run(() => this.dealer.fillHand(this.game.players[this.game.activePlayer],this.game));
+              let deal:Deal = this.dealer.fillHand(this.game.players[this.game.activePlayer],this.game);
+              this.moveSvc.addTurn(deal);
+//              this.zone.run(() => this.dealer.fillHand(this.game.players[this.game.activePlayer],this.game));
           }
 //          console.log(`m.to=${m.to} card=${this.toFaceNumber(this.viewTopOfStack(m.to-GamePositionsEnum.BASE))}`);
           if(m.to>=GamePositionsEnum.BASE+GamePositionsEnum.STACK_1 && 

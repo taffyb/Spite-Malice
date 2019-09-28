@@ -68,6 +68,7 @@ export class RecursiveDeterministicPlayer extends AutoPlayer{
         }
            
 //        console.log(`Move: ${SMUtils.moveToString(m)}`);
+        m.puuid=this.uuid;
         return m;              
     }
     findTopMove(moves:AutoMove[]):AutoMove{    
