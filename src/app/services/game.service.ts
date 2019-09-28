@@ -46,6 +46,7 @@ export class GameService {
       return game;
   }
   removeGame(gameId:string){
+      
       this.games.forEach((g,i)=>{
          if(g.uuid==gameId){
              this.games.splice(i,1);

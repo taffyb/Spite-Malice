@@ -144,7 +144,7 @@ export class DealerService {
 //          game.recyclePile.push(cards[c]);
 //      }
 //  }
-  fillHand(player:Player,game:Game):Turn{
+  fillHand(player:Player,game:Game):Deal{
       let c:number=0;
       let deal:Deal=new Deal();
       let move:Move;

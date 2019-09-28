@@ -31,7 +31,7 @@ export class Player {
   static fromJSON(JSONString:string):Player{
       let newPlayer:Player= new this();
       let p=JSON.parse(JSONString);
-      newPlayer.uuid=p.guid;
+      newPlayer.uuid=p.uuid;
       newPlayer.type=p.type;
       newPlayer.name=p.name;
       newPlayer.cards=p.cards;

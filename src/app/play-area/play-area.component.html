@@ -22,7 +22,7 @@
 			<th>Player</th>
 			<th class="left" >Pile</th>
 			<th class="left" colspan=5>Hand</th>
-			<th class="left" colspan=4>Stack</th>
+			<th class="left" colspan=4>Stack {{p.isStackFull()}}</th>
 		</tr>
 		<!--  Main player row -->
 		<tr >
@@ -164,7 +164,8 @@
 									<card pos="{{pos}}" cardNo="{{Cards.NO_CARD}}"></card>
 								</span>
 								<!-- if the selected card is from the HAND -->
-								<span *ngIf="fromPosition>=PlayerPositions.HAND_1 && PlayerPositions.HAND_5>=fromPosition">				            
+								<span *ngIf="fromPosition>=PlayerPositions.HAND_1 && PlayerPositions.HAND_5>=fromPosition">	
+									<!-- All stacks have at least one card -->          
 					    			<span (mouseover)="toggleTarget(pos)" 
 									      (mouseout)="toggleTarget(-1)" 
 								          (click)="moveTo(pos)">

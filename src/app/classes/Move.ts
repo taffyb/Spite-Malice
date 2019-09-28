@@ -4,5 +4,5 @@ export class Move{
     card: number;
     to: number;
     isDiscard:boolean=false;
-    
+    isUndo:boolean=false;    
 }
