@@ -13,7 +13,7 @@ import {TurnEnum} from '../classes/Enums';
 })
 export class MovesService {
   private turns:Turn[]=[];
-  subscribers:IMoveSubscriber[];
+  subscribers:IMoveSubscriber[]=[];
   
 
   constructor() { }
@@ -32,6 +32,7 @@ export class MovesService {
       this.turns.push(new Turn());
   }
   addTurn(turn:Turn){
+      console.log(`[move.service.addTurn]: ${JSON.stringify(turn)}`);
       this.turns.push(turn);
   }
   addMove(move:Move){
@@ -43,7 +44,7 @@ export class MovesService {
 //          console.log(`Turn: ${JSON.stringify(this.turns[this.turns.length-1])}`);
           this.addTurn(new Turn());
       }
-     console.log(`move: ${SMUtils.moveToString(move)}`);
+      console.log(`[move.service.addMove]: ${SMUtils.moveToString(move)}`);
       this.publish(move);
   }
   
@@ -68,12 +69,16 @@ export class MovesService {
           let currentTurn:Turn=this.turns[this.turns.length-1];
           switch(currentTurn.type){
           case TurnEnum.PLAYER:
+              console.log(`Undo Player Turn`);
               break;
           case TurnEnum.DEALER:
+              console.log(`Undo Dealer Turn`);
               break;
           case TurnEnum.RECYCLE:
+              console.log(`Undo Recycle Turn`);
               break;
           case TurnEnum.PLAYER_SWITCH:
+              console.log(`Undo Player Switch`);
               break;
           }
           if(this.turns[this.turns.length-1].moves.length>0){

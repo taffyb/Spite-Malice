@@ -114,8 +114,6 @@ export class PlayAreaComponent implements OnInit, IMoveSubscriber {
           while(!move.isDiscard){
               move = player.findNextMove(this.game);
               this.moveSvc.addMove(move);
-//              this.zone.run(() => 
-//              this.onNewMoves([move]));
           }
       }
   }
@@ -135,9 +133,9 @@ export class PlayAreaComponent implements OnInit, IMoveSubscriber {
       }
       this.setActivePlayer(ap);
   }
-  toggleMoveFrom(player:number,position:number){
+  toggleMoveFrom(ap:number,position:number){
 //      console.log(`toggleMoveFrom(position:${position})`);
-      if(player == this.game.activePlayer){
+      if(ap == this.game.activePlayer){
           if(position==this.fromPosition){
               this.zone.run(() => this.fromPosition =-1);
           }else{
