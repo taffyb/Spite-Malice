@@ -195,4 +195,12 @@ export class Player {
       if(this.cards[PlayerPositionsEnum.HAND_5]>0){cards++;}
       return cards;
   }
+  isStackFull():boolean{
+      const i:number = this.cards[PlayerPositionsEnum.STACK_4].length;
+      const isFull:boolean = (this.cards[PlayerPositionsEnum.STACK_1].length>1 &&
+                              this.cards[PlayerPositionsEnum.STACK_2].length>1 &&
+                              this.cards[PlayerPositionsEnum.STACK_3].length>1 &&
+                              this.cards[PlayerPositionsEnum.STACK_4].length>1)
+      return isFull;
+  }
 }

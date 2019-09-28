@@ -22,7 +22,7 @@
 			<th>Player</th>
 			<th class="left" >Pile</th>
 			<th class="left" colspan=5>Hand</th>
-			<th class="left" colspan=4>Stack</th>
+			<th class="left" colspan=4>Stack {{p.isStackFull()}}</th>
 		</tr>
 		<!--  Main player row -->
 		<tr >
@@ -114,13 +114,17 @@
 								<span *ngIf="(fromPosition>=PlayerPositions.HAND_1 && fromPosition<=PlayerPositions.HAND_5)">
 									<!-- the position is from the stack -->
 									<span *ngIf="(pos>=PlayerPositions.STACK_1 && pos<=PlayerPositions.STACK_4)">
-										<!-- This is the only card on the stack -->
-										<span *ngIf="p.cards[pos].length==2">
+										<!-- This is the only card on the stack and stack is full-->
+										<span *ngIf="p.cards[pos].length==2 && p.isStackFull()">
 							    			<span (mouseover)="toggleTarget(pos)" 
 												  (mouseout)="toggleTarget(-1)" 
 									              (click)="moveTo(pos)">
 									              <card pos="{{pos}}" cardNo="{{p.viewCard(pos)}}"></card>
 									        </span>
+										</span>
+										<!-- This is the only card on the stack and stack is NOT full-->
+										<span *ngIf="p.cards[pos].length==2 && !p.isStackFull()">
+									         <card pos="{{pos}}" cardNo="{{p.viewCard(pos)}}"></card>
 										</span>
 										<!-- 
 											There is more than one card on the stack 
@@ -160,7 +164,8 @@
 									<card pos="{{pos}}" cardNo="{{Cards.NO_CARD}}"></card>
 								</span>
 								<!-- if the selected card is from the HAND -->
-								<span *ngIf="fromPosition>=PlayerPositions.HAND_1 && PlayerPositions.HAND_5>=fromPosition">				            
+								<span *ngIf="fromPosition>=PlayerPositions.HAND_1 && PlayerPositions.HAND_5>=fromPosition">	
+									<!-- All stacks have at least one card -->          
 					    			<span (mouseover)="toggleTarget(pos)" 
 									      (mouseout)="toggleTarget(-1)" 
 								          (click)="moveTo(pos)">
