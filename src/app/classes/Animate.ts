@@ -6,15 +6,15 @@ import {
   state
 } from '@angular/animations';
 
-export const slidingDoorAnimation = trigger('slidingDoorAnimation', 
+export const slidingCardAnimation = trigger('slidingCardAnimation', 
   [
-    state('in', 
-      style({ width: '{{ inWidth }}', overflow:'hidden'}),
-      { params: { inWidth: '250px'}}
+    state('start', 
+      style({position: 'fixed', top: '{{ sTop }}', left:'{{ sLeft }}'}),
+      { params: { sTop: '250px',sLeft:''}}
     ),
-    state('out', 
-      style({ width: '{{ outWidth }}'}),
-      { params: { outWidth: '*'}}
+    state('end', 
+      style({ top: '{{ eTop }}', left:'{{ eLeft }}'}),
+      { params: { eTop: '250px',eLeft:''}}
     ),
     transition('* <=> *',animate('{{ time }}'))
   ]
