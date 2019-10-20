@@ -8,7 +8,7 @@ import {GameService} from './services/game.service';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  title = 'my-app';
+  title = 'Spite & Malice';
   activeTab:number=TabsEnum.DEFAULT;
   Tabs=TabsEnum;
   gameService:GameService;

@@ -214,7 +214,7 @@ export class TestGames{
         const c=CardsEnum;
         
         let game:Game=new Game();
-        game.name="collapsing stack";
+        game.name="undo joker";
         let player:Player=new Player();
         player.initialiseCards();
         
@@ -224,7 +224,7 @@ export class TestGames{
         player.cards[pp.HAND_1]=s.HEARTS+c.ACE;
         player.cards[pp.HAND_2]=s.HEARTS+c.THREE;
         player.cards[pp.HAND_3]=s.HEARTS+c.NINE;
-        player.cards[pp.HAND_4]=s.HEARTS+c.JACK;
+        player.cards[pp.HAND_4]=c.JOKER;
         player.cards[pp.HAND_5]=s.SPADES+c.FIVE;
         player.cards[pp.STACK_1]=[c.NO_CARD];
         player.cards[pp.STACK_2]=[c.NO_CARD,s.HEARTS+c.FOUR];
@@ -262,7 +262,7 @@ export class TestGames{
                                       s.DIAMONDS+c.TEN,
                                       s.DIAMONDS+c.JACK,
                                       s.DIAMONDS+c.QUEEN];
-        game.centreStacks[gp.STACK_2]=[c.NO_CARD];
+        game.centreStacks[gp.STACK_2]=[s.HEARTS+c.EIGHT];
         game.centreStacks[gp.STACK_3]=[c.NO_CARD];
         game.centreStacks[gp.STACK_4]=[c.NO_CARD];
         
