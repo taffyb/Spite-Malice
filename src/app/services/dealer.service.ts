@@ -7,6 +7,8 @@ import {Move} from '../classes/Move';
 import {PlayerPositionsEnum} from '../classes/Enums';
 import {GamePositionsEnum} from '../classes/Enums';
 import {CardsEnum} from '../classes/Enums';
+import {TurnEnum} from '../classes/Enums';
+import {MovesService} from '../services/moves.service';
 
 @Injectable({
   providedIn: 'root'
@@ -16,7 +18,7 @@ export class DealerService {
 //  recyclePile:number[]=[]; 
   decks:number=2; //default play with two decks
 
-  constructor() {
+  constructor(private movesSvc:MovesService) {
       this.fillDeck();
   }
   fillDeck(){
@@ -161,6 +163,7 @@ export class DealerService {
               move.card=nextCard;
               move.to=i;
               deal.moves.push(move);
+              this.movesSvc.addMove(move, TurnEnum.DEALER);
               player.addCard(nextCard,i);              
           }          
       }

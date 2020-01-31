@@ -66,7 +66,7 @@ export class SMUtils{
     
         str+= " ".repeat(depth);
         if(m instanceof AutoMove){
-            str+=`${(m.previousMove?"prev<= ":" ")}[${m.card}/${this.toFaceNumber(m.card)}]${m.from}->${m.to} ${m.score?'<'+m.score+'>':''} ${m.isDiscard?"Discard":""}`;
+            str+=`${(m.previousMove?"prev<= ":" ")}[${m.card}/${CardsEnum[this.toFaceNumber(m.card)]}]${m.from}->${m.to} ${m.score?'<'+m.score+'>':''} ${m.isDiscard?"Discard":""}`;
             if(m.nextMoves){
                 depth+=1;
                 m.nextMoves.forEach(m=>{

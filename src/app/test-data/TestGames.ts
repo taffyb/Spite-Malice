@@ -220,9 +220,13 @@ export class TestGames{
         
         player.name="Player 1";
         player.cards[pp.PILE]=[c.NO_CARD,
-                               s.HEARTS+c.ACE];
+                               s.CLUBS+c.NINE,
+                               s.CLUBS+c.TEN,
+                               s.CLUBS+c.SEVEN,
+                               s.CLUBS+c.EIGHT,
+                               s.HEARTS+c.TWO];
         player.cards[pp.HAND_1]=s.HEARTS+c.ACE;
-        player.cards[pp.HAND_2]=s.HEARTS+c.THREE;
+        player.cards[pp.HAND_2]=s.HEARTS+c.KING;
         player.cards[pp.HAND_3]=s.HEARTS+c.NINE;
         player.cards[pp.HAND_4]=c.JOKER;
         player.cards[pp.HAND_5]=s.SPADES+c.FIVE;
@@ -238,14 +242,14 @@ export class TestGames{
         player.name="Player 2";
         player.cards[pp.PILE]=[c.NO_CARD,
                                s.CLUBS+c.ACE];
-        player.cards[pp.HAND_1]=s.HEARTS+c.ACE;
-        player.cards[pp.HAND_2]=s.HEARTS+c.THREE;
-        player.cards[pp.HAND_3]=s.HEARTS+c.NINE;
-        player.cards[pp.HAND_4]=s.HEARTS+c.JACK;
+        player.cards[pp.HAND_1]=c.NO_CARD;
+        player.cards[pp.HAND_2]=c.NO_CARD;
+        player.cards[pp.HAND_3]=c.NO_CARD;
+        player.cards[pp.HAND_4]=c.NO_CARD;
         player.cards[pp.HAND_5]=s.SPADES+c.FIVE;
-        player.cards[pp.STACK_1]=[c.NO_CARD,s.HEARTS+c.FIVE];
-        player.cards[pp.STACK_2]=[c.NO_CARD,s.SPADES+c.FOUR];
-        player.cards[pp.STACK_3]=[c.NO_CARD,s.DIAMONDS+c.NINE];
+        player.cards[pp.STACK_1]=[c.NO_CARD];
+        player.cards[pp.STACK_2]=[c.NO_CARD];
+        player.cards[pp.STACK_3]=[c.NO_CARD];
         player.cards[pp.STACK_4]=[c.NO_CARD];
         game.players.push(player);
         
@@ -262,7 +266,7 @@ export class TestGames{
                                       s.DIAMONDS+c.TEN,
                                       s.DIAMONDS+c.JACK,
                                       s.DIAMONDS+c.QUEEN];
-        game.centreStacks[gp.STACK_2]=[s.HEARTS+c.EIGHT];
+        game.centreStacks[gp.STACK_2]=[s.HEARTS+c.FOUR];
         game.centreStacks[gp.STACK_3]=[c.NO_CARD];
         game.centreStacks[gp.STACK_4]=[c.NO_CARD];
         

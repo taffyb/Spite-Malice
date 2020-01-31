@@ -18,6 +18,7 @@ import {GameService} from '../services/game.service';
 import {PlayerPositionsEnum} from '../classes/Enums';
 import {GamePositionsEnum} from '../classes/Enums';
 import {CardsEnum} from '../classes/Enums';
+import {TurnEnum} from '../classes/Enums';
 import {Game} from '../classes/Game';
 import {SMUtils} from '../classes/SMUtils';
 
@@ -115,7 +116,6 @@ export class PlayAreaComponent implements OnInit, IMoveSubscriber {
           this.onNewMoves([move]);
           while(!move.isDiscard){
               move = player.findNextMove(this.game);
-              this.moveSvc.addMove(move);
           }
       }
   }
@@ -123,7 +123,7 @@ export class PlayAreaComponent implements OnInit, IMoveSubscriber {
       let player:Player=this.game.players[this.game.activePlayer];
       if((player instanceof AutoPlayer)){
           let move:Move = player.findNextMove(this.game);
-          this.moveSvc.addMove(move);
+          this.moveSvc.addMove(move,TurnEnum.PLAYER);
 //          this.onNewMoves([move]);
       }   
   }
@@ -187,7 +187,7 @@ export class PlayAreaComponent implements OnInit, IMoveSubscriber {
          this.isPendingDiscard=false;
       }
       
-      this.moveSvc.addMove(move);
+      this.moveSvc.addMove(move,TurnEnum.PLAYER);
       this.fromPosition=-1;
       this.toPosition=-1;
   }
@@ -228,86 +228,93 @@ export class PlayAreaComponent implements OnInit, IMoveSubscriber {
   }
   onUndo(moves:Move[]){
       let player:Player;
-      moves.forEach(m=>{   
-          //determine the player who made the move
-          this.game.players.forEach(p=>{
-             if(p.uuid==m.puuid){
-                 player=p;
-             }
-          });
-          
-          //If it is from a center stack
-//          console.log(`${JSON.stringify(m)}`);
-          if(m.from>GamePositionsEnum.BASE){
-             if(m.from==GamePositionsEnum.RECYCLE_PILE){
-                 this.game.recyclePile.pop();
-                 this.game.centreStacks[m.to-GamePositionsEnum.BASE].push(m.card);
-                 
-             }else{
-                 this.game.centreStacks[m.from-GamePositionsEnum.BASE].pop();
-             }
+      let m:Move;
+  console.log(`UNDO ${SMUtils.movesToString(moves)}`);
+      for(let i:number=0;i<moves.length;i++){
+        m=moves[i]; 
+//      moves.forEach(m=>{ 
+          if(m.hasOwnProperty('card')){
+              console.log(`onUndo: ${SMUtils.moveToString(m)}`);
+              //determine the player who made the move
+              this.game.players.forEach(p=>{
+                 if(p.uuid==m.puuid){
+                     player=p;
+                 }
+              });
+              
+              //If it is from a center stack
+              if(m.from>GamePositionsEnum.BASE){
+                 if(m.from==GamePositionsEnum.RECYCLE_PILE){
+                     this.game.recyclePile.pop();
+                     this.game.centreStacks[m.to-GamePositionsEnum.BASE].push(m.card);  
+                     if(SMUtils.toFaceNumber(this.game.viewTopOfStack(m.to-GamePositionsEnum.BASE))==CardsEnum.QUEEN){
+                         this.game.recyclePile.pop();
+                         this.game.recyclePile.pop();
+                     }
+                 }else{
+                     this.game.centreStacks[m.from-GamePositionsEnum.BASE].pop();
+                 }              
+              }
+              
+              //If it is from a Player stack
+              if(m.from>=PlayerPositionsEnum.STACK_1 && m.from<=PlayerPositionsEnum.STACK_4){
+                  player.cards[m.from].pop();
+              }
+              
+              if(m.to==GamePositionsEnum.DECK){
+                  this.dealer.returnCard(m.card);
+                  this.game.players[this.game.activePlayer].cards[m.from]=CardsEnum.NO_CARD;
+              }else if(m.to>PlayerPositionsEnum.STACK_4){
+                  this.game.centreStacks[m.to-GamePositionsEnum.BASE].push(m.card);
+              }else{
+                  player.addCard(m.card,m.to) 
+              }  
+          }else{
+             console.log(`onUndo: PLAYER_SWITCH`);
+             this.onUndoActivePlayer(); 
              
           }
-          
-          //If it is from a Player stack
-          if(m.from>=PlayerPositionsEnum.STACK_1 && m.from<=PlayerPositionsEnum.STACK_4){
-              player.cards[m.from].pop();
-          }
-          
-          //If it it is going back to the deck
-          if(m.to==GamePositionsEnum.DECK){
-              this.dealer.returnCard(m.card);
-          }else if(m.to>PlayerPositionsEnum.STACK_4){
-              this.game.centreStacks[m.to-GamePositionsEnum.BASE].push(m.card);
-          }else{
-              this.zone.run(() =>{player.addCard(m.card,m.to); });   
-          }    
-      });
+//      });
+      }
   }
   onNewMoves(moves:Move[]){
       moves.forEach(m=>{   
-          let nextPlayer = (this.game.activePlayer+1<this.game.players.length?this.game.activePlayer+1:0);
-     
-          this.game.players[this.game.activePlayer].removeCard(m.from);
-          if(m.to<=PlayerPositionsEnum['STACK_4']){
-              this.game.players[this.game.activePlayer].addCard(m.card,m.to);
-          }else{
-    //          console.log(`m.to:${m.to} GamePositionsEnum.BASE:${GamePositionsEnum.BASE}`);
-              this.game.centreStacks[m.to-GamePositionsEnum.BASE].push(m.card);
-          }
-          if(m.isDiscard){
-    //          console.log(`Discard: ${JSON.stringify(moves)}`);
-              let deal:Deal;
-              deal=this.dealer.fillHand(this.game.players[nextPlayer],this.game);
-              this.moveSvc.addTurn(deal);
-              this.moveSvc.addTurn(new PlayerSwitch());
-              this.zone.run(() => this.setActivePlayer(nextPlayer)); 
-              this.game.nextTurn();
-          }else{
-    //          console.log(`Move: ${JSON.stringify(moves)}`);
-              this.zone.run(() => null);
-          }
-          if(this.game.players[this.game.activePlayer].cardsInHand()==0){
-              let deal:Deal = this.dealer.fillHand(this.game.players[this.game.activePlayer],this.game);
-              this.moveSvc.addTurn(deal);
-//              this.zone.run(() => this.dealer.fillHand(this.game.players[this.game.activePlayer],this.game));
-          }
-//          console.log(`m.to=${m.to} card=${this.toFaceNumber(this.viewTopOfStack(m.to-GamePositionsEnum.BASE))}`);
-          if(m.to>=GamePositionsEnum.BASE+GamePositionsEnum.STACK_1 && 
-                  (this.toFaceNumber(this.viewTopOfStack(m.to-GamePositionsEnum.BASE))==CardsEnum.KING)){
-              let stack:number[]= this.game.centreStacks[m.to-GamePositionsEnum.BASE];
-//              console.log(`Recycle centre stack: ${m.to} ${JSON.stringify(this.game.centreStacks[m.to-GamePositionsEnum.BASE])}`);
-              this.moveSvc.addRecycle(stack,m.to);
-              this.game.addToRecyclePile(stack,this.game);
-              this.game.centreStacks[m.to-GamePositionsEnum.BASE]=[CardsEnum.NO_CARD]
-          }
-          if(m.from==PlayerPositionsEnum.PILE && this.game.players[this.game.activePlayer].viewCard(m.from)==CardsEnum.NO_CARD){
-    //        Game Over
-              let otherPlayer:number = (this.game.activePlayer-1>=0?0:1);
-              this.game.gameOver=`${this.game.players[this.game.activePlayer].name}  won!.\n`+
-                  `${this.game.players[otherPlayer].name} still had `+
-                  `${this.game.players[otherPlayer].cards[PlayerPositionsEnum.PILE].length-1} card`+
-                  `${(this.game.players[otherPlayer].cards[PlayerPositionsEnum.PILE].length-1)==1?'':'s'} left.`;
+          if(m.hasOwnProperty('card')){
+              console.log(`Perform Move: ${SMUtils.moveToString(m)}`);
+              let nextPlayer = (this.game.activePlayer+1<this.game.players.length?this.game.activePlayer+1:0);
+         
+              this.game.players[this.game.activePlayer].removeCard(m.from);
+              if(m.to<=PlayerPositionsEnum['STACK_4']){
+                  this.game.players[this.game.activePlayer].addCard(m.card,m.to);
+              }else{
+                  this.game.centreStacks[m.to-GamePositionsEnum.BASE].push(m.card);
+              }
+              if(m.isDiscard){
+                  this.moveSvc.addMove(new Move(),TurnEnum.PLAYER_SWITCH);
+                  this.toggleActivePlayer();
+                  this.dealer.fillHand(this.game.players[nextPlayer],this.game);
+                  this.zone.run(() => this.setActivePlayer(nextPlayer)); 
+              }else{
+                  this.zone.run(() => null);
+              }
+              if(this.game.players[this.game.activePlayer].cardsInHand()==0){
+                  let deal:Deal = this.dealer.fillHand(this.game.players[this.game.activePlayer],this.game);
+              }
+              if(m.to>=GamePositionsEnum.BASE+GamePositionsEnum.STACK_1 && 
+                      (this.toFaceNumber(this.viewTopOfStack(m.to-GamePositionsEnum.BASE))==CardsEnum.KING)){
+                  let stack:number[]= this.game.centreStacks[m.to-GamePositionsEnum.BASE];
+                  this.moveSvc.addRecycle(stack,m.to);
+                  this.game.addToRecyclePile(stack,this.game);
+                  this.game.centreStacks[m.to-GamePositionsEnum.BASE]=[CardsEnum.NO_CARD]
+              }
+              if(m.from==PlayerPositionsEnum.PILE && this.game.players[this.game.activePlayer].viewCard(m.from)==CardsEnum.NO_CARD){
+        //        Game Over
+                  let otherPlayer:number = (this.game.activePlayer-1>=0?0:1);
+                  this.game.gameOver=`${this.game.players[this.game.activePlayer].name}  won!.\n`+
+                      `${this.game.players[otherPlayer].name} still had `+
+                      `${this.game.players[otherPlayer].cards[PlayerPositionsEnum.PILE].length-1} card`+
+                      `${(this.game.players[otherPlayer].cards[PlayerPositionsEnum.PILE].length-1)==1?'':'s'} left.`;
+              } 
           }
       });
   }
