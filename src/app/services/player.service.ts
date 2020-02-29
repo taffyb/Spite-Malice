@@ -19,6 +19,14 @@ export class PlayerService {
       p.name="Suzannah";
       this.players.push(p);
       
+      p=new Player();
+      p.name="Player 1";
+      this.players.push(p);
+      
+      p=new Player();
+      p.name="Player 2";
+      this.players.push(p);
+ /*     
       p=new DeterministicPlayer();
       p.name="Dannie D.";   
       this.players.push(p); 
@@ -30,7 +38,7 @@ export class PlayerService {
       p=new RecursiveDeterministicPlayer();
       p.name="Roger D.";   
       this.players.push(p); 
-      
+   */   
       
   }
   findPlayer(puuid:string):Player{

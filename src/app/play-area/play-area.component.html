@@ -13,7 +13,7 @@
 	<img src="../assets/theend.webp"  height="350" width="500"> 
 </div>
 <div *ngIf="!game.gameOver">
-   Is Full Auto: <tb-toggle [(state)]="isFullAuto" ></tb-toggle><p>
+ <!--   Is Full Auto: <tb-toggle [(state)]="isFullAuto" ></tb-toggle><p> -->
    <div class="player-hand" *ngFor="let p of game.players;let pIdx=index">
 	
 	 <table class="player-hand">
@@ -353,5 +353,6 @@
 			</tr>
 		</table>
   </div>
-  <span class="button" (click)="saveGame()">Save Game</span><span>&nbsp;</span><span class="button" (click)="undo()">Undo</span><p>
+  <!-- <span class="button" (click)="saveGame()">Save Game</span><span>&nbsp;</span> -->
+  <span class="button" (click)="undo()">Undo</span><p>
 </div>

@@ -12,10 +12,10 @@ export class TestGames{
     games:Game[]=[];
    
     constructor(){
-        this.games.push(this.testGame_1());
-        this.games.push(this.testGame_2());
-        this.games.push(this.testGame_3());
-        this.games.push(this.testGame_4());
+//        this.games.push(this.testGame_1());
+//        this.games.push(this.testGame_2());
+//        this.games.push(this.testGame_3());
+//        this.games.push(this.testGame_4());
     }
 
     /*
