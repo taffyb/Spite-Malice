@@ -6,7 +6,7 @@ import { CardAnimation } from '../classes/CardAnimation';
 
 @Component({
     selector: 'card',
-    template: `<div id="c{{pos}}"><img  src="/assets/cards/{{filename()}}"/></div>`,
+    template: `<div id="c{{pos}}"><img  src="assets/cards/{{filename()}}"/></div>`,
     styles: [`
         :host {
           float: left;
