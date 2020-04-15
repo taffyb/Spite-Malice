@@ -33,12 +33,12 @@ export class PlayerService {
       
       p=new DeterministicPlayer();
       p.name="Doug D.";   
-      this.players.push(p);         
+      this.players.push(p);     
+   */        
 
       p=new RecursiveDeterministicPlayer();
-      p.name="Roger D.";   
-      this.players.push(p); 
-   */   
+      p.name="Robot.";   
+      this.players.push(p);
       
   }
   findPlayer(puuid:string):Player{

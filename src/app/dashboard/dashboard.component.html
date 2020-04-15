@@ -1,9 +1,9 @@
 
 <p>
 <div class="list">
-	<span *ngIf="!gameService.puuid1 || !gameService.puuid2">New</span> <a
+	<span *ngIf="!gameService.puuid1 || !gameService.puuid2">Play</span> <a
 		*ngIf="gameService.puuid1 && gameService.puuid2"
-		routerLink="/play-area/new">New</a>
+		routerLink="/play-area/new">Play</a>
 	<p>
 		Game Name <input
 			name="gamename"
@@ -72,7 +72,7 @@
 		<li>Enter a Name for your game (optional - defaults to 'new')</li>
 		<li>Select a Player from the list for Player 1 (currently there is no ability to create new users - under development)</li>
 		<li>Select a Player from the list for Player 2</li> 
-		<li>Click 'New' (only becomes clickable when name and Player 1 & 2 are set)</li>
+		<li>Click 'Play' (only becomes clickable when Name and Player 1 & 2 are set)</li>
 	</ol>
 	<p>Once a game is complete (or before, if you want to quit), click on the 'X' beside 
 		the name of the game in the tab bar to close the game. Click on the 'Dashboard' tab to return to 

@@ -100,6 +100,9 @@ export class PlayAreaComponent implements OnInit, IMoveSubscriber {
       }
       return retVal;
   }
+  hasAutoPlayer():boolean{
+      return ((this.game.players[0] instanceof AutoPlayer) || (this.game.players[1] instanceof AutoPlayer))
+  }
   ngOnInit() {
   }
   viewTopOfStack(stack:number):number{          

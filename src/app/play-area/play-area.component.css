@@ -44,11 +44,13 @@ th.left {
 .inactive{
 	color:black;
 	font-weight: normal;
+	
 }
 .semiAuto{
 	color:black;
 	background-color:rgb(237,126,27);
 	font-weight: normal;
+	cursor: pointer;
 }
 .fullAuto{
 	color:black;

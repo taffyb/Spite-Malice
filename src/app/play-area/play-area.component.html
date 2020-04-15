@@ -13,7 +13,11 @@
 	<img src="./assets/theend.webp"  height="350" width="500"> 
 </div>
 <div *ngIf="!game.gameOver">
- <!--   Is Full Auto: <tb-toggle [(state)]="isFullAuto" ></tb-toggle><p> -->
+<!-- 
+	<div *ngIf="hasAutoPlayer()">
+    	Is Full Auto: <tb-toggle [(state)]="isFullAuto" ></tb-toggle><p> 
+    </div>
+ -->
    <div class="player-hand" *ngFor="let p of game.players;let pIdx=index">
 	
 	 <table class="player-hand">

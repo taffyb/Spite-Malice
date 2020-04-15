@@ -32,6 +32,7 @@ export class RecursiveDeterministicPlayer extends AutoPlayer{
         return dp;
     }
     findNextMove(game:Game):Move{
+        console.log(`${this.name}: findNextMove`);
         let m:Move;        
         let possibleMoves:AutoMove[]=[];
         let moves:AutoMove[];
@@ -45,7 +46,7 @@ export class RecursiveDeterministicPlayer extends AutoPlayer{
             moves.forEach(m=>{
                 m.score=this.calculateOverallScore(m);
             });
-//            console.log(`all found moves:\n${SMUtils.movesToString(moves)}`);
+            console.log(`all found moves:\n${SMUtils.movesToString(moves)}`);
   
             let bestFinalMove:AutoMove=this.findTopMove(moves);
             if(bestFinalMove){
@@ -58,6 +59,7 @@ export class RecursiveDeterministicPlayer extends AutoPlayer{
                     bestFinalMove=previousMove;
                     delete bestFinalMove.nextMoves;
                 }
+                console.log(`Best Moves.length ${this.moves.length}`);
                 console.log(`Best Move:\n ${SMUtils.movesToString(this.moves)}`);
                 m = this.moves.splice(0,1)[0];                
             }

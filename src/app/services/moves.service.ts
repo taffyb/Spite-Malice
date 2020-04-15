@@ -69,7 +69,7 @@ export class MovesService {
 //      }
 //          
 //      this.turns[this.turns.length-1].moves.push(move);
-      console.log(`[move.service.addMove ${TurnEnum[type]}]: ${SMUtils.moveToString(move)} `);
+      console.log(`[move.service.addMove ${TurnEnum[type]}]: ${type==TurnEnum.PLAYER_SWITCH?'':SMUtils.moveToString(move)} `);
       this.publish(move);
   }
   
